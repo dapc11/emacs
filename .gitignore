@@ -1,0 +1,9 @@
+/.mc-lists.el
+/auto-save-list/
+/custom-file.el~
+/eln-cache/
+/elpa/
+/init.el~
+/tutorial/
+/projectile-bookmarks.eld
+/transient/
