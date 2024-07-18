@@ -94,7 +94,8 @@
 (global-set-key (kbd "C-c <right>") 'windmove-right)
 (global-set-key (kbd "C-c .") 'next-error)
 (global-set-key (kbd "C-c ,") 'previous-error)
-
+(global-set-key (kbd "C-c v") 'split-window-right)
+(global-set-key (kbd "C-c -") 'split-window-below)
 
 (setq package-check-signature nil)
 (use-package magit
