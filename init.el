@@ -16,7 +16,11 @@
 
 (load-theme 'spacemacs-dark)
 (set-frame-font "JetBrains Mono 12" nil t)
+(setq enable-local-variables :safe)
+(setq byte-compile-warnings '(not docstrings))
+(setq-default cursor-type 'bar)
 (setq ring-bell-function 'ignore)
+
 
 (use-package vertico
   :init
@@ -124,9 +128,6 @@
     )
   )
 
-(setq byte-compile-warnings '(not docstrings))
-(setq-default cursor-type 'bar)
-
 (use-package projectile
   :init
   (setq projectile-project-search-path '("~/repos"))
@@ -151,4 +152,3 @@
 	 ("C-c C-r" . ivy-resume)
       	 ("C-x C-f" . counsel-find-file))
   )
-(setq enable-local-variables :safe)
