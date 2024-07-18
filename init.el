@@ -92,6 +92,8 @@
 (global-set-key (kbd "C-c <down>") 'windmove-down)
 (global-set-key (kbd "C-c <left>") 'windmove-left)
 (global-set-key (kbd "C-c <right>") 'windmove-right)
+(global-set-key (kbd "C-c .") 'next-error)
+(global-set-key (kbd "C-c ,") 'previous-error)
 
 
 (setq package-check-signature nil)
@@ -129,7 +131,8 @@
   (setq projectile-project-search-path '("~/repos"))
   :bind (
 	 ("C-c p" . projectile-command-map)
-	 ("C-c C-p" . projectile-switch-project))
+	 ("C-c C-p" . projectile-switch-project)
+	 ("C-c s" . projectile-ag))
   :config
   (projectile-mode +1)
   )
