@@ -11,9 +11,8 @@
 
 (require 'package)
 (package-initialize)
-
 (add-to-list 'package-archives
-	     '("melpa", "http://melpa.milkbox.net/packages/") t)
+             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 
 (load-theme 'spacemacs-dark)
 (set-frame-font "JetBrains Mono 12" nil t)
@@ -47,6 +46,8 @@
   (helm-mode 1)
   :bind (
          ("M-y" . helm-show-kill-ring)
+	 ("M-x" . helm-M-x)
+	 ("C-c r" . helm-recentf)
 	 )
   )
 
@@ -66,10 +67,12 @@
 (use-package multiple-cursors
   :ensure t
   :bind(("C-S-c C-S-c" . mc/edit-lines)
-        ("C-<" . mc/mark-next-like-this)
-        ("C->" . mc/mark-previous-like-this)
+        ("M-<down>" . mc/mark-next-like-this)
+        ("M-<up>" . mc/mark-previous-like-this)
         ("C-c C-<" . mc/mark-all-like-this)
-        ("C-c n" . mc/insert-numbers))
+        ("C-<" . mc/mark-next-word-like-this)
+	("C->" . mc/mark-previous-word-like-this)
+	)
   :config
   (setq mc/insert-numbers-default 1)
   )
@@ -85,10 +88,10 @@
   )
 
 (global-set-key (kbd "C-d") 'duplicate-line)
-(global-set-key (kbd "ä") 'forward-paragraph)
-(global-set-key (kbd "ö") 'backward-paragraph)
-(global-set-key (kbd "M-<down>") 'forward-paragraph)
-(global-set-key (kbd "M-<up>") 'backward-paragraph)
+(global-set-key (kbd "C-c <up>") 'windmove-up)
+(global-set-key (kbd "C-c <down>") 'windmove-down)
+(global-set-key (kbd "C-c <left>") 'windmove-left)
+(global-set-key (kbd "C-c <right>") 'windmove-right)
 
 
 (setq package-check-signature nil)
@@ -125,7 +128,8 @@
   :init
   (setq projectile-project-search-path '("~/repos"))
   :bind (
-	 ("C-c p" . projectile-command-map))
+	 ("C-c p" . projectile-command-map)
+	 ("C-c C-p" . projectile-switch-project))
   :config
   (projectile-mode +1)
   )
@@ -139,8 +143,8 @@
   (ivy-mode)
   (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
   :bind (("C-s" . swiper-isearch)
-	 ("M-s" . swiper-isearch-at-point)
+	 ("M-s" . swiper-isearch-thing-at-point)
 	 ("C-c C-r" . ivy-resume)
-	 ("M-x" . counsel-M-x)
-	 ("C-x C-f" . counsel-find-file))
+      	 ("C-x C-f" . counsel-find-file))
   )
+(setq enable-local-variables :safe)
