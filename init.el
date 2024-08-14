@@ -1,66 +1,128 @@
-(setq inhibit-startup-message t)
+ (setq inhibit-startup-message t)
 
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
-
+(delete-selection-mode 1)
 (global-hl-line-mode t)
+(global-display-line-numbers-mode t)
+
+;; 4 spaces rather than tabs
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+(setq c-basic-offset 4)
+(setq c-basic-indent 4)
+
+(setq column-number-mode t)
+(setq backup-directory-alist '(("." . "~/.emacsbackup")))
 
 (setq custom-file "~/.emacs.d/custom-file.el")
 (load-file custom-file)
 
 (require 'package)
-(package-initialize)
-(add-to-list 'package-archives
-             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")))
+(setq package-check-signature nil)
+(custom-set-variables '(gnutls-algorithm-priority "normal:-vers-tls1.3"))
 
-(load-theme 'spacemacs-dark)
-(set-frame-font "JetBrains Mono 12" nil t)
-(setq enable-local-variables :safe)
-(setq byte-compile-warnings '(not docstrings))
-(setq-default cursor-type 'bar)
+(package-initialize)
+
+(load-theme 'atom-one-dark)
+
+(set-frame-font "JetBrains Mono 13" nil)
+(setq line-spacing 0.1)
 (setq ring-bell-function 'ignore)
 
-
 (use-package vertico
-  :init
-  (setq vertico-cycle t)
-  :config
-  (vertico-mode)
-  )
-
-(use-package which-key
-  :config
-  (which-key-mode)
-  )
-
-(use-package orderless
-  :init
-  (setq completion-styles '(orderless basic)
-	completion-category-defaults nil
-	completion-category-overrides '((file (styles partial-completion)))))
-
-(use-package helm
   :ensure t
   :init
-  (setq helm-M-x-fuzzy-match 1)
-  (setq helm-buffers-fuzzy-matching 1)
-  (setq helm-recentf-fuzzy-match 0)
+  (vertico-mode)
+  (setq vertico-cycle t))
+
+(use-package which-key
+  :init
+  (which-key-mode))
+
+(use-package orderless
+  :demand t
   :config
-  (helm-mode 1)
-  :bind (
-         ("M-y" . helm-show-kill-ring)
-	 ("M-x" . helm-M-x)
-	 ("C-c r" . helm-recentf)
-	 )
-  )
+
+  (defun +orderless--consult-suffix ()
+    "Regexp which matches the end of string with Consult tofu support."
+    (if (and (boundp 'consult--tofu-char) (boundp 'consult--tofu-range))
+        (format "[%c-%c]*$"
+                consult--tofu-char
+                (+ consult--tofu-char consult--tofu-range -1))
+      "$"))
+
+  ;; Recognizes the following patterns:
+  ;; * .ext (file extension)
+  ;; * regexp$ (regexp matching at end)
+  (defun +orderless-consult-dispatch (word _index _total)
+    (cond
+     ;; Ensure that $ works with Consult commands, which add disambiguation suffixes
+     ((string-suffix-p "$" word)
+      `(orderless-regexp . ,(concat (substring word 0 -1) (+orderless--consult-suffix))))
+     ;; File extensions
+     ((and (or minibuffer-completing-file-name
+               (derived-mode-p 'eshell-mode))
+           (string-match-p "\\`\\.." word))
+      `(orderless-regexp . ,(concat "\\." (substring word 1) (+orderless--consult-suffix))))))
+
+  ;; Define orderless style with initialism by default
+  (orderless-define-completion-style +orderless-with-initialism
+    (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp)))
+
+  ;; You may want to combine the `orderless` style with `substring` and/or `basic`.
+  ;; There are many details to consider, but the following configurations all work well.
+  ;; Personally I (@minad) use option 3 currently. Also note that you may want to configure
+  ;; special styles for special completion categories, e.g., partial-completion for files.
+  ;;
+  ;; 1. (setq completion-styles '(orderless))
+  ;; This configuration results in a very coherent completion experience,
+  ;; since orderless is used always and exclusively. But it may not work
+  ;; in all scenarios. Prefix expansion with TAB is not possible.
+  ;;
+  ;; 2. (setq completion-styles '(substring orderless))
+  ;; By trying substring before orderless, TAB expansion is possible.
+  ;; The downside is that you can observe the switch from substring to orderless
+  ;; during completion, less coherent.
+  ;;
+  ;; 3. (setq completion-styles '(orderless basic))
+  ;; Certain dynamic completion tables (completion-table-dynamic)
+  ;; do not work properly with orderless. One can add basic as a fallback.
+  ;; Basic will only be used when orderless fails, which happens only for
+  ;; these special tables.
+  ;;
+  ;; 4. (setq completion-styles '(substring orderless basic))
+  ;; Combine substring, orderless and basic.
+  ;;
+  (setq completion-styles '(orderless basic)
+        completion-category-defaults nil
+        ;;; Enable partial-completion for files.
+        ;;; Either give orderless precedence or partial-completion.
+        ;;; Note that completion-category-overrides is not really an override,
+        ;;; but rather prepended to the default completion-styles.
+        ;; completion-category-overrides '((file (styles orderless partial-completion))) ;; orderless is tried first
+        completion-category-overrides '((file (styles partial-completion)) ;; partial-completion is tried first
+                                        ;; enable initialism by default for symbols
+                                        (command (styles +orderless-with-initialism))
+                                        (variable (styles +orderless-with-initialism))
+                                        (symbol (styles +orderless-with-initialism)))
+        orderless-component-separator #'orderless-escapable-split-on-space ;; allow escaping space with backslash!
+        orderless-style-dispatchers (list #'+orderless-consult-dispatch
+                                          #'orderless-affix-dispatch)))
+
+(use-package savehist
+  :init
+  (savehist-mode))
 
 (use-package company
   :init
-  (add-hook 'after-init-hook 'global-company-mode)
-  :config
   (company-mode)
-  )
+  (add-hook 'after-init-hook 'global-company-mode)
+  (global-set-key (kbd "C-c C-SPC") 'company-complete)
+  (setq company-backends '((company-capf company-dabbrev-code)))
+  (setq company-require-match nil))
 
 (with-eval-after-load 'company
   (define-key company-active-map (kbd "TAB") #'company-complete-common-or-cycle)
@@ -68,87 +130,114 @@
   (define-key company-active-map (kbd "S-TAB") (lambda () (interactive) (company-complete-common-or-cycle -1)))
   (define-key company-active-map (kbd "TAB") (lambda () (interactive) (company-complete-common-or-cycle -1))))
 
-(use-package multiple-cursors
-  :ensure t
-  :bind(("C-S-c C-S-c" . mc/edit-lines)
-        ("M-<down>" . mc/mark-next-like-this)
-        ("M-<up>" . mc/mark-previous-like-this)
-        ("C-c C-<" . mc/mark-all-like-this)
-        ("C-<" . mc/mark-next-word-like-this)
-	("C->" . mc/mark-previous-word-like-this)
-	)
-  :config
-  (setq mc/insert-numbers-default 1)
-  )
+(defun my/python-mode-hook ()
+  (add-to-list 'company-backends 'company-jedi))
 
-(defun duplicate-line()
-  (interactive)
-  (move-beginning-of-line 1)
-  (kill-line)
-  (yank)
-  (open-line 1)
-  (next-line 1)
-  (yank)
-  )
+(add-hook 'python-mode-hook 'my/python-mode-hook)
 
-(global-set-key (kbd "C-d") 'duplicate-line)
+(require 'multiple-cursors)
+;(global-set-key (kbd "C-c C-a") 'mc/edit-lines)
+(global-set-key (kbd "M-<right>") 'mc/mark-next-like-this)
+(global-set-key (kbd "M-<left>") 'mc/mark-previous-like-this)
+
+(global-set-key (kbd "C-<") 'mc/mark-next-like-this)
+(global-set-key (kbd "C->") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+(global-set-key (kbd "M-S-<right>") 'mark-sexp)
+
+(require 'magit)
+(setq byte-compile-warnings '(not docstrings))
+
+(global-set-key (kbd "C-c <right>") 'windmove-right)
+(global-set-key (kbd "C-c <left>") 'windmove-left)
 (global-set-key (kbd "C-c <up>") 'windmove-up)
 (global-set-key (kbd "C-c <down>") 'windmove-down)
-(global-set-key (kbd "C-c <left>") 'windmove-left)
-(global-set-key (kbd "C-c <right>") 'windmove-right)
-(global-set-key (kbd "C-c .") 'next-error)
-(global-set-key (kbd "C-c ,") 'previous-error)
-(global-set-key (kbd "C-c v") 'split-window-right)
 (global-set-key (kbd "C-c -") 'split-window-below)
+(global-set-key (kbd "C-c v") 'split-window-right)
+(global-set-key (kbd "C-c q") 'delete-window)
+(global-set-key (kbd "C-c r") 'recentf)
+(global-set-key (kbd "C-r") 'query-replace)
+(global-set-key (kbd "C-S-r") 'isearch-query-replace)
+(global-set-key (kbd "C-c g") 'magit)
+(global-set-key (kbd "C-c n") 'projectile-find-file)
+(global-set-key (kbd "C-c f") 'projectile-ripgrep)
+(global-set-key (kbd "C-.") 'next-error)
+(global-set-key (kbd "C-,") 'previous-error)
 
-(setq package-check-signature nil)
-(use-package magit
-  :bind (("C-c g" . magit-status)
-         ("C-c C-g l" . magit-file-log)
-         ("C-c f" . magit-grep))
-  :init
-  (progn
-    (delete 'Git vc-handled-backends)
-    ;; make magit status go full-screen but remember previous window
-    ;; settings
-    ;; from: http://whattheemacsd.com/setup-magit.el-01.html
-    (defadvice magit-status (around magit-fullscreen activate)
-      (window-configuration-to-register :magit-fullscreen)
-      ad-do-it
-      (delete-other-windows))
+(defun move-text-internal (arg)
+   (cond
+    ((and mark-active transient-mark-mode)
+     (if (> (point) (mark))
+            (exchange-point-and-mark))
+     (let ((column (current-column))
+              (text (delete-and-extract-region (point) (mark))))
+       (forward-line arg)
+       (move-to-column column t)
+       (set-mark (point))
+       (insert text)
+       (exchange-point-and-mark)
+       (setq deactivate-mark nil)))
+    (t
+     (beginning-of-line)
+     (when (or (> arg 0) (not (bobp)))
+       (forward-line)
+       (when (or (< arg 0) (not (eobp)))
+            (transpose-lines arg))
+       (forward-line -1)))))
 
-    ;; Close popup when commiting - this stops the commit window
-    ;; hanging around
-    ;; From: http://git.io/rPBE0Q
-    (defadvice git-commit-commit (after delete-window activate)
-      (delete-window))
+(defun move-text-down (arg)
+   "Move region (transient-mark-mode active) or current line
+  arg lines down."
+   (interactive "*p")
+   (move-text-internal arg))
 
-    (defadvice git-commit-abort (after delete-window activate)
-      (delete-window))
-    )
-  )
+(defun move-text-up (arg)
+   "Move region (transient-mark-mode active) or current line
+  arg lines up."
+   (interactive "*p")
+   (move-text-internal (- arg)))
+
+(global-set-key [M-S-down] 'move-text-down)
+(global-set-key [M-S-up] 'move-text-up)
 
 (use-package projectile
   :init
-  (setq projectile-project-search-path '("~/repos"))
-  :bind (
-	 ("C-c p" . projectile-command-map)
-	 ("C-c C-p" . projectile-switch-project)
-	 ("C-c s" . projectile-ag))
-  :config
   (projectile-mode +1)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (setq projectile-completion-system 'auto)
+  (setq projectile-project-search-path '(("~/repos" . 1)))
   )
 
-(use-package ivy
+(defun my-set-background-color (&optional frame)
+  "Set custom background color."
+  (with-selected-frame (or frame (selected-frame))
+    (set-background-color "#171717")))
+
+;; Run later, for client frames...
+(add-hook 'after-make-frame-functions 'my-set-background-color)
+;; ...and now, for the initial frame.
+(my-set-background-color)
+
+(defadvice align-regexp (around align-regexp-with-spaces activate)
+  (let ((indent-tabs-mode nil))
+    ad-do-it))
+
+(require 'eglot)
+(add-hook 'go-mode-hook 'eglot-ensure)
+
+(use-package exec-path-from-shell
+  :init
+  (when (daemonp)
+  (exec-path-from-shell-initialize)))
+
+(use-package git-gutter
   :config
-  (setq ivy-use-virtual-buffers t)
-  (setq enable-recursive-minibuffers t)
-  (setq swiper-action-recenter t)
-  (setq swiper-goto-start-of-match t)
-  (ivy-mode)
-  (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
-  :bind (("C-s" . swiper-isearch)
-	 ("M-s" . swiper-isearch-thing-at-point)
-	 ("C-c C-r" . ivy-resume)
-      	 ("C-x C-f" . counsel-find-file))
+  (git-gutter-mode))
+
+
+(require 'ansi-color)
+(defun colorize-compilation-buffer ()
+  (ansi-color-apply-on-region compilation-filter-start (point))
   )
+(add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+(add-hook 'write-file-hooks 'delete-trailing-whitespace nil t)
