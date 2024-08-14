@@ -8,7 +8,7 @@
    '("0c860c4fe9df8cff6484c54d2ae263f19d935e4ff57019999edbda9c7eda50b8" "c7f838704d7caa88bc337464867c22af0a502e32154558b0f6c9c3c6e8650122" "d92c1c36a5181cf629749bf6feee1886cf6bce248ab075c9d1b1f6096fea9539" "7fd8b914e340283c189980cd1883dbdef67080ad1a3a9cc3df864ca53bdc89cf" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" default))
  '(gnutls-algorithm-priority "normal:-vers-tls1.3")
  '(package-selected-packages
-   '(k8s-mode yaml-mode lua-mode dockerfile-mode rg ripgrep git-gutter exec-path-from-shell ag atom-one-dark-theme company-jedi company-go projectile magit vertico orderless multiple-cursors company which-key))
+   '(smartparens expand-region json-mode python-mode git-gutter-fringe k8s-mode yaml-mode lua-mode dockerfile-mode rg ripgrep git-gutter exec-path-from-shell ag atom-one-dark-theme company-jedi company-go projectile magit vertico orderless multiple-cursors company which-key))
  '(safe-local-variable-values
    '((lsp-diagnostics-disabled-modes python-mode)
      (eval flycheck-add-next-checker 'python-flake8

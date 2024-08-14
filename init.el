@@ -20,11 +20,16 @@
 (load-file custom-file)
 
 (require 'package)
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")))
-(setq package-check-signature nil)
-(custom-set-variables '(gnutls-algorithm-priority "normal:-vers-tls1.3"))
-
+(add-to-list 'package-archives '("gnu"   . "https://elpa.gnu.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (package-initialize)
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(eval-and-compile
+  (setq use-package-always-ensure t
+        use-package-expand-minimally t))
 
 (load-theme 'atom-one-dark)
 
@@ -71,31 +76,6 @@
   ;; Define orderless style with initialism by default
   (orderless-define-completion-style +orderless-with-initialism
     (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp)))
-
-  ;; You may want to combine the `orderless` style with `substring` and/or `basic`.
-  ;; There are many details to consider, but the following configurations all work well.
-  ;; Personally I (@minad) use option 3 currently. Also note that you may want to configure
-  ;; special styles for special completion categories, e.g., partial-completion for files.
-  ;;
-  ;; 1. (setq completion-styles '(orderless))
-  ;; This configuration results in a very coherent completion experience,
-  ;; since orderless is used always and exclusively. But it may not work
-  ;; in all scenarios. Prefix expansion with TAB is not possible.
-  ;;
-  ;; 2. (setq completion-styles '(substring orderless))
-  ;; By trying substring before orderless, TAB expansion is possible.
-  ;; The downside is that you can observe the switch from substring to orderless
-  ;; during completion, less coherent.
-  ;;
-  ;; 3. (setq completion-styles '(orderless basic))
-  ;; Certain dynamic completion tables (completion-table-dynamic)
-  ;; do not work properly with orderless. One can add basic as a fallback.
-  ;; Basic will only be used when orderless fails, which happens only for
-  ;; these special tables.
-  ;;
-  ;; 4. (setq completion-styles '(substring orderless basic))
-  ;; Combine substring, orderless and basic.
-  ;;
   (setq completion-styles '(orderless basic)
         completion-category-defaults nil
         ;;; Enable partial-completion for files.
@@ -143,10 +123,14 @@
 (global-set-key (kbd "C-<") 'mc/mark-next-like-this)
 (global-set-key (kbd "C->") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-(global-set-key (kbd "M-S-<right>") 'mark-sexp)
 
 (require 'magit)
 (setq byte-compile-warnings '(not docstrings))
+(use-package smartparens
+  :init
+  (smartparens-mode))
+(use-package expand-region)
+(global-set-key (kbd "M-S-<right>") 'er/expand-region)
 
 (global-set-key (kbd "C-c <right>") 'windmove-right)
 (global-set-key (kbd "C-c <left>") 'windmove-left)
@@ -231,9 +215,22 @@
   (exec-path-from-shell-initialize)))
 
 (use-package git-gutter
+  :hook (prog-mode . git-gutter-mode)
   :config
-  (git-gutter-mode))
+  (setq git-gutter:update-interval 0.02))
 
+(use-package git-gutter-fringe
+  :config
+  (define-fringe-bitmap 'git-gutter-fr:added [224] nil nil '(center repeated))
+  (define-fringe-bitmap 'git-gutter-fr:modified [224] nil nil '(center repeated))
+  (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240] nil nil 'bottom))
+
+(use-package yaml-mode)
+(use-package json-mode)
+(use-package python-mode)
+(use-package go-mode)
+(use-package dockerfile-mode)
+(use-package lua-mode)
 
 (require 'ansi-color)
 (defun colorize-compilation-buffer ()
