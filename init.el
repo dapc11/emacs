@@ -137,8 +137,10 @@
 (use-package smartparens
   :init
   (smartparens-mode))
+
 (use-package expand-region)
 (global-set-key (kbd "M-S-<right>") 'er/expand-region)
+(global-set-key (kbd "M-S-<left>") 'er/contract-region)
 
 (global-set-key (kbd "C-c <right>") 'windmove-right)
 (global-set-key (kbd "C-c <left>") 'windmove-left)
