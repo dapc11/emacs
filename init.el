@@ -6,7 +6,9 @@
 (scroll-bar-mode -1)
 (delete-selection-mode 1)
 (global-hl-line-mode t)
+(recentf-mode 1)
 (global-display-line-numbers-mode t)
+(advice-add 'risky-local-variable-p :override #'ignore)
 
 ;; 4 spaces rather than tabs
 (setq-default indent-tabs-mode nil)
@@ -131,7 +133,6 @@
 (setq ediff-custom-diff-options "-u")
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 (setq ediff-split-window-function 'split-window-vertically)
-
 (setq byte-compile-warnings '(not docstrings))
 
 (use-package smartparens
@@ -141,25 +142,60 @@
 (use-package expand-region)
 (global-set-key (kbd "M-S-<right>") 'er/expand-region)
 (global-set-key (kbd "M-S-<left>") 'er/contract-region)
-
 (global-set-key (kbd "C-c <right>") 'windmove-right)
 (global-set-key (kbd "C-c <left>") 'windmove-left)
 (global-set-key (kbd "C-c <up>") 'windmove-up)
 (global-set-key (kbd "C-c <down>") 'windmove-down)
 (global-set-key (kbd "C-c -") 'split-window-below)
 (global-set-key (kbd "C-c v") 'split-window-right)
-(global-set-key (kbd "C-c q") 'delete-window)
-(global-set-key (kbd "C-c r") 'recentf)
+
+(defun kill-and-close-buffer ()
+  "Kill and Close current active buffer"
+  (interactive)
+  (kill-this-buffer)
+  (delete-window)
+)
+
+(global-set-key (kbd "C-c q") 'kill-and-close-buffer)
 (global-set-key (kbd "C-r") 'query-replace)
 (global-set-key (kbd "C-S-r") 'isearch-query-replace)
 (global-set-key (kbd "C-c g") 'magit)
-(global-set-key (kbd "C-c C-g") 'magit)
-(global-set-key (kbd "C-c n") 'projectile-find-file)
-(global-set-key (kbd "C-c f") 'projectile-ripgrep)
 (global-set-key (kbd "C-.") 'next-error)
 (global-set-key (kbd "C-,") 'previous-error)
 (global-set-key (kbd "C-u") 'undo)
+(global-set-key (kbd "C-t") 'treemacs)
 (global-set-key (kbd "C-S-u") 'undo-redo)
+(global-set-key (kbd "C-/") 'comment-line)
+(global-set-key (kbd "C-c n") 'projectile-find-file)
+
+(use-package treemacs
+  :ensure t
+  :defer t
+  :config
+  (progn
+    (setq
+      treemacs-deferred-git-apply-delay        0.5
+      treemacs-no-png-images t
+      treemacs-sorting                         'mod-time-desc
+      treemacs-text-scale                      -0.5)
+
+    (treemacs-follow-mode t)
+    (treemacs-filewatch-mode t)
+    (treemacs-fringe-indicator-mode 'always)
+
+    (treemacs-hide-gitignored-files-mode nil))
+  :bind
+  (:map global-map
+    ("C-t"   . treemacs)))
+
+(use-package treemacs-projectile
+  :after (treemacs projectile)
+  :ensure t)
+
+(use-package treemacs-magit
+  :after (treemacs magit)
+  :ensure t)
+
 
 (defun rc/duplicate-line ()
   "Duplicate current line"
@@ -175,7 +211,6 @@
 
 (global-set-key (kbd "C-c C-d") 'rc/duplicate-line)
 (global-set-key (kbd "C-c d") 'rc/duplicate-line)
-(global-set-key (kbd "C-c C-c") "\C-u\C- ")
 
 (defun unpop-to-mark-command ()
   "Unpop off mark ring. Does nothing if mark ring is empty."
@@ -222,8 +257,8 @@
   (interactive "*p")
   (move-text-internal (- arg)))
 
-(global-set-key [M-S-down] 'move-text-down)
-(global-set-key [M-S-up] 'move-text-up)
+(global-set-key [M-down] 'move-text-down)
+(global-set-key [M-up] 'move-text-up)
 
 (use-package projectile
   :init
@@ -233,15 +268,15 @@
   (setq projectile-project-search-path '(("~/repos" . 1)))
   )
 
-(defun my-set-background-color (&optional frame)
-  "Set custom background color."
-  (with-selected-frame (or frame (selected-frame))
-    (set-background-color "#171717")))
+;; (defun my-set-background-color (&optional frame)
+;;   "Set custom background color."
+;;   (with-selected-frame (or frame (selected-frame))
+;;     (set-background-color "#171717")))
 
-;; Run later, for client frames...
-(add-hook 'after-make-frame-functions 'my-set-background-color)
-;; ...and now, for the initial frame.
-(my-set-background-color)
+;; ;; Run later, for client frames...
+;; (add-hook 'after-make-frame-functions 'my-set-background-color)
+;; ;; ...and now, for the initial frame.
+;; (my-set-background-color)
 
 (defadvice align-regexp (around align-regexp-with-spaces activate)
   (let ((indent-tabs-mode nil))
@@ -299,7 +334,6 @@
 ;;; Whitespace mode
 (defun rc/set-up-whitespace-handling ()
   (interactive)
-  (whitespace-mode)
   (add-to-list 'write-file-functions 'delete-trailing-whitespace))
 
 (add-hook 'python-mode-hook 'rc/set-up-whitespace-handling)
@@ -314,8 +348,6 @@
   (ansi-color-apply-on-region compilation-filter-start (point))
   )
 (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
-(add-hook 'write-file-hooks 'delete-trailing-whitespace nil t)
-
 
 (defun goto-last-change (&optional mark-point minimal-line-distance)
   "Set point to the position of the last change.
@@ -374,6 +406,7 @@ will return point to the current position."
 	    (setq goto-last-change-undo nil)
 	    (error "Buffer not modified")))))
 
+(global-set-key (kbd "C-c C-c") 'goto-last-change)
 
 (defun ediff-copy-both-to-C ()
   (interactive)
@@ -385,3 +418,149 @@ will return point to the current position."
 (add-hook 'ediff-keymap-setup-hook 'add-d-to-ediff-mode-map)
 
 (setopt use-short-answers t)
+
+
+(defun skeez/consult-line () ; conslut-line
+  (interactive)
+  (if (minibufferp)
+    ;; when in minibuffer..
+    (progn
+      (vertico-next)
+      )
+    ;; when not in minibuffer..
+    (progn
+      (let ((vertico-count 10)    )
+        (consult-line))
+      )
+    ) ; if
+  ;; (let ((vertico-count 3) (consult-preview-key nil)    )
+  ;;   (consult-line))
+  )
+
+;; limit preview
+;; when C-r in minibuffer, attempt to tell vertico to just go backwards one
+(defun skeez/consult-line-reverse ()
+  (interactive)
+  (if (minibufferp)
+    ;; when in minibuffer..
+    (progn
+      (vertico-previous)
+      )
+    ;; when not in minibuffer..
+    (progn
+      (let ((vertico-count 10)   )
+        (consult-line))
+      )
+    ) ; if
+  ;; (let ((vertico-count 3) (consult-preview-key nil)    )
+  ;;   (consult-line))
+  )
+
+(define-key vertico-map [S-up] #'vertico-previous)
+(define-key vertico-map [S-down] #'vertico-next)
+
+(use-package consult
+  ;; Replace bindings. Lazily loaded by `use-package'.
+  :bind (;; C-c bindings in `mode-specific-map'
+          ([remap Info-search] . consult-info)
+          ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+          ("C-c b" . consult-buffer)                ;; orig. switch-to-buffer
+          ("C-c B" . consult-project-buffer)                ;; orig. switch-to-buffer
+          ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+          ("M-g i" . consult-imenu)
+          ("C-c l" . consult-goto-line)
+          ("C-c r" . consult-recent-file)
+          ("C-c N" . consult-fd)
+          ("C-c F" . consult-focus-lines)
+          ("C-c f" . consult-ripgrep))
+
+  ;; Enable automatic preview at point in the *Completions* buffer. This is
+  ;; relevant when you use the default completion UI.
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+
+  ;; The :init configuration is always executed (Not lazy)
+  :init
+
+  ;; Optionally configure the register formatting. This improves the register
+  ;; preview for `consult-register', `consult-register-load',
+  ;; `consult-register-store' and the Emacs built-ins.
+  (setq register-preview-delay 0.5
+        register-preview-function #'consult-register-format)
+
+  ;; Optionally tweak the register preview window.
+  ;; This adds thin lines, sorting and hides the mode line of the window.
+  (advice-add #'register-preview :override #'consult-register-window)
+
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+
+  ;; Configure other variables and modes in the :config section,
+  ;; after lazily loading the package.
+  :config
+
+  ;; Optionally configure preview. The default value
+  ;; is 'any, such that any key triggers the preview.
+  ;; (setq consult-preview-key 'any)
+  ;; For some commands and buffer sources it is useful to configure the
+  ;; :preview-key on a per-command basis using the `consult-customize' macro.
+  (consult-customize
+    consult-ripgrep consult-git-grep consult-grep
+    consult-bookmark consult-recent-file consult-xref
+    consult--source-bookmark consult--source-file-register
+    consult--source-recent-file consult--source-project-recent-file
+    preview-key '([S-up] [S-down]))
+)
+
+(global-set-key (kbd "C-s") 'skeez/consult-line)         ; normally isearch-forward
+(global-set-key (kbd "C-r") 'skeez/consult-line-reverse) ; normally isearch-backward
+
+(autoload 'projectile-project-root "projectile")
+(setq consult-project-function (lambda (_) (projectile-project-root)))
+
+(use-package embark
+  :ensure t
+
+  :bind (
+          ("M-e" . embark-export))
+
+  :init
+
+  ;; Optionally replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command)
+
+  ;; Show the Embark target at point via Eldoc. You may adjust the
+  ;; Eldoc strategy, if you want to see the documentation from
+  ;; multiple providers. Beware that using this can be a little
+  ;; jarring since the message shown in the minibuffer can be more
+  ;; than one line, causing the modeline to move up and down:
+
+  ;; (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+  ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+
+  :config
+
+  ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
+
+;; Consult users will also want the embark-consult package.
+(use-package embark-consult
+  :ensure t ; only need to install it, embark loads it after consult if found
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
+
+(defvar-local consult-toggle-preview-orig nil)
+
+(defun consult-toggle-preview ()
+  "Command to enable/disable preview."
+  (interactive)
+  (if consult-toggle-preview-orig
+      (setq consult--preview-function consult-toggle-preview-orig
+            consult-toggle-preview-orig nil)
+    (setq consult-toggle-preview-orig consult--preview-function
+          consult--preview-function #'ignore)))
+
+(define-key vertico-map (kbd "C-p") #'consult-toggle-preview)
