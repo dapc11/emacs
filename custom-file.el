@@ -16,7 +16,7 @@
           (setq tab-width 4)
           (setq python-indent-offset 4)))))
  '(package-selected-packages
-    '(embark-consult treemacs-magit treemacs-projectile consult treemacs smartparens expand-region json-mode python-mode git-gutter-fringe k8s-mode yaml-mode lua-mode dockerfile-mode rg ripgrep git-gutter exec-path-from-shell ag atom-one-dark-theme company-jedi company-go projectile magit vertico orderless multiple-cursors company which-key))
+    '(go-mode cape corfu embark-consult treemacs-magit treemacs-projectile consult treemacs smartparens expand-region json-mode python-mode git-gutter-fringe k8s-mode yaml-mode lua-mode dockerfile-mode rg ripgrep git-gutter exec-path-from-shell ag atom-one-dark-theme projectile magit vertico orderless multiple-cursors which-key))
  '(safe-local-variable-values
     '((lsp-diagnostics-disabled-modes python-mode)
        (eval flycheck-add-next-checker 'python-flake8

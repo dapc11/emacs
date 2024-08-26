@@ -1,23 +1,22 @@
 (setq inhibit-startup-message t)
 (setq lisp-indent-offset 2)
-(tool-bar-mode -1)
-(show-paren-mode 1)
-(menu-bar-mode -1)
-(scroll-bar-mode -1)
-(delete-selection-mode 1)
-(global-hl-line-mode t)
-(recentf-mode 1)
-(global-display-line-numbers-mode t)
-(advice-add 'risky-local-variable-p :override #'ignore)
+(setq tool-bar-mode -1)
+(setq show-paren-mode 1)
+(setq menu-bar-mode -1)
+(setq scroll-bar-mode -1)
+(setq delete-selection-mode 1)
+(setq global-hl-line-mode t)
+(setq recentf-mode 1)
+(setq global-display-line-numbers-mode t)
+(setq advice-add 'risky-local-variable-p :override #'ignore)
+(setq column-number-mode t)
+(setq backup-directory-alist '(("." . "~/.emacsbackup")))
 
 ;; 4 spaces rather than tabs
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 (setq c-basic-offset 4)
 (setq c-basic-indent 4)
-
-(setq column-number-mode t)
-(setq backup-directory-alist '(("." . "~/.emacsbackup")))
 
 (setq custom-file "~/.emacs.d/custom-file.el")
 (load-file custom-file)
@@ -51,74 +50,49 @@
   (which-key-mode))
 
 (use-package orderless
-  :demand t
-  :config
-
-  (defun +orderless--consult-suffix ()
-    "Regexp which matches the end of string with Consult tofu support."
-    (if (and (boundp 'consult--tofu-char) (boundp 'consult--tofu-range))
-      (format "[%c-%c]*$"
-        consult--tofu-char
-        (+ consult--tofu-char consult--tofu-range -1))
-      "$"))
-
-  ;; Recognizes the following patterns:
-  ;; * .ext (file extension)
-  ;; * regexp$ (regexp matching at end)
-  (defun +orderless-consult-dispatch (word _index _total)
-    (cond
-      ;; Ensure that $ works with Consult commands, which add disambiguation suffixes
-      ((string-suffix-p "$" word)
-        `(orderless-regexp . ,(concat (substring word 0 -1) (+orderless--consult-suffix))))
-      ;; File extensions
-      ((and (or minibuffer-completing-file-name
-              (derived-mode-p 'eshell-mode))
-         (string-match-p "\\`\\.." word))
-        `(orderless-regexp . ,(concat "\\." (substring word 1) (+orderless--consult-suffix))))))
-
-  ;; Define orderless style with initialism by default
-  (orderless-define-completion-style +orderless-with-initialism
-    (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp)))
-  (setq completion-styles '(orderless basic)
-    completion-category-defaults nil
-        ;;; Enable partial-completion for files.
-        ;;; Either give orderless precedence or partial-completion.
-        ;;; Note that completion-category-overrides is not really an override,
-        ;;; but rather prepended to the default completion-styles.
-    ;; completion-category-overrides '((file (styles orderless partial-completion))) ;; orderless is tried first
-    completion-category-overrides
-    '(
-       (file (styles partial-completion)) ;; partial-completion is tried first
-       ;; enable initialism by default for symbols
-       (command (styles +orderless-with-initialism))
-       (variable (styles +orderless-with-initialism))
-       (symbol (styles +orderless-with-initialism)))
-    orderless-component-separator #'orderless-escapable-split-on-space ;; allow escaping space with backslash!
-    orderless-style-dispatchers (list #'+orderless-consult-dispatch
-                                  #'orderless-affix-dispatch)))
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion)))))
 
 (use-package savehist
   :init
   (savehist-mode))
 
-(use-package company
+(use-package corfu
+  :custom
+  (corfu-cycle t)                 ; Allows cycling through candidates
+  (corfu-auto t)                  ; Enable auto completion
+  (corfu-auto-prefix 2)
+  (corfu-auto-delay 0.1)
+  (corfu-popupinfo-delay '(0.4 . 0.2))
+
+  :bind (:map corfu-map
+          ("M-SPC"      . corfu-insert-separator)
+          ("TAB"        . corfu-next)
+          ([tab]        . corfu-next)
+          ("S-TAB"      . corfu-previous)
+          ([backtab]    . corfu-previous)
+          ("S-<return>" . nil) ;; leave my entry as it is
+          ("RET"        . corfu-insert))
+
   :init
-  (company-mode)
-  (add-hook 'after-init-hook 'global-company-mode)
-  (global-set-key (kbd "C-c C-SPC") 'company-complete)
-  (setq company-backends '((company-capf company-dabbrev-code)))
-  (setq company-require-match nil))
+  (global-corfu-mode)
+)
 
-(with-eval-after-load 'company
-  (define-key company-active-map (kbd "TAB") #'company-complete-common-or-cycle)
-  (define-key company-active-map (kbd "<tab>") #'company-complete-common-or-cycle)
-  (define-key company-active-map (kbd "S-TAB") (lambda () (interactive) (company-complete-common-or-cycle -1)))
-  (define-key company-active-map (kbd "TAB") (lambda () (interactive) (company-complete-common-or-cycle -1))))
+(use-package cape
+  :init
+  (add-hook 'completion-at-point-functions #'cape-dabbrev)
+  (add-hook 'completion-at-point-functions #'cape-file))
 
-(defun my/python-mode-hook ()
-  (add-to-list 'company-backends 'company-jedi))
+(defun my/eglot-capf ()
+  (setq-local completion-at-point-functions
+              (list (cape-capf-super
+                     #'eglot-completion-at-point
+                     #'cape-dabbrev
+                     #'cape-file))))
 
-(add-hook 'python-mode-hook 'my/python-mode-hook)
+(add-hook 'eglot-managed-mode-hook #'my/eglot-capf)
 
 (require 'multiple-cursors)
 (global-set-key (kbd "M-<right>") 'mc/mark-next-like-this)
@@ -129,11 +103,12 @@
 
 (require 'magit)
 
-(setq ediff-diff-options "")
-(setq ediff-custom-diff-options "-u")
-(setq ediff-window-setup-function 'ediff-setup-windows-plain)
-(setq ediff-split-window-function 'split-window-vertically)
-(setq byte-compile-warnings '(not docstrings))
+(setq
+  ediff-diff-options ""
+  ediff-custom-diff-options "-u"
+  ediff-window-setup-function 'ediff-setup-windows-plain
+  ediff-split-window-function 'split-window-vertically
+  byte-compile-warnings '(not docstrings))
 
 (use-package smartparens
   :init
@@ -174,10 +149,10 @@
   :config
   (progn
     (setq
-      treemacs-deferred-git-apply-delay        0.5
+      treemacs-deferred-git-apply-delay 0.5
       treemacs-no-png-images t
-      treemacs-sorting                         'mod-time-desc
-      treemacs-text-scale                      -0.5)
+      treemacs-sorting 'mod-time-desc
+      treemacs-text-scale -0.5)
 
     (treemacs-follow-mode t)
     (treemacs-filewatch-mode t)
@@ -264,9 +239,9 @@
   :init
   (projectile-mode +1)
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  (setq projectile-completion-system 'auto)
-  (setq projectile-project-search-path '(("~/repos" . 1)))
-  )
+  (setq
+    projectile-completion-system 'auto
+    projectile-project-search-path '(("~/repos" . 1))))
 
 ;; (defun my-set-background-color (&optional frame)
 ;;   "Set custom background color."
@@ -345,8 +320,7 @@
 
 (require 'ansi-color)
 (defun colorize-compilation-buffer ()
-  (ansi-color-apply-on-region compilation-filter-start (point))
-  )
+  (ansi-color-apply-on-region compilation-filter-start (point)))
 (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
 
 (defun goto-last-change (&optional mark-point minimal-line-distance)
@@ -419,7 +393,6 @@ will return point to the current position."
 
 (setopt use-short-answers t)
 
-
 (defun skeez/consult-line () ; conslut-line
   (interactive)
   (if (minibufferp)
@@ -432,9 +405,7 @@ will return point to the current position."
       (let ((vertico-count 10)    )
         (consult-line))
       )
-    ) ; if
-  ;; (let ((vertico-count 3) (consult-preview-key nil)    )
-  ;;   (consult-line))
+    )
   )
 
 ;; limit preview
@@ -451,9 +422,7 @@ will return point to the current position."
       (let ((vertico-count 10)   )
         (consult-line))
       )
-    ) ; if
-  ;; (let ((vertico-count 3) (consult-preview-key nil)    )
-  ;;   (consult-line))
+    )
   )
 
 (define-key vertico-map [S-up] #'vertico-previous)
@@ -477,13 +446,7 @@ will return point to the current position."
   ;; Enable automatic preview at point in the *Completions* buffer. This is
   ;; relevant when you use the default completion UI.
   :hook (completion-list-mode . consult-preview-at-point-mode)
-
-  ;; The :init configuration is always executed (Not lazy)
   :init
-
-  ;; Optionally configure the register formatting. This improves the register
-  ;; preview for `consult-register', `consult-register-load',
-  ;; `consult-register-store' and the Emacs built-ins.
   (setq register-preview-delay 0.5
         register-preview-function #'consult-register-format)
 
@@ -495,15 +458,7 @@ will return point to the current position."
   (setq xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
 
-  ;; Configure other variables and modes in the :config section,
-  ;; after lazily loading the package.
   :config
-
-  ;; Optionally configure preview. The default value
-  ;; is 'any, such that any key triggers the preview.
-  ;; (setq consult-preview-key 'any)
-  ;; For some commands and buffer sources it is useful to configure the
-  ;; :preview-key on a per-command basis using the `consult-customize' macro.
   (consult-customize
     consult-ripgrep consult-git-grep consult-grep
     consult-bookmark consult-recent-file consult-xref
@@ -520,27 +475,11 @@ will return point to the current position."
 
 (use-package embark
   :ensure t
-
-  :bind (
-          ("M-e" . embark-export))
-
+  :bind (("M-e" . embark-export))
   :init
-
-  ;; Optionally replace the key help with a completing-read interface
   (setq prefix-help-command #'embark-prefix-help-command)
 
-  ;; Show the Embark target at point via Eldoc. You may adjust the
-  ;; Eldoc strategy, if you want to see the documentation from
-  ;; multiple providers. Beware that using this can be a little
-  ;; jarring since the message shown in the minibuffer can be more
-  ;; than one line, causing the modeline to move up and down:
-
-  ;; (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
-  ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
-
   :config
-
-  ;; Hide the mode line of the Embark live/completions buffers
   (add-to-list 'display-buffer-alist
                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
                  nil
