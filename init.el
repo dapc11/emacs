@@ -1,22 +1,24 @@
 (setq inhibit-startup-message t)
 (setq lisp-indent-offset 2)
-(setq tool-bar-mode -1)
-(setq show-paren-mode 1)
-(setq menu-bar-mode -1)
-(setq scroll-bar-mode -1)
-(setq delete-selection-mode 1)
-(setq global-hl-line-mode t)
-(setq recentf-mode 1)
-(setq global-display-line-numbers-mode t)
-(setq advice-add 'risky-local-variable-p :override #'ignore)
-(setq column-number-mode t)
-(setq backup-directory-alist '(("." . "~/.emacsbackup")))
-
-;; 4 spaces rather than tabs
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 (setq c-basic-offset 4)
 (setq c-basic-indent 4)
+(setq column-number-mode t)
+(setq backup-directory-alist '(("." . "~/.emacsbackup")))
+(setq line-spacing 0.1)
+(setq ring-bell-function 'ignore)
+
+(set-frame-font "JetBrains Mono 11" nil)
+(tool-bar-mode -1)
+(show-paren-mode 1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(delete-selection-mode)
+(global-hl-line-mode)
+(recentf-mode)
+(global-display-line-numbers-mode)
+(advice-add 'risky-local-variable-p :override #'ignore)
 
 (setq custom-file "~/.emacs.d/custom-file.el")
 (load-file custom-file)
@@ -35,15 +37,14 @@
 
 (load-theme 'atom-one-dark)
 
-(set-frame-font "JetBrains Mono 11" nil)
-(setq line-spacing 0.1)
-(setq ring-bell-function 'ignore)
+(use-package wgrep)
 
 (use-package vertico
   :ensure t
+  :custom
+  (vertico-cycle t)
   :init
-  (vertico-mode)
-  (setq vertico-cycle t))
+  (vertico-mode))
 
 (use-package which-key
   :init
@@ -60,12 +61,9 @@
   (savehist-mode))
 
 (use-package corfu
-  :custom
-  (corfu-cycle t)                 ; Allows cycling through candidates
-  (corfu-auto t)                  ; Enable auto completion
-  (corfu-auto-prefix 2)
-  (corfu-auto-delay 0.1)
-  (corfu-popupinfo-delay '(0.4 . 0.2))
+  :ensure t
+  :init
+  (global-corfu-mode)
 
   :bind (:map corfu-map
           ("M-SPC"      . corfu-insert-separator)
@@ -73,68 +71,147 @@
           ([tab]        . corfu-next)
           ("S-TAB"      . corfu-previous)
           ([backtab]    . corfu-previous)
-          ("S-<return>" . nil) ;; leave my entry as it is
+          ("S-<return>" . nil)
           ("RET"        . corfu-insert))
 
-  :init
-  (global-corfu-mode)
-)
+  :custom
+  (corfu-cycle t)
+  (corfu-auto t)
+  (corfu-auto-prefix 2)
+  (corfu-auto-delay 0.1)
+  (corfu-popupinfo-delay '(0.4 . 0.2)))
 
 (use-package cape
-  :init
-  (add-hook 'completion-at-point-functions #'cape-dabbrev)
-  (add-hook 'completion-at-point-functions #'cape-file))
+  :ensure t
+  :config
+  (setq cape-dabbrev-check-other-buffers nil)
 
-(defun my/eglot-capf ()
-  (setq-local completion-at-point-functions
-              (list (cape-capf-super
-                     #'eglot-completion-at-point
-                     #'cape-dabbrev
-                     #'cape-file))))
+  ;; Set up CAPF with `cape-dabbrev` and other sources
+  (defun my/setup-capf ()
+    "Set up completion-at-point-functions with cape and dabbrev."
+    (setq-local completion-at-point-functions
+                (list
+               ;; Combine eglot with cape sources
+               (cape-capf-buster
+                #'eglot-completion-at-point
+                #'cape-dabbrev
+                #'cape-file
+                #'cape-symbol))))
+  ;; Add CAPF setup to programming modes
+  (add-hook 'prog-mode-hook #'my/setup-capf))
 
-(add-hook 'eglot-managed-mode-hook #'my/eglot-capf)
+(use-package multiple-cursors
+  :ensure t
+  :bind (
+          ("M-<right>". mc/mark-next-like-this)
+          ("M-<left>" . mc/mark-previous-like-this)
+          ("C-<" . mc/mark-next-like-this)
+          ("C->" . mc/mark-previous-like-this)
+          ("C-c C-<" . mc/mark-all-like-this))
+  )
 
-(require 'multiple-cursors)
-(global-set-key (kbd "M-<right>") 'mc/mark-next-like-this)
-(global-set-key (kbd "M-<left>") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-<") 'mc/mark-next-like-this)
-(global-set-key (kbd "C->") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+(setq imperative-verb-file "~/.emacs.d/imperatives.txt")
+(defun get-imperative-verbs ()
+  "Return a list of imperative verbs."
+  (let ((file-path imperative-verb-file))
+    (with-temp-buffer
+      (insert-file-contents file-path)
+      (split-string (buffer-string) "\n" t)
+      )))
 
-(require 'magit)
+(defcustom my-git-commit-style-convention-checks '(summary-starts-with-capital
+                                                   summary-does-not-end-with-period
+                                                   summary-uses-imperative)
+  "List of checks performed by `my-git-commit-check-style-conventions'.
+Valid members are `summary-starts-with-capital',
+`summary-does-not-end-with-period', and
+`summary-uses-imperative'. That function is a member of
+`git-commit-finish-query-functions'."
+  :options '(summary-starts-with-capital
+             summary-does-not-end-with-period
+             summary-uses-imperative)
+  :type '(list :convert-widget custom-hood-convert-widget)
+  :group 'git-commit)
 
-(setq
-  ediff-diff-options ""
-  ediff-custom-diff-options "-u"
-  ediff-window-setup-function 'ediff-setup-windows-plain
-  ediff-split-window-function 'split-window-vertically
-  byte-compile-warnings '(not docstrings))
+;; Parallels `git-commit-check-style-conventions'
+(defun my-git-commit-check-style-conventions (force)
+  "Check for violations of certain basic style conventions.
+
+For each violation ask the user if she wants to proceed anway.
+Option `my-git-commit-check-style-conventions' controls which
+conventions are checked."
+  (save-excursion
+    (goto-char (point-min))
+    (re-search-forward (git-commit-summary-regexp) nil t)
+    (let ((summary (match-string 1))
+           (first-word))
+      (and (or (not (memq 'summary-starts-with-capital
+                      my-git-commit-style-convention-checks))
+             (let ((case-fold-search nil))
+               (string-match-p "^[[:upper:]]" summary))
+             (y-or-n-p "Summary line does not start with capital letter.  Commit anyway? "))
+        (or (not (memq 'summary-does-not-end-with-period
+                   my-git-commit-style-convention-checks))
+          (not (string-match-p "[\\.!\\?;,:]$" summary))
+          (y-or-n-p "Summary line ends with punctuation.  Commit anyway? "))
+        (or (not (memq 'summary-uses-imperative
+                   my-git-commit-style-convention-checks))
+          (progn
+            (string-match "^\\([[:alpha:]]*\\)" summary)
+            (setq first-word (downcase (match-string 1 summary)))
+            (car (member first-word (get-imperative-verbs))))
+          (when (y-or-n-p "Summary line should use imperative.  Does it? ")
+            (when (y-or-n-p (format "Add `%s' to list of imperative verbs?" first-word))
+              (with-temp-buffer
+                (insert first-word)
+                (insert "\n")
+                (write-region (point-min) (point-max) imperative-verb-file t)))
+            t))))))
+
+(use-package magit
+  :ensure t
+  :bind (("C-c g" . magit-status))
+  :custom
+  (git-commit-summary-max-length 50)
+  (git-commit-fill-column 72)
+  (ediff-diff-options "")
+  (ediff-custom-diff-options "-u")
+  (ediff-window-setup-function 'ediff-setup-windows-plain)
+  (ediff-split-window-function 'split-window-vertically)
+  (byte-compile-warnings '(not docstrings))
+
+  :config
+  (add-hook 'after-save-hook 'magit-after-save-refresh-status t)
+  (add-to-list 'git-commit-finish-query-functions
+               #'my-git-commit-check-style-conventions)
+  )
 
 (use-package smartparens
   :init
   (smartparens-mode))
 
-(use-package expand-region)
-(global-set-key (kbd "M-S-<right>") 'er/expand-region)
-(global-set-key (kbd "M-S-<left>") 'er/contract-region)
-(global-set-key (kbd "C-c <right>") 'windmove-right)
-(global-set-key (kbd "C-c <left>") 'windmove-left)
-(global-set-key (kbd "C-c <up>") 'windmove-up)
-(global-set-key (kbd "C-c <down>") 'windmove-down)
-(global-set-key (kbd "C-c -") 'split-window-below)
-(global-set-key (kbd "C-c v") 'split-window-right)
+(use-package expand-region
+  :bind (
+          ("M-S-<right>" . er/expand-region)
+          ("M-S-<left>" . er/contract-region)))
 
-(defun kill-and-close-buffer ()
+
+(defun dt/kill-and-close-buffer ()
   "Kill and Close current active buffer"
   (interactive)
   (kill-this-buffer)
   (delete-window)
 )
 
-(global-set-key (kbd "C-c q") 'kill-and-close-buffer)
+(global-set-key (kbd "C-c <right>") 'windmove-right)
+(global-set-key (kbd "C-c <left>") 'windmove-left)
+(global-set-key (kbd "C-c <up>") 'windmove-up)
+(global-set-key (kbd "C-c <down>") 'windmove-down)
+(global-set-key (kbd "C-c -") 'split-window-below)
+(global-set-key (kbd "C-c v") 'split-window-right)
+(global-set-key (kbd "C-c q") 'dt/kill-and-close-buffer)
 (global-set-key (kbd "C-r") 'query-replace)
 (global-set-key (kbd "C-S-r") 'isearch-query-replace)
-(global-set-key (kbd "C-c g") 'magit)
 (global-set-key (kbd "C-.") 'next-error)
 (global-set-key (kbd "C-,") 'previous-error)
 (global-set-key (kbd "C-u") 'undo)
@@ -142,26 +219,30 @@
 (global-set-key (kbd "C-S-u") 'undo-redo)
 (global-set-key (kbd "C-/") 'comment-line)
 (global-set-key (kbd "C-c n") 'projectile-find-file)
+;; Rebind Page Up (prior) to act as Home
+(global-set-key [prior] 'move-beginning-of-line)
+;; Rebind Page Down (next) to act as End
+(global-set-key [next] 'move-end-of-line)
+;; Rebind M-/ functionality to M-;
+(global-set-key (kbd "M-;") 'dabbrev-expand)
 
 (use-package treemacs
   :ensure t
   :defer t
   :config
-  (progn
-    (setq
-      treemacs-deferred-git-apply-delay 0.5
-      treemacs-no-png-images t
-      treemacs-sorting 'mod-time-desc
-      treemacs-text-scale -0.5)
+  (setq
+    treemacs-deferred-git-apply-delay 0.5
+    treemacs-no-png-images t
+    treemacs-sorting 'mod-time-desc
+    treemacs-text-scale -0.5)
 
-    (treemacs-follow-mode t)
-    (treemacs-filewatch-mode t)
-    (treemacs-fringe-indicator-mode 'always)
-
-    (treemacs-hide-gitignored-files-mode nil))
+  (treemacs-follow-mode t)
+  (treemacs-filewatch-mode t)
+  (treemacs-fringe-indicator-mode 'always)
+  (treemacs-hide-gitignored-files-mode nil)
   :bind
   (:map global-map
-    ("C-t"   . treemacs)))
+    ("C-t" . treemacs)))
 
 (use-package treemacs-projectile
   :after (treemacs projectile)
@@ -172,7 +253,7 @@
   :ensure t)
 
 
-(defun rc/duplicate-line ()
+(defun dt/duplicate-line ()
   "Duplicate current line"
   (interactive)
   (let ((column (- (point) (point-at-bol)))
@@ -184,10 +265,10 @@
     (move-beginning-of-line 1)
     (forward-char column)))
 
-(global-set-key (kbd "C-c C-d") 'rc/duplicate-line)
-(global-set-key (kbd "C-c d") 'rc/duplicate-line)
+(global-set-key (kbd "C-c C-d") 'dt/duplicate-line)
+(global-set-key (kbd "C-c d") 'dt/duplicate-line)
 
-(defun unpop-to-mark-command ()
+(defun dt/unpop-to-mark-command ()
   "Unpop off mark ring. Does nothing if mark ring is empty."
   (interactive)
   (when mark-ring
@@ -197,9 +278,9 @@
     (setq mark-ring (nbutlast mark-ring))
     (goto-char (marker-position (car (last mark-ring))))))
 
-(global-set-key (kbd "C-c C-x") 'unpop-to-mark-command)
+(global-set-key (kbd "C-c C-x") 'dt/unpop-to-mark-command)
 
-(defun move-text-internal (arg)
+(defun dt/move-text-internal (arg)
   (cond
     ((and mark-active transient-mark-mode)
       (if (> (point) (mark))
@@ -220,25 +301,26 @@
           (transpose-lines arg))
         (forward-line -1)))))
 
-(defun move-text-down (arg)
+(defun dt/move-text-down (arg)
   "Move region (transient-mark-mode active) or current line
   arg lines down."
   (interactive "*p")
-  (move-text-internal arg))
+  (dt/move-text-internal arg))
 
-(defun move-text-up (arg)
+(defun dt/move-text-up (arg)
   "Move region (transient-mark-mode active) or current line
   arg lines up."
   (interactive "*p")
-  (move-text-internal (- arg)))
+  (dt/move-text-internal (- arg)))
 
-(global-set-key [M-down] 'move-text-down)
-(global-set-key [M-up] 'move-text-up)
+(global-set-key (kbd "M-<down>") 'dt/move-text-down)
+(global-set-key (kbd "M-<up>") 'dt/move-text-up)
 
 (use-package projectile
   :init
-  (projectile-mode +1)
+  (projectile-mode)
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  :config
   (setq
     projectile-completion-system 'auto
     projectile-project-search-path '(("~/repos" . 1))))
@@ -257,8 +339,9 @@
   (let ((indent-tabs-mode nil))
     ad-do-it))
 
-(require 'eglot)
-(add-hook 'go-mode-hook 'eglot-ensure)
+(use-package eglot
+  :ensure t
+  :hook ((prog-mode . eglot-ensure)))
 
 (use-package exec-path-from-shell
   :init
@@ -278,7 +361,7 @@
 
 (use-package yaml-mode)
 (use-package json-mode)
-(use-package python-mode)
+;; (use-package python-mode)
 (use-package go-mode)
 (use-package dockerfile-mode)
 (use-package lua-mode)
@@ -292,7 +375,8 @@
        ("\\.yml\\'" . yaml-mode)
        ("\\.tpl\\'" . k8s-mode)
        ("\\.go\\'" . go-mode)
-       ("\\.py\\'" . smartparens-mode)
+       ("\\.py\\'" . python-mode)
+       ;; ("\\.py\\'" . smartparens-mode)
        ("\\.yaml\\'" . smartparens-mode)
        ("\\.yml\\'" . smartparens-mode)
        ("\\.tpl\\'" . smartparens-mode)
@@ -307,16 +391,31 @@
   )
 
 ;;; Whitespace mode
-(defun rc/set-up-whitespace-handling ()
+(defun dt/set-up-whitespace-handling ()
   (interactive)
   (add-to-list 'write-file-functions 'delete-trailing-whitespace))
 
-(add-hook 'python-mode-hook 'rc/set-up-whitespace-handling)
-(add-hook 'yaml-mode-hook 'rc/set-up-whitespace-handling)
-(add-hook 'go-mode-hook 'rc/set-up-whitespace-handling)
-(add-hook 'lua-mode-hook 'rc/set-up-whitespace-handling)
-(add-hook 'json-mode-hook 'rc/set-up-whitespace-handling)
-(add-hook 'emacs-lisp-mode-hook 'rc/set-up-whitespace-handling)
+(defun dt/fill-column-git ()
+  (interactive)
+  (set-face-foreground 'fill-column-indicator "salmon")
+  (lambda ()
+    (set-fill-column 72)
+    (display-fill-column-indicator-mode))
+  )
+
+(add-hook 'git-commit-setup-hook 'dt/fill-column-git)
+(add-hook 'yaml-mode-hook 'dt/set-up-whitespace-handling)
+(add-hook 'go-mode-hook 'dt/set-up-whitespace-handling)
+(add-hook 'lua-mode-hook 'dt/set-up-whitespace-handling)
+(add-hook 'json-mode-hook 'dt/set-up-whitespace-handling)
+(add-hook 'emacs-lisp-mode-hook 'dt/set-up-whitespace-handling)
+(add-hook 'git-commit-setup-hook 'dt/set-up-whitespace-handling)
+;; (add-hook 'python-mode-hook 'dt/set-up-whitespace-handling)
+;; (add-hook 'python-mode-hook
+;;   (lambda nil
+;;     (setq indent-tabs-mode t)
+;;     (setq tab-width 4)
+;;     (setq python-indent-offset 4)))
 
 (require 'ansi-color)
 (defun colorize-compilation-buffer ()
@@ -393,7 +492,7 @@ will return point to the current position."
 
 (setopt use-short-answers t)
 
-(defun skeez/consult-line () ; conslut-line
+(defun dt/consult-line ()
   (interactive)
   (if (minibufferp)
     ;; when in minibuffer..
@@ -408,9 +507,7 @@ will return point to the current position."
     )
   )
 
-;; limit preview
-;; when C-r in minibuffer, attempt to tell vertico to just go backwards one
-(defun skeez/consult-line-reverse ()
+(defun dt/consult-line-reverse ()
   (interactive)
   (if (minibufferp)
     ;; when in minibuffer..
@@ -425,38 +522,41 @@ will return point to the current position."
     )
   )
 
-(define-key vertico-map [S-up] #'vertico-previous)
-(define-key vertico-map [S-down] #'vertico-next)
+(defun dt/consult-ripgrep-region-or-prompt ()
+  "Call `consult-ripgrep' with the selected region as the initial input if any.
+If no region is selected, call `consult-ripgrep' without pre-populating the input."
+  (interactive)
+  (if (use-region-p)
+    (consult-ripgrep nil (buffer-substring-no-properties (region-beginning) (region-end)))
+    (consult-ripgrep))
+  )
 
 (use-package consult
-  ;; Replace bindings. Lazily loaded by `use-package'.
-  :bind (;; C-c bindings in `mode-specific-map'
+  :bind (
           ([remap Info-search] . consult-info)
-          ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
-          ("C-c b" . consult-buffer)                ;; orig. switch-to-buffer
-          ("C-c B" . consult-project-buffer)                ;; orig. switch-to-buffer
-          ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+          ("C-x b" . consult-buffer)
+          ("C-c b" . consult-buffer)
+          ("C-c B" . consult-project-buffer)
+          ("M-y" . consult-yank-pop)
           ("M-g i" . consult-imenu)
           ("C-c l" . consult-goto-line)
           ("C-c r" . consult-recent-file)
           ("C-c N" . consult-fd)
           ("C-c F" . consult-focus-lines)
-          ("C-c f" . consult-ripgrep))
+          ("C-c f" . dt/consult-ripgrep-region-or-prompt))
 
   ;; Enable automatic preview at point in the *Completions* buffer. This is
   ;; relevant when you use the default completion UI.
   :hook (completion-list-mode . consult-preview-at-point-mode)
   :init
   (setq register-preview-delay 0.5
-        register-preview-function #'consult-register-format)
+    register-preview-function #'consult-register-format
+    xref-show-xrefs-function #'consult-xref
+    xref-show-definitions-function #'consult-xref)
 
   ;; Optionally tweak the register preview window.
   ;; This adds thin lines, sorting and hides the mode line of the window.
   (advice-add #'register-preview :override #'consult-register-window)
-
-  ;; Use Consult to select xref locations with preview
-  (setq xref-show-xrefs-function #'consult-xref
-        xref-show-definitions-function #'consult-xref)
 
   :config
   (consult-customize
@@ -467,8 +567,8 @@ will return point to the current position."
     preview-key '([S-up] [S-down]))
 )
 
-(global-set-key (kbd "C-s") 'skeez/consult-line)         ; normally isearch-forward
-(global-set-key (kbd "C-r") 'skeez/consult-line-reverse) ; normally isearch-backward
+(global-set-key (kbd "C-s") 'dt/consult-line)
+(global-set-key (kbd "C-r") 'dt/consult-line-reverse)
 
 (autoload 'projectile-project-root "projectile")
 (setq consult-project-function (lambda (_) (projectile-project-root)))
@@ -485,9 +585,8 @@ will return point to the current position."
                  nil
                  (window-parameters (mode-line-format . none)))))
 
-;; Consult users will also want the embark-consult package.
 (use-package embark-consult
-  :ensure t ; only need to install it, embark loads it after consult if found
+  :ensure t
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
@@ -503,3 +602,5 @@ will return point to the current position."
           consult--preview-function #'ignore)))
 
 (define-key vertico-map (kbd "C-p") #'consult-toggle-preview)
+(define-key vertico-map (kbd "S-<up>") #'vertico-previous)
+(define-key vertico-map (kbd "S-<down>") #'vertico-next)
