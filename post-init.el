@@ -105,7 +105,7 @@ If no region is selected, call `consult-ripgrep' without pre-populating the inpu
           ("C-c l" . consult-goto-line)
           ("C-c r" . consult-recent-file)
           ("C-c N" . consult-fd)
-          ("C-c F" . consult-focus-lines)
+          ("C-c F" . dt/consult-ripgrep-at-point)
           ("C-c f" . dt/consult-ripgrep-region-or-prompt)
 
           :map minibuffer-local-map
@@ -212,10 +212,6 @@ If no region is selected, call `consult-ripgrep' without pre-populating the inpu
   (select-text-in-delimiters)
   (let ((search-string (buffer-substring-no-properties (region-beginning) (region-end))))
     (consult-ripgrep nil (concat search-string (char-to-string ? )))))
-
-;; Bind this function to a key, if you like, for easy access
-(global-set-key (kbd "C-c R") #'dt/consult-ripgrep-at-point)
-
 
 (defun select-text-in-delimiters ()
   "Select text between the nearest left and right delimiters."
