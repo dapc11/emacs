@@ -172,7 +172,6 @@ conventions are checked."
 (global-set-key (kbd "C-S-r") 'isearch-query-replace)
 (global-set-key (kbd "C-n") 'next-error)
 (global-set-key (kbd "C-b") 'previous-error)
-(global-set-key (kbd "C-u") 'undo)
 (global-set-key (kbd "C-t") 'treemacs)
 (global-set-key (kbd "C-S-j") 'join-line)
 (global-set-key (kbd "C-S-u") 'undo-redo)
@@ -371,8 +370,6 @@ With a prefix arg (optional arg MARK-POINT non-nil), set mark so \
 \\[exchange-point-and-mark]
 will return point to the current position."
   (interactive "P")
-  ;; (unless (buffer-modified-p)
-  ;;   (error "Buffer not modified"))
   (when (eq buffer-undo-list t)
     (error "No undo information in this buffer"))
   (when mark-point

@@ -296,3 +296,20 @@ That is, a string used to represent it on the tab bar."
   indent-bars-color-by-depth nil
   indent-bars-highlight-current-depth nil
   indent-bars-display-on-blank-lines nil)
+
+(use-package undo-tree
+  :config
+  (global-undo-tree-mode)
+  :init
+  ;; Set directory to store undo-tree history files
+  (setq undo-tree-history-directory-alist
+    `(("." . ,(concat user-emacs-directory "undo-history/"))))
+
+  ;; Ensure the directory exists
+  (make-directory (concat user-emacs-directory "undo-history/") t)
+
+  ;; Enable persistent undo
+  (setq undo-tree-auto-save-history t)
+
+  :bind (("C-z" . undo-tree-undo)
+          ("C-S z" . undo-tree-redo)))
