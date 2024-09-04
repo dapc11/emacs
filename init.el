@@ -361,9 +361,21 @@ conventions are checked."
 (add-hook 'prog-mode-hook 'git-gutter-mode)
 
 (require 'ansi-color)
-(defun colorize-compilation-buffer ()
-  (ansi-color-apply-on-region compilation-filter-start (point)))
-(add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+(setq ansi-color-names-vector
+      ["#21252B"  ; Black
+       "#E06C75"  ; Red
+       "#98C379"  ; Green
+       "#D19A66"  ; Yellow
+       "#61AFEF"  ; Blue
+       "#C678DD"  ; Magenta
+       "#56B6C2"  ; Cyan
+        "#ABB2BF"]) ; White
+
+(defun my-apply-ansi-colors ()
+  (let ((inhibit-read-only t))
+    (ansi-color-apply-on-region (point-min) (point-max))))
+
+(add-hook 'compilation-filter-hook 'my-apply-ansi-colors)
 
 (defun goto-last-change (&optional mark-point minimal-line-distance)
   "Set point to the position of the last change.
