@@ -28,6 +28,7 @@
 (scroll-bar-mode -1)
 (delete-selection-mode)
 (global-hl-line-mode)
+(auto-save-visited-mode)
 (global-display-line-numbers-mode)
 (advice-add 'risky-local-variable-p :override #'ignore)
 
