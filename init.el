@@ -176,6 +176,7 @@ conventions are checked."
 (global-set-key (kbd "C-c -") 'split-window-below)
 (global-set-key (kbd "C-c v") 'split-window-right)
 (global-set-key (kbd "C-c q") 'dt/kill-and-close-buffer)
+(global-set-key (kbd "C-c k") 'kill-this-buffer)
 (global-set-key (kbd "C-r") 'query-replace)
 (global-set-key (kbd "C-S-r") 'isearch-query-replace)
 (global-set-key (kbd "C-n") 'next-error)
