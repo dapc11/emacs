@@ -358,6 +358,7 @@ conventions are checked."
 (add-hook 'emacs-lisp-mode-hook 'dt/set-up-whitespace-handling)
 (add-hook 'git-commit-setup-hook 'dt/set-up-whitespace-handling)
 (add-hook 'python-mode-hook 'dt/set-up-whitespace-handling)
+(add-hook 'prog-mode-hook 'git-gutter-mode)
 
 (require 'ansi-color)
 (defun colorize-compilation-buffer ()
