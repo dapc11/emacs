@@ -36,10 +36,9 @@
 (use-package embark
   :ensure t
   :bind (
-          ("M-e" . embark-export)
+          ("C-c e" . embark-export)
           ("C-." . embark-act)
-          ("C-;" . embark-dwim)
-          )
+          ("C-;" . embark-dwim))
   :init
   (setq prefix-help-command #'embark-prefix-help-command)
 
