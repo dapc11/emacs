@@ -174,6 +174,7 @@ conventions are checked."
 (global-set-key (kbd "C-b") 'previous-error)
 (global-set-key (kbd "C-t") 'treemacs)
 (global-set-key (kbd "C-S-j") 'join-line)
+(global-unset-key (kbd "C-s"))
 (global-set-key (kbd "C-S-u") 'undo-redo)
 (global-set-key (kbd "C-/") 'comment-line)
 (global-set-key (kbd "C-c n") 'projectile-find-file)
