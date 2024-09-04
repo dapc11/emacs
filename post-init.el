@@ -265,8 +265,18 @@ That is, a string used to represent it on the tab bar."
     (custom-set-variables
       '(tabbar-separator (quote (0.5))))))
 
-(defun my-tabbar-buffer-groups ()
-  (list (cond ((string-equal "*" (substring (buffer-name) 0 1)) "emacs")
-              ((eq major-mode 'dired-mode) "emacs")
-              (t "user"))))
-(setq tabbar-buffer-groups-function 'my-tabbar-buffer-groups)
+(setq tabbar-buffer-groups-function (lambda () (list "All")))
+
+(defun dt/tabbar-buffer-list ()
+  "Return the list of buffers to show in tabs.
+   Exclude buffers whose names start and end with '*'."
+  (delq nil
+        (mapcar #'(lambda (b)
+                    (let ((name (buffer-name b)))
+                      (if (and (not (string-prefix-p " " name))
+                               (not (string-match "^\\*.*\\*$" name)))
+                          b)))
+                (buffer-list))))
+
+;; Set the custom buffer list function
+(setq tabbar-buffer-list-function 'dt/tabbar-buffer-list)
