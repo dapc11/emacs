@@ -275,8 +275,11 @@ If no region is selected, call `consult-ripgrep' without pre-populating the inpu
 
 (use-package indent-bars
   :load-path "~/.emacs.d/indent-bars"
-  :hook ((yaml-mode . indent-bars-mode)
-            (python-mode . indent-bars-mode))
+  :hook (
+          (yaml-mode . indent-bars-mode)
+          (python-mode . indent-bars-mode)
+          (emacs-lisp-mode . indent-bars-mode)
+          )
   :custom
   (indent-bars-prefer-character t))
 (setq
