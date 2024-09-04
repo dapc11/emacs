@@ -31,7 +31,9 @@
 (auto-save-visited-mode)
 (global-display-line-numbers-mode)
 (advice-add 'risky-local-variable-p :override #'ignore)
-
+(xterm-mouse-mode t)
+(global-set-key (kbd "<mouse-4>") 'previous-line)
+(global-set-key (kbd "<mouse-5>") 'next-line)'
 (setq custom-file "~/.emacs.d/custom-file.el")
 (load-file custom-file)
 
