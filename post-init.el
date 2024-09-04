@@ -269,16 +269,16 @@ That is, a string used to represent it on the tab bar."
 
 (defun dt/tabbar-buffer-list ()
   "Return the list of buffers to show in tabs.
-   Exclude buffers whose names start and end with '*'."
+   Exclude buffers whose names start and end with '*', and magit buffers."
   (delq nil
         (mapcar #'(lambda (b)
                     (let ((name (buffer-name b)))
                       (if (and (not (string-prefix-p " " name))
-                               (not (string-match "^\\*.*\\*$" name)))
+                               (not (string-match "^\\*.*\\*$" name))
+                               (not (string-prefix-p "magit" name)))
                           b)))
                 (buffer-list))))
 
-;; Set the custom buffer list function
 (setq tabbar-buffer-list-function 'dt/tabbar-buffer-list)
 
 (use-package indent-bars
