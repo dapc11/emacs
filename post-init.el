@@ -217,7 +217,7 @@ If no region is selected, call `consult-ripgrep' without pre-populating the inpu
 
     (set-face-attribute
       'tabbar-default nil
-      :background "#282C34"
+      :background "#21252B"
       :box '(:line-width 1 :color "#282C34" :style nil))
     (set-face-attribute
       'tabbar-unselected nil
@@ -241,27 +241,19 @@ If no region is selected, call `consult-ripgrep' without pre-populating the inpu
       :background "#282C34"
       :height 0.6)
 
-    (custom-set-variables
-      '(tabbar-separator (quote (0.5))))
-    ;; adding spaces
     (defun tabbar-buffer-tab-label (tab)
-      "Return a label for TAB.
-That is, a string used to represent it on the tab bar."
-      (let ((label  (if tabbar--buffer-show-groups
-                      (format "[%s]  " (tabbar-tab-tabset tab))
-                      (format "%s  " (tabbar-tab-value tab)))))
-        ;; Unless the tab bar auto scrolls to keep the selected tab
-        ;; visible, shorten the tab label to keep as many tabs as possible
-        ;; in the visible area of the tab bar.
-        (if tabbar-auto-scroll-flag
-          label
-          (tabbar-shorten
-            label (max 1 (/ (window-width)
-                           (length (tabbar-view
-                                     (tabbar-current-tabset)))))))))
+      "Return a label for TAB that includes the Git repository name, if available."
+      (let* ((buffer (tabbar-tab-value tab))
+              (label (format "%s" (buffer-name buffer)))
+              (git-root (with-current-buffer buffer
+                          (vc-root-dir)))
+              (repo-name (if git-root
+                           (file-name-nondirectory (directory-file-name git-root))
+                           "")))
+        (if (and git-root (not (string= repo-name "")))
+          (format "[%s] %s " repo-name label)
+          label)))
 
-    ;; Change padding of the tabs
-    ;; we also need to set separator to avoid overlapping tabs by highlighted tabs
     (custom-set-variables
       '(tabbar-separator (quote (0.5))))))
 
