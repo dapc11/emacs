@@ -69,21 +69,6 @@
     )
   )
 
-(defun dt/consult-line-reverse ()
-  (interactive)
-  (if (minibufferp)
-    ;; when in minibuffer..
-    (progn
-      (vertico-previous)
-      )
-    ;; when not in minibuffer..
-    (progn
-      (let ((vertico-count 10)   )
-        (consult-line))
-      )
-    )
-  )
-
 (defun dt/consult-ripgrep-region-or-prompt ()
   "Call `consult-ripgrep' with the selected region as the initial input if any.
 If no region is selected, call `consult-ripgrep' without pre-populating the input."
@@ -106,7 +91,7 @@ If no region is selected, call `consult-ripgrep' without pre-populating the inpu
           ("C-c r" . consult-recent-file)
           ("C-c N" . consult-fd)
           ("C-c F" . dt/consult-ripgrep-at-point)
-          ("C-c f" . dt/consult-ripgrep-region-or-prompt)
+          ("C-S-f" . dt/consult-ripgrep-region-or-prompt)
 
           :map minibuffer-local-map
           ("M-s" . consult-history)
@@ -153,9 +138,7 @@ If no region is selected, call `consult-ripgrep' without pre-populating the inpu
 (define-key vertico-map (kbd "S-<up>") #'vertico-previous)
 (define-key vertico-map (kbd "S-<down>") #'vertico-next)
 
-(global-set-key (kbd "C-s") 'dt/consult-line)
-(global-set-key (kbd "C-r") 'dt/consult-line-reverse)
-
+(global-set-key (kbd "C-f") 'dt/consult-line)
 
 (use-package corfu
   :ensure t
