@@ -280,3 +280,19 @@ That is, a string used to represent it on the tab bar."
 
 ;; Set the custom buffer list function
 (setq tabbar-buffer-list-function 'dt/tabbar-buffer-list)
+
+(use-package indent-bars
+  :load-path "~/.emacs.d/indent-bars"
+  :hook ((yaml-mode . indent-bars-mode)
+            (python-mode . indent-bars-mode))
+  :custom
+  (indent-bars-prefer-character t))
+(setq
+  indent-bars-color '(highlight :face-bg t :blend 0.5)
+  indent-bars-pattern "."
+  indent-bars-width-frac 0.1
+  indent-bars-pad-frac 0.1
+  indent-bars-zigzag nil
+  indent-bars-color-by-depth nil
+  indent-bars-highlight-current-depth nil
+  indent-bars-display-on-blank-lines nil)
