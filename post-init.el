@@ -19,7 +19,6 @@
 ;; the precise point where you previously left off.
 (add-hook 'after-init-hook #'save-place-mode)
 
-
 (use-package vertico
   :ensure t
   :custom
@@ -121,6 +120,10 @@ If no region is selected, call `consult-ripgrep' without pre-populating the inpu
 (autoload 'projectile-project-root "projectile")
 (setq consult-project-function (lambda (_) (projectile-project-root)))
 
+(defun dt/yaml-mode-keybindings ()
+  (define-key yaml-mode-map (kbd "M-.") 'dt/consult-ripgrep-at-point))
+
+(add-hook 'yaml-mode-hook 'dt/yaml-mode-keybindings)
 
 (defvar-local consult-toggle-preview-orig nil)
 
