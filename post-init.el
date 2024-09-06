@@ -217,17 +217,17 @@ If no region is selected, call `consult-ripgrep' without pre-populating the inpu
 
     (set-face-attribute
       'tabbar-default nil
-      :background "#21252B"
-      :box '(:line-width 1 :color "#282C34" :style nil))
+      :background "#24272e"
+      :box '(:line-width 1 :color "#24272e" :style nil))
     (set-face-attribute
       'tabbar-unselected nil
-      :background "#282C34"
-      :box '(:line-width 5 :color "#282C34" :style nil))
+      :background "#24272e"
+      :box '(:line-width 5 :color "#24272e" :style nil))
     (set-face-attribute
       'tabbar-selected nil
-      :background "#2C323C"
+      :background "#323a45"
       :foreground "#ABB2BF"
-      :box '(:line-width 5 :color "#2C323C" :style nil))
+      :box '(:line-width 5 :color "#323a45" :style nil))
     (set-face-attribute
       'tabbar-highlight nil
       :background "#2C323C"
@@ -235,10 +235,12 @@ If no region is selected, call `consult-ripgrep' without pre-populating the inpu
       :box '(:line-width 5 :color "#2C323C" :style nil))
     (set-face-attribute
       'tabbar-button nil
-      :box '(:line-width 1 :color "#282C34" :style nil))
+      :background "#24272e"
+      :foreground "#24272e"
+      :box '(:line-width 1 :color "#24272e" :style nil))
     (set-face-attribute
       'tabbar-separator nil
-      :background "#282C34"
+      :background "#24272e"
       :height 0.6)
 
     (defun tabbar-buffer-tab-label (tab)

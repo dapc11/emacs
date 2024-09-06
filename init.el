@@ -33,7 +33,7 @@
 (advice-add 'risky-local-variable-p :override #'ignore)
 (xterm-mouse-mode t)
 (global-set-key (kbd "<mouse-4>") 'previous-line)
-(global-set-key (kbd "<mouse-5>") 'next-line)'
+(global-set-key (kbd "<mouse-5>") 'next-line)
 (setq custom-file "~/.emacs.d/custom-file.el")
 (load-file custom-file)
 
@@ -287,9 +287,19 @@ conventions are checked."
   (let ((indent-tabs-mode nil))
     ad-do-it))
 
+;; Create a derived major-mode based on yaml-mode
+(define-derived-mode helm-mode yaml-mode "helm"
+  "Major mode for editing kubernetes helm templates")
+
 (use-package eglot
-  :ensure t
-  :hook ((prog-mode . eglot-ensure)))
+  :hook
+  (helm-mode . eglot-ensure)
+  (python-mode . eglot-ensure)
+  (go-mode . eglot-ensure)
+  :config
+  (add-to-list 'eglot-server-programs '(helm-mode "helm_ls" "serve")))
+
+(add-hook 'eglot--managed-mode-hook (lambda () (flymake-mode -1)))
 
 (use-package exec-path-from-shell
   :init
@@ -297,9 +307,8 @@ conventions are checked."
     (exec-path-from-shell-initialize)))
 
 (use-package git-gutter
-  :hook (prog-mode . git-gutter-mode)
   :config
-  (setq git-gutter:update-interval 0.02))
+  (setq git-gutter:update-interval 2))
 
 (use-package git-gutter-fringe
   :config
@@ -358,7 +367,6 @@ conventions are checked."
 (add-hook 'emacs-lisp-mode-hook 'dt/set-up-whitespace-handling)
 (add-hook 'git-commit-setup-hook 'dt/set-up-whitespace-handling)
 (add-hook 'python-mode-hook 'dt/set-up-whitespace-handling)
-(add-hook 'prog-mode-hook 'git-gutter-mode)
 
 (require 'ansi-color)
 (setq ansi-color-names-vector
