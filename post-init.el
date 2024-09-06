@@ -306,7 +306,7 @@ If no region is selected, call `consult-ripgrep' without pre-populating the inpu
   (make-directory (concat user-emacs-directory "undo-history/") t)
 
   ;; Enable persistent undo
-  (setq undo-tree-auto-save-history t)
+  (setq undo-tree-auto-save-history t))
 
-  :bind (("C-z" . undo-tree-undo)
-          ("C-S z" . undo-tree-redo)))
+(global-set-key (kbd "C-z") 'undo-tree-undo)
+(global-set-key (kbd "C-S-z") 'undo-tree-redo)
