@@ -19,7 +19,7 @@
            (setq tab-width 4)
            (setq python-indent-offset 4)))))
  '(package-selected-packages
-    '(rainbow-mode undo-tree tabbar go-mode cape corfu embark-consult treemacs-magit treemacs-projectile consult treemacs smartparens expand-region json-mode git-gutter-fringe k8s-mode yaml-mode lua-mode dockerfile-mode rg ripgrep git-gutter exec-path-from-shell ag atom-one-dark-theme projectile magit vertico orderless multiple-cursors which-key))
+    '(goto-last-change pandoc markdown-mode markdown-preview-mode rainbow-mode undo-tree tabbar go-mode cape corfu embark-consult treemacs-magit treemacs-projectile consult treemacs smartparens expand-region json-mode git-gutter-fringe k8s-mode yaml-mode lua-mode dockerfile-mode rg ripgrep git-gutter exec-path-from-shell ag atom-one-dark-theme projectile magit vertico orderless multiple-cursors which-key))
  '(tabbar-separator '(0.5))
  '(whitespace-style
     '(face tabs trailing space-before-tab newline empty space-after-tab tab-mark)))

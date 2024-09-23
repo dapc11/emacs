@@ -112,7 +112,7 @@
 (global-set-key (kbd "C-c v") 'split-window-right)
 (global-set-key (kbd "C-c q") 'dt/kill-and-close-buffer)
 (global-set-key (kbd "C-c k") 'kill-this-buffer)
-(global-set-key (kbd "C-r") 'query-replace)
+(global-set-key (kbd "C-r") 'projectile-recentf)
 (global-set-key (kbd "C-S-r") 'isearch-query-replace)
 (global-set-key (kbd "C-n") 'next-error)
 (global-set-key (kbd "C-b") 'previous-error)
@@ -121,6 +121,7 @@
 (global-unset-key (kbd "C-s"))
 (global-set-key (kbd "C-c c") 'comment-line)
 (global-set-key (kbd "C-c n") 'projectile-find-file)
+(global-set-key (kbd "C-p") 'projectile-find-file)
 (global-set-key [prior] 'move-beginning-of-line)
 (global-set-key [next] 'move-end-of-line)
 (global-set-key (kbd "M-;") 'dabbrev-expand)
@@ -160,8 +161,13 @@
   :init
   (projectile-mode)
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (add-to-list 'projectile-globally-ignored-directories "^bob$")
+  (add-to-list 'projectile-globally-ignored-directories "^\\.bob$")
+  (add-to-list 'projectile-globally-ignored-directories "^automation$")
+
   :config
   (setq
+    projectile-indexing-method 'native
     projectile-completion-system 'auto
     projectile-project-search-path '(("~/repos" . 1))))
 
