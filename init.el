@@ -79,6 +79,7 @@
 
   :config
   (add-hook 'after-save-hook 'magit-after-save-refresh-status t)
+  (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
   (add-to-list 'git-commit-finish-query-functions
     #'dt/git-commit-check-style-conventions))
 
