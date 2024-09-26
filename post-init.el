@@ -55,16 +55,20 @@
 (defun dt/consult-line ()
   (interactive)
   (if (minibufferp)
-    ;; when in minibuffer..
+      ;; When in minibuffer..
+      (progn
+        (vertico-next))
+    ;; When not in minibuffer..
     (progn
-      (vertico-next)
-      )
-    ;; when not in minibuffer..
-    (progn
-      (let ((vertico-count 10)    )
-        (consult-line))
-      )
-    )
+      (let* ((vertico-count 10)
+             (selected-text (when (region-active-p)
+                              (buffer-substring-no-properties
+                               (region-beginning)
+                               (region-end)))))
+        (deactivate-mark)  ;; Deactivate the region after grabbing the text
+        (if selected-text
+            (consult-line selected-text) ;; Pre-populate if text is selected
+          (consult-line)))))  ;; Default behavior if no region is selected
   )
 
 (defun dt/consult-ripgrep-region-or-prompt ()

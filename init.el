@@ -163,8 +163,12 @@
   (projectile-mode)
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (add-to-list 'projectile-globally-ignored-directories "^bob$")
+  (add-to-list 'projectile-globally-ignored-directories "^batteries$")
   (add-to-list 'projectile-globally-ignored-directories "^\\.bob$")
   (add-to-list 'projectile-globally-ignored-directories "^automation$")
+  (add-to-list 'projectile-globally-ignored-directories "^httpprobe$")
+  (add-to-list 'projectile-globally-ignored-directories "^__pycache__$")
+  (add-to-list 'projectile-globally-ignored-directories "^vendor$")
 
   :config
   (setq
