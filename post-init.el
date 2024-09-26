@@ -71,14 +71,6 @@
           (consult-line)))))  ;; Default behavior if no region is selected
   )
 
-(defun dt/consult-ripgrep-region-or-prompt ()
-  "Call `consult-ripgrep' with the selected region as the initial input if any.
-If no region is selected, call `consult-ripgrep' without pre-populating the input."
-  (interactive)
-  (if (use-region-p)
-    (consult-ripgrep nil (buffer-substring-no-properties (region-beginning) (region-end)))
-    (consult-ripgrep))
-  )
 
 (use-package consult
   :bind (
@@ -92,8 +84,7 @@ If no region is selected, call `consult-ripgrep' without pre-populating the inpu
           ("C-c l" . consult-goto-line)
           ("C-c r" . consult-recent-file)
           ("C-c N" . consult-fd)
-          ("C-c F" . dt/consult-ripgrep-at-point)
-          ("C-S-f" . dt/consult-ripgrep-region-or-prompt)
+          ("C-S-f" . ag-project)
 
           :map minibuffer-local-map
           ("M-s" . consult-history)
@@ -125,7 +116,7 @@ If no region is selected, call `consult-ripgrep' without pre-populating the inpu
 (setq consult-project-function (lambda (_) (projectile-project-root)))
 
 (defun dt/yaml-mode-keybindings ()
-  (define-key yaml-mode-map (kbd "M-.") 'dt/consult-ripgrep-at-point))
+  (define-key yaml-mode-map (kbd "M-.") 'dt/ag-at-point))
 
 (add-hook 'yaml-mode-hook 'dt/yaml-mode-keybindings)
 
@@ -195,22 +186,24 @@ If no region is selected, call `consult-ripgrep' without pre-populating the inpu
   ;; Add CAPF setup to programming modes
   (add-hook 'prog-mode-hook #'dt/setup-capf))
 
-;; Ripgrep the current word from project root
-(defun dt/consult-ripgrep-at-point ()
+;; Ag the current word from project root
+(defun dt/ag-at-point ()
+  "Search for the text between delimiters using ag in the project."
   (interactive)
   (select-text-in-delimiters)
   (let ((search-string (buffer-substring-no-properties (region-beginning) (region-end))))
-    (consult-ripgrep nil (concat search-string (char-to-string ? )))))
+    (ag-project search-string)))
 
 (defun select-text-in-delimiters ()
   "Select text between the nearest left and right delimiters."
   (interactive)
   (let (start end)
-    (skip-chars-backward "^<>([{\"'")
-    (setq start (point))
-    (skip-chars-forward "^<>)]}\"'")
-    (setq end (point))
-    (push-mark start)))
+    (skip-chars-backward "^<>([{\"'")  ;; Move to the nearest left delimiter
+    (setq start (point))               ;; Mark the start position
+    (skip-chars-forward "^<>)]}\"'")   ;; Move to the nearest right delimiter
+    (setq end (point))                 ;; Mark the end position
+    (set-mark start)                   ;; Set the mark at the start
+    (goto-char end)))                  ;; Move point to the end position
 
 (use-package tabbar
   :ensure t
@@ -317,3 +310,32 @@ If no region is selected, call `consult-ripgrep' without pre-populating the inpu
 
 (global-set-key (kbd "C-z") 'undo-tree-undo)
 (global-set-key (kbd "C-S-z") 'undo-tree-redo)
+
+(use-package dumb-jump
+  :init
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
+(with-eval-after-load 'undo-tree
+  (define-key undo-tree-map (kbd "C-/") nil))
+
+(defun comment-line
+  "Comment or uncomment current line and leave point after it.
+
+  If region is active, comment lines in the active region instead.
+  Unlike `comment-dwim', this always comments whole lines."
+  (interactive "p")
+  (if (use-region-p)
+      (let ((beg (save-excursion (goto-char (region-beginning)) (line-beginning-position)))
+            (end (save-excursion (goto-char (region-end)) (line-end-position))))
+        (comment-or-uncomment-region beg end)
+        (setq deactivate-mark nil))  ;; Keep the region active
+    (when (and (eq last-command 'comment-line-backward)
+               (natnump n))
+    (let ((range
+           (list (line-beginning-position)
+                 (goto-char (line-end-position n)))))
+      (comment-or-uncomment-region
+       (apply #'min range)
+       (apply #'max range))))))
+
+
+(global-set-key (kbd "C-/") 'comment-line)
