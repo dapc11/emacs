@@ -59,6 +59,7 @@
 
 (use-package multiple-cursors
   :ensure t
+  :config
   :bind (
           ("M-<right>". mc/mark-next-like-this)
           ("M-<left>" . mc/mark-previous-like-this)
