@@ -53,6 +53,13 @@
   (embark-collect-mode . consult-preview-at-point-mode))
 
 (defun dt/consult-line ()
+  "Search for a line using `consult-line`.
+
+If the function is called within the minibuffer, it moves to the next candidate
+in the `vertico` completion menu using `vertico-next`.
+
+Region will pre the prepopulated input if active.
+The region is deactivated after the selected text is grabbed."
   (interactive)
   (if (minibufferp)
       ;; When in minibuffer..
@@ -95,9 +102,7 @@
   :hook (completion-list-mode . consult-preview-at-point-mode)
   :init
   (setq register-preview-delay 0.5
-    register-preview-function #'consult-register-format
-    xref-show-xrefs-function #'consult-xref
-    xref-show-definitions-function #'consult-xref)
+    register-preview-function #'consult-register-format)
 
   ;; Optionally tweak the register preview window.
   ;; This adds thin lines, sorting and hides the mode line of the window.
@@ -116,6 +121,7 @@
 (setq consult-project-function (lambda (_) (projectile-project-root)))
 
 (defun dt/yaml-mode-keybindings ()
+  "YAML mode specific keymaps."
   (define-key yaml-mode-map (kbd "M-.") 'dt/ag-at-point))
 
 (add-hook 'yaml-mode-hook 'dt/yaml-mode-keybindings)
@@ -263,7 +269,7 @@
 
 (defun dt/tabbar-buffer-list ()
   "Return the list of buffers to show in tabs.
-   Exclude buffers whose names start and end with '*', and magit buffers."
+Exclude buffers whose names start and end with '*', and magit buffers."
   (delq nil
         (mapcar #'(lambda (b)
                     (let ((name (buffer-name b)))
@@ -294,48 +300,49 @@
   indent-bars-highlight-current-depth nil
   indent-bars-display-on-blank-lines nil)
 
-(use-package undo-tree
-  :config
-  (global-undo-tree-mode)
-  :init
-  ;; Set directory to store undo-tree history files
-  (setq undo-tree-history-directory-alist
-    `(("." . ,(concat user-emacs-directory "undo-history/"))))
-
-  ;; Ensure the directory exists
-  (make-directory (concat user-emacs-directory "undo-history/") t)
-
-  ;; Enable persistent undo
-  (setq undo-tree-auto-save-history t))
-
-(global-set-key (kbd "C-z") 'undo-tree-undo)
-(global-set-key (kbd "C-S-z") 'undo-tree-redo)
+(global-set-key (kbd "C-z") 'undo)
+(global-set-key (kbd "C-S-z") 'undo-redo)
 
 (use-package dumb-jump
   :init
   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
-(with-eval-after-load 'undo-tree
-  (define-key undo-tree-map (kbd "C-/") nil))
 
-(defun comment-line
+(defun dt/comment-line (n)
   "Comment or uncomment current line and leave point after it.
+With positive prefix, apply to N lines including current one.
+With negative prefix, apply to -N lines above. Also, further
+consecutive invocations of this command will inherit the negative
+argument.
 
-  If region is active, comment lines in the active region instead.
-  Unlike `comment-dwim', this always comments whole lines."
+If region is active, comment lines in active region instead.
+Unlike `comment-dwim', this always comments whole lines."
   (interactive "p")
   (if (use-region-p)
-      (let ((beg (save-excursion (goto-char (region-beginning)) (line-beginning-position)))
-            (end (save-excursion (goto-char (region-end)) (line-end-position))))
-        (comment-or-uncomment-region beg end)
-        (setq deactivate-mark nil))  ;; Keep the region active
+      (progn
+        (comment-or-uncomment-region
+         (save-excursion
+           (goto-char (region-beginning))
+           (line-beginning-position))
+         (save-excursion
+           (goto-char (region-end))
+           (line-end-position)))
+        (setq deactivate-mark nil))  ;; Keep region active after commenting
     (when (and (eq last-command 'comment-line-backward)
                (natnump n))
+      (setq n (- n)))
     (let ((range
            (list (line-beginning-position)
                  (goto-char (line-end-position n)))))
       (comment-or-uncomment-region
        (apply #'min range)
-       (apply #'max range))))))
+       (apply #'max range)))
+    (unless (natnump n) (setq this-command 'comment-line-backward))))
 
 
-(global-set-key (kbd "C-/") 'comment-line)
+
+(global-set-key (kbd "C-/") nil)
+(global-set-key (kbd "C-/") 'dt/comment-line)
+
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode))
