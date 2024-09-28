@@ -346,3 +346,13 @@ Unlike `comment-dwim', this always comments whole lines."
 (use-package flycheck
   :ensure t
   :init (global-flycheck-mode))
+
+;; Use both pylint and flake8 for Python
+;; Generate pylint rc: pylint --generate-rcfile > ~/.pylintrc
+(setq-default flycheck-disabled-checkers '(python-pycompile))  ;; Disable pycompile checker
+(setq-default flycheck-checker 'python-flake8)  ;; Set flake8 as the main checker
+
+;; Run pylint after flake8
+(flycheck-add-next-checker 'python-flake8 'python-pylint)
+
+;;; post-init.el ends here
