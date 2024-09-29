@@ -344,9 +344,8 @@ Unlike `comment-dwim', this always comments whole lines."
 (global-set-key (kbd "C-/") 'dt/comment-line)
 
 (use-package flycheck
-  :ensure t
-  :init (global-flycheck-mode))
-b
+  :ensure t)
+
 (use-package hydra
   :defer 2
   :bind ("C-c f" . hydra-flycheck/body))
@@ -375,14 +374,27 @@ b
   ("v" flycheck-verify-setup))
 
 (global-set-key (kbd "M-n") 'flycheck-next-error)
-(global-set-key (kbd "M-p") 'flycheck-previous-error)
+(global-set-key (kbd "M-b") 'flycheck-previous-error)
 
-;; Use both pylint and flake8 for Python
+
+(add-hook 'go-mode-hook
+  #'(lambda ()
+      (rainbow-mode 1)
+      (flymake-mode 0)
+      (flycheck-mode 1)
+      (flycheck-checker 'go-gofmt)
+      (flycheck-add-next-checker 'go-gofmt 'go-vet)
+      (flycheck-add-next-checker 'go-vet 'go-build)
+      ))
+
 ;; Generate pylint rc: pylint --generate-rcfile > ~/.pylintrc
-(setq-default flycheck-disabled-checkers '(python-pycompile))  ;; Disable pycompile checker
-(setq-default flycheck-checker 'python-flake8)  ;; Set flake8 as the main checker
-
-;; Run pylint after flake8
-(flycheck-add-next-checker 'python-flake8 'python-pylint)
+(add-hook 'python-mode-hook #'(lambda ()
+      (rainbow-mode 1)
+      (flymake-mode 0)
+      (flycheck-mode 1)
+      (flycheck-checker 'python-flake8)
+      (flycheck-add-next-checker 'python-flake8 'python-pylint)
+      (flycheck-add-next-checker 'python-pylint 'python-pycompile)
+      ))
 
 ;;; post-init.el ends here
