@@ -167,6 +167,7 @@
   (add-to-list 'projectile-globally-ignored-directories "^httpprobe$")
   (add-to-list 'projectile-globally-ignored-directories "^__pycache__$")
   (add-to-list 'projectile-globally-ignored-directories "^vendor$")
+  (add-to-list 'projectile-globally-ignored-directories "^target$")
 
   :config
   (setq
