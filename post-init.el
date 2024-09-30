@@ -92,6 +92,9 @@ The region is deactivated after the selected text is grabbed."
           ("C-c r" . consult-recent-file)
           ("C-c N" . consult-fd)
           ("C-S-f" . ag-project)
+          ("C-c z b" . dt/fd-notes)
+          ("C-c z f" . dt/rg-notes)
+          ("C-c z n" . dt/new-note)
 
           :map minibuffer-local-map
           ("M-s" . consult-history)
@@ -109,6 +112,32 @@ The region is deactivated after the selected text is grabbed."
   (advice-add #'register-preview :override #'consult-register-window)
 
   :config
+  (defun dt/fd-notes ()
+    (interactive)
+    (consult-fd "~/notes"))
+  (defun dt/rg-notes ()
+    (interactive)
+    (consult-ripgrep "~/notes"))
+  (defun dt/new-note ()
+    "Create a new markdown file in ~/notes with a title.
+The title will be injected as the first header (# Title),
+capitalized according to Chicago style, and the filename
+will be snake_case with a .md extension."
+    (interactive)
+    (let* ((title (read-string "Title: "))   ;; Prompt user for the title
+            (chicago-title (with-temp-buffer
+                             (insert title)
+                             (goto-char (point-min))
+                             (capitalize-region (point-min) (point-max))
+                             (string-trim (buffer-string))))  ;; Chicago-style capitalization
+            (filename (concat "~/notes/"
+                        (replace-regexp-in-string " " "_" (downcase title)) ".md"))) ;; Create snake_case filename
+      ;; Create new file with title as the first header
+      (find-file filename)
+      (insert (concat "# " chicago-title "\n\n")) ;; Insert title as header
+      (save-buffer)
+      (message "Markdown file created: %s" filename)))
+
   (consult-customize
     consult-ripgrep consult-git-grep consult-grep
     consult-bookmark consult-recent-file consult-xref
