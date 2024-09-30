@@ -194,8 +194,11 @@
 
 (use-package exec-path-from-shell
   :init
+  (setq exec-path-from-shell-shell-name "/bin/zsh")
   (when (daemonp)
-    (exec-path-from-shell-initialize)))
+    (exec-path-from-shell-initialize))
+  :config
+  (exec-path-from-shell-copy-envs '("PATH" "SONARQUBE_TOKEN_CODEANALYZER" "JAVA_HOME" "M2_HOME" "M2" "MAVEN_OPTS" "GOPRIVATE" "GOPROXY")))
 
 (use-package git-gutter
   :config
