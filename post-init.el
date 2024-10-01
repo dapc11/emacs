@@ -250,34 +250,6 @@ will be snake_case with a .md extension."
   (progn
     (tabbar-mode t)
 
-    (set-face-attribute
-      'tabbar-default nil
-      :background "#24272e"
-      :box '(:line-width 1 :color "#24272e" :style nil))
-    (set-face-attribute
-      'tabbar-unselected nil
-      :background "#24272e"
-      :box '(:line-width 5 :color "#24272e" :style nil))
-    (set-face-attribute
-      'tabbar-selected nil
-      :background "#323a45"
-      :foreground "#ABB2BF"
-      :box '(:line-width 5 :color "#323a45" :style nil))
-    (set-face-attribute
-      'tabbar-highlight nil
-      :background "#2C323C"
-      :foreground "#ABB2BF"
-      :box '(:line-width 5 :color "#2C323C" :style nil))
-    (set-face-attribute
-      'tabbar-button nil
-      :background "#24272e"
-      :foreground "#24272e"
-      :box '(:line-width 1 :color "#24272e" :style nil))
-    (set-face-attribute
-      'tabbar-separator nil
-      :background "#24272e"
-      :height 0.6)
-
     (defun tabbar-buffer-tab-label (tab)
       "Return a label for TAB that includes the Git repository name, if available."
       (let* ((buffer (tabbar-tab-value tab))

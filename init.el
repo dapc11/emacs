@@ -47,7 +47,9 @@
   (setq use-package-always-ensure t
     use-package-expand-minimally t))
 
-(load-theme 'atom-one-dark)
+(dt/load-user-init "gruber-darker-theme.el")
+
+(load-theme 'gruber-darker)
 
 (dt/load-user-init "utils.el")
 
