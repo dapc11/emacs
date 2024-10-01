@@ -23,10 +23,10 @@
       (load user-init-file nil t))))
 
 (set-frame-font "JetBrains Mono 11" nil)
-(tool-bar-mode -1)
+(tool-bar-mode 0)
 (show-paren-mode 1)
-(menu-bar-mode -1)
-(scroll-bar-mode -1)
+(menu-bar-mode 0)
+(scroll-bar-mode 0)
 (delete-selection-mode)
 (global-hl-line-mode)
 (auto-save-visited-mode)
@@ -53,9 +53,6 @@
 
 (dt/load-user-init "utils.el")
 
-(use-package which-key
-  :init
-  (which-key-mode))
 
 (use-package savehist)
 
@@ -64,11 +61,7 @@
   :config
   :bind (
           ("M-<right>". mc/mark-next-like-this)
-          ("M-<left>" . mc/mark-previous-like-this)
-          ("C-<" . mc/mark-next-like-this)
-          ("C->" . mc/mark-previous-like-this)
-          ("C-c C-<" . mc/mark-all-like-this))
-  )
+          ("M-<left>" . mc/mark-previous-like-this)))
 
 (use-package magit
   :ensure t
@@ -83,6 +76,7 @@
   :config
   (add-hook 'after-save-hook 'magit-after-save-refresh-status t)
   (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
+  (setq magit-blame-echo-style 'headings)
   (add-to-list 'git-commit-finish-query-functions
     #'dt/git-commit-check-style-conventions))
 
@@ -132,32 +126,6 @@
 (global-set-key (kbd "M-<down>") 'dt/move-text-down)
 (global-set-key (kbd "M-<up>") 'dt/move-text-up)
 
-(use-package treemacs
-  :ensure t
-  :defer t
-  :config
-  (setq
-    treemacs-deferred-git-apply-delay 0.5
-    treemacs-no-png-images t
-    treemacs-sorting 'mod-time-desc
-    treemacs-text-scale -0.5)
-
-  (treemacs-follow-mode t)
-  (treemacs-filewatch-mode t)
-  (treemacs-fringe-indicator-mode 'always)
-  (treemacs-hide-gitignored-files-mode nil)
-  :bind
-  (:map global-map
-    ("C-t" . treemacs)))
-
-(use-package treemacs-projectile
-  :after (treemacs projectile)
-  :ensure t)
-
-(use-package treemacs-magit
-  :after (treemacs magit)
-  :ensure t)
-
 (use-package projectile
   :init
   (projectile-mode)
@@ -181,18 +149,10 @@
   (let ((indent-tabs-mode nil))
     ad-do-it))
 
-(define-derived-mode helm-mode yaml-mode "helm"
-  "Major mode for editing kubernetes helm templates")
-
 (use-package eglot
   :hook
-  (helm-mode . eglot-ensure)
   (python-mode . eglot-ensure)
-  (go-mode . eglot-ensure)
-  :config
-  (add-to-list 'eglot-server-programs '(helm-mode "helm_ls" "serve")))
-
-(add-hook 'eglot--managed-mode-hook (lambda () (flymake-mode -1)))
+  (go-mode . eglot-ensure))
 
 (use-package exec-path-from-shell
   :init
@@ -202,22 +162,13 @@
   :config
   (exec-path-from-shell-copy-envs '("PATH" "SONARQUBE_TOKEN_CODEANALYZER" "JAVA_HOME" "M2_HOME" "M2" "MAVEN_OPTS" "GOPRIVATE" "GOPROXY")))
 
-(use-package git-gutter
-  :config
-  (setq git-gutter:update-interval 2))
-
-(use-package git-gutter-fringe
-  :config
-  (define-fringe-bitmap 'git-gutter-fr:added [224] nil nil '(center repeated))
-  (define-fringe-bitmap 'git-gutter-fr:modified [224] nil nil '(center repeated))
-  (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240] nil nil 'bottom))
-
 (use-package yaml-mode)
 (use-package json-mode)
 (use-package go-mode)
 (use-package dockerfile-mode)
 (use-package lua-mode)
 (use-package k8s-mode)
+(use-package ansi-color)
 
 (setq auto-mode-alist
   (append
@@ -241,17 +192,6 @@
        )
     auto-mode-alist)
   )
-
-(require 'ansi-color)
-(setq ansi-color-names-vector
-  ["#21252B"  ; Black
-    "#E06C75"  ; Red
-    "#98C379"  ; Green
-    "#D19A66"  ; Yellow
-    "#61AFEF"  ; Blue
-    "#C678DD"  ; Magenta
-    "#56B6C2"  ; Cyan
-    "#ABB2BF"]) ; White
 
 (add-hook 'yaml-mode-hook 'dt/set-up-whitespace-handling)
 (add-hook 'go-mode-hook 'dt/set-up-whitespace-handling)

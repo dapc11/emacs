@@ -282,25 +282,6 @@ Exclude buffers whose names start and end with '*', and magit buffers."
 
 (setq tabbar-buffer-list-function 'dt/tabbar-buffer-list)
 
-(use-package indent-bars
-  :load-path "~/.emacs.d/indent-bars"
-  :hook (
-          (yaml-mode . indent-bars-mode)
-          (python-mode . indent-bars-mode)
-          (emacs-lisp-mode . indent-bars-mode)
-          )
-  :custom
-  (indent-bars-prefer-character t))
-(setq
-  indent-bars-color '(highlight :face-bg t :blend 0.5)
-  indent-bars-pattern "."
-  indent-bars-width-frac 0.1
-  indent-bars-pad-frac 0.1
-  indent-bars-zigzag nil
-  indent-bars-color-by-depth nil
-  indent-bars-highlight-current-depth nil
-  indent-bars-display-on-blank-lines nil)
-
 (global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "C-S-z") 'undo-redo)
 
@@ -389,7 +370,8 @@ Unlike `comment-dwim', this always comments whole lines."
       ))
 
 ;; Generate pylint rc: pylint --generate-rcfile > ~/.pylintrc
-(add-hook 'python-mode-hook #'(lambda ()
+(add-hook 'python-mode-hook
+  #'(lambda ()
       (rainbow-mode 1)
       (flymake-mode 0)
       (flycheck-mode 1)
@@ -398,4 +380,8 @@ Unlike `comment-dwim', this always comments whole lines."
       (flycheck-add-next-checker 'python-pylint 'python-pycompile)
       ))
 
+(use-package highlight-indentation
+  :config
+  (set-face-background 'highlight-indentation-face "#212121"))
+(add-hook 'prog-mode-hook (lambda () (highlight-indentation-mode 1)))
 ;;; post-init.el ends here
