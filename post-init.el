@@ -384,4 +384,8 @@ Unlike `comment-dwim', this always comments whole lines."
   :config
   (set-face-background 'highlight-indentation-face "#212121"))
 (add-hook 'prog-mode-hook (lambda () (highlight-indentation-mode 1)))
+
+(add-to-list 'compilation-error-regexp-alist
+             '("^\\([0-9.]+\\-[a-z0-9]+\\.*\\): digest: sha256:\\([a-f0-9]+\\) size: \\([0-9]+\\)$" 1 2 3))
+
 ;;; post-init.el ends here
