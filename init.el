@@ -22,7 +22,7 @@
     (when (file-exists-p user-init-file)
       (load user-init-file nil t))))
 
-(set-frame-font "JetBrains Mono 11" nil)
+(set-frame-font "JetBrains Mono" nil)
 (tool-bar-mode 0)
 (show-paren-mode 1)
 (menu-bar-mode 0)
