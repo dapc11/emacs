@@ -411,8 +411,8 @@
 
    ;; Tabbar
     `(tabbar-default ((t (:background ,gruber-darker-bg ))))
-    `(tabbar-unselected ((t (:background ,gruber-darker-bg :foreground ,gruber-darker-fg ))))
-    `(tabbar-selected ((t (:background ,gruber-darker-bg :foreground ,gruber-darker-wisteria ))))
+    `(tabbar-unselected ((t (:background ,gruber-darker-bg :foreground ,gruber-darker-niagara-1 ))))
+    `(tabbar-selected ((t (:background ,gruber-darker-bg+1 :foreground ,gruber-darker-fg ))))
     `(tabbar-highlight ((t (:background ,gruber-darker-bg :foreground ,gruber-darker-yellow ))))
     `(tabbar-modified ((t (:background ,gruber-darker-bg :foreground ,gruber-darker-yellow ))))
     `(tabbar-selected-modified ((t (:background ,gruber-darker-bg :foreground ,gruber-darker-red ))))
@@ -432,5 +432,4 @@
 ;; indent-tabs-mode: nil
 ;; eval: (when (fboundp 'rainbow-mode) (rainbow-mode +1))
 ;; End:
-
 ;;; gruber-darker-theme.el ends here.

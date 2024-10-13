@@ -6,7 +6,7 @@
  '(before-save-hook '(delete-trailing-whitespace))
  '(compilation-scroll-output t)
  '(custom-safe-themes
-    '("b0fda28799663e26d5a800c70f245d255933f2ad66eeade2c986707d3fa5c957" default))
+    '("2119133daf4639a0151886f2a13ca32284ed7388a1b7d2401e8886d376a4b0a8"))
  '(gnutls-algorithm-priority "normal:-vers-tls1.3")
  '(ignored-local-variable-values
     '((lsp-diagnostics-disabled-modes python-mode)
