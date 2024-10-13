@@ -154,6 +154,12 @@
   (python-mode . eglot-ensure)
   (go-mode . eglot-ensure))
 
+(use-package tree-sitter)
+(use-package tree-sitter-langs)
+(use-package treesit-auto
+  :config
+  (global-treesit-auto-mode -1))
+
 (use-package exec-path-from-shell
   :init
   (setq exec-path-from-shell-shell-name "/bin/zsh")
