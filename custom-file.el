@@ -7,6 +7,7 @@
  '(compilation-scroll-output t)
  '(custom-safe-themes
     '("2119133daf4639a0151886f2a13ca32284ed7388a1b7d2401e8886d376a4b0a8"))
+ '(eglot-connect-timeout nil)
  '(gnutls-algorithm-priority "normal:-vers-tls1.3")
  '(ignored-local-variable-values
     '((lsp-diagnostics-disabled-modes python-mode)
@@ -19,7 +20,7 @@
            (setq tab-width 4)
            (setq python-indent-offset 4)))))
  '(package-selected-packages
-    '(eglot embark highlight-indentation hydra xterm-color flycheck dumb-jump rainbow-mode tabbar go-mode cape corfu embark-consult consult smartparens expand-region json-mode k8s-mode yaml-mode lua-mode dockerfile-mode rg ripgrep exec-path-from-shell ag projectile magit vertico orderless multiple-cursors))
+    '(eglot-java eglot embark highlight-indentation hydra xterm-color flycheck dumb-jump rainbow-mode tabbar go-mode cape corfu embark-consult consult smartparens expand-region json-mode k8s-mode yaml-mode lua-mode dockerfile-mode rg ripgrep exec-path-from-shell ag projectile magit vertico orderless multiple-cursors))
  '(safe-local-variable-values '((eval when (fboundp 'rainbow-mode) (rainbow-mode 1))))
  '(tabbar-separator '(0.5))
  '(whitespace-style

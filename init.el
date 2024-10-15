@@ -160,7 +160,14 @@
                                             :foldingRangeProvider)
         ;; NOTE We disable eglot-auto-display-help-buffer because :select t
         ;;      its popup rule causes eglot to steal focus too often.
-        eglot-auto-display-help-buffer nil))
+    eglot-auto-display-help-buffer nil)
+  :bind (
+          ("C-c c a" . eglot-code-actions)
+          ("C-c c f" . eglot-format)
+          ("C-c c r" . eglot-rename)
+          ("C-c c c" . eglot-code-action-quickfix)
+          ("C-c c e" . eglot-code-action-extract)
+          ("C-c c i" . eglot-code-action-inline)))
 ;;; JAVA START
 
 (defvar my/local-dir (concat user-emacs-directory ".local/") "Local state directory")
@@ -205,6 +212,18 @@
     (when (file-exists-p directory)
       (delete-directory directory 'recursive))
     (make-directory directory t)))
+
+;; mkdir -p ~/.emacs.d/.local/lsp/eclipse.jdt.ls
+;; pushd ~/.emacs.d/.local/lsp/eclipse.jdt.ls
+;; curl -s -L https://www.eclipse.org/downloads/download.php?file=/jdtls/milestones/1.26.0/jdt-language-server-1.26.0-202307271613.tar.gz | tar zxv
+;; mkdir bundles
+;; pushd bundles
+;; curl -O https://github.com/dgileadi/vscode-java-decompiler/raw/master/server/dg.jdt.ls.decompiler.cfr-0.0.3.jar
+;; curl -O https://github.com/dgileadi/vscode-java-decompiler/raw/master/server/dg.jdt.ls.decompiler.common-0.0.3.jar
+;; curl -O https://github.com/dgileadi/vscode-java-decompiler/raw/master/server/dg.jdt.ls.decompiler.fernflower-0.0.3.jar
+;; curl -O https://github.com/dgileadi/vscode-java-decompiler/raw/master/server/dg.jdt.ls.decompiler.procyon-0.0.3.jar
+;; popod
+;; popd
 
 (use-package eglot-java
   :custom
