@@ -114,7 +114,6 @@
 (global-set-key (kbd "C-S-r") 'isearch-query-replace)
 (global-set-key (kbd "C-n") 'next-error)
 (global-set-key (kbd "C-b") 'previous-error)
-(global-set-key (kbd "C-t") 'treemacs)
 (global-set-key (kbd "C-S-j") 'join-line)
 (global-set-key (kbd "C-c n") 'projectile-find-file)
 (global-set-key [prior] 'move-beginning-of-line)
@@ -150,15 +149,86 @@
     ad-do-it))
 
 (use-package eglot
-  :hook
-  (python-mode . eglot-ensure)
-  (go-mode . eglot-ensure))
+  :init
+  (setq eglot-sync-connect 3
+        eglot-connect-timeout nil
+        eglot-autoshutdown t
+        eglot-send-changes-idle-time 0.5
+        eglot-events-buffer-size 0
+        eglot-report-progress t
+        eglot-ignored-server-capabilities '(:documentHighlightProvider
+                                            :foldingRangeProvider)
+        ;; NOTE We disable eglot-auto-display-help-buffer because :select t
+        ;;      its popup rule causes eglot to steal focus too often.
+        eglot-auto-display-help-buffer nil))
+;;; JAVA START
 
-(use-package tree-sitter)
-(use-package tree-sitter-langs)
-(use-package treesit-auto
+(defvar my/local-dir (concat user-emacs-directory ".local/") "Local state directory")
+(defvar lsp-java-workspace-dir (expand-file-name "lsp/workspace/data" my/local-dir) "LSP data directory for Java")
+(defvar java-home "/home/daniel/.sdkman/candidates/java/current" "The home dir of the jdk")
+(defvar java-bin (format "%s/bin/java" java-home) "The path to the java binary")
+(defvar jdtls-home "/opt/eclipse.jdt.ls" "The path to eclipse.jdt.ls installation")
+(defvar jdtls-config (format "%s/config_linux" jdtls-home) "The path to eclipse.jdt.ls installation")
+
+(defun my/jdtls-start-command (arg)
+  "Creates the command to start jdtls"
+  (let ((jdtls-jar (replace-regexp-in-string "\n\\'" "" (shell-command-to-string (format "find %s/plugins -iname '*launcher_*.jar'" jdtls-home)) "The jar file that starts jdtls")))
+    `(,java-bin "-jar" ,jdtls-jar "-data" ,(format "/home/daniel/.cache/lsp/project/%s" (project-name (project-current))) "-configuration" ,jdtls-config
+       "--add-modules=ALL-SYSTEM"
+       "--add-opens java.base/java.util=ALL-UNNAMED"
+       "--add-opens java.base/java.lang=ALL-UNNAMED"
+       "-XX:+UseAdaptiveSizePolicy" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Xmx8G" "-Xms2G" "-Xverify:none")))
+
+(defun my/java-setup-project-workspace ()
+  "Setup a local java workspace for the current project."
+  (interactive)
+  (let* ((project-root (project-root (project-current)))
+          (file-path (concat project-root ".dir-locals.el"))
+          (data-dir (concat (project-root (project-current)) ".lsp/workspace/data"))
+          (cache-dir (concat (project-root (project-current)) ".lsp/workspace/cache"))
+          (content '((java-mode
+                       (eval . (progn
+                                 (setq lsp-session-file (concat (project-root (project-current)) ".lsp/session")
+                                   lsp-java-workspace-dir (concat (project-root (project-current)) ".lsp/workspace/data")
+                                   lsp-java-workspace-cache-dir (concat (project-root (project-current)) ".lsp/workspace/cache"))))))))
+    (make-directory data-dir t)
+    (make-directory cache-dir t)
+    (with-temp-buffer
+      (setq-local enable-local-variables :all)
+      (insert (format "%s\n" (pp-to-string content)))
+      (write-file file-path))))
+
+(defun my/java-clear-project-workspace ()
+  "Setup a local java workspace for the current project."
+  (interactive)
+  (let ((directory lsp-java-workspace-dir))
+    (when (file-exists-p directory)
+      (delete-directory directory 'recursive))
+    (make-directory directory t)))
+
+(use-package eglot-java
+  :custom
+  (eglot-java-eclipse-jdt-ls-download-url "https://www.eclipse.org/downloads/download.php?file=/jdtls/milestones/1.37.0/jdt-language-server-1.37.0-202406271335.tar.gz")
+  (eglot-java-server-install-dir (file-name-concat my/local-dir "lsp" "eclipse.jdt.ls"))
+  (eglot-java-eclipse-jdt-args '("-XX:+UseAdaptiveSizePolicy" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Xmx8G" "-Xms2G"))
+  (eglot-java-eclipse-jdt-data-root-dir (file-name-concat my/local-dir "lsp" "eclipse.jdt.ls" "data"))
+  :init
+
+  (defun jdtls-initialization-options ()
+    (let ((setting-json-file (file-name-concat my/local-dir "lsp" "eclipse.jdt.ls" "config.json")))
+      (with-temp-buffer
+        (insert-file-contents setting-json-file)
+        (json-parse-buffer :object-type 'plist :false-object :json-false))))
+
   :config
-  (global-treesit-auto-mode -1))
+  ;; Override existing options
+  (cl-defmethod eglot-initialization-options ((server eglot-java-eclipse-jdt))
+    (jdtls-initialization-options))
+  ;; eglot-java registers in 'project-find-functions a function that lookus up for .project
+  (advice-add 'eglot-java--init :after (lambda() (remove-hook 'project-find-functions  #'eglot-java--project-try)))
+  :hook (java-mode . eglot-java-mode))
+
+;;; JAVA END
 
 (use-package exec-path-from-shell
   :init
