@@ -234,7 +234,7 @@
   :init
 
   (defun jdtls-initialization-options ()
-    (let ((setting-json-file (file-name-concat my/local-dir "lsp" "eclipse.jdt.ls" "config.json")))
+    (let ((setting-json-file (file-name-concat user-emacs-directory "config.json")))
       (with-temp-buffer
         (insert-file-contents setting-json-file)
         (json-parse-buffer :object-type 'plist :false-object :json-false))))
