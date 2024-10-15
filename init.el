@@ -125,6 +125,18 @@
 (global-set-key (kbd "M-<down>") 'dt/move-text-down)
 (global-set-key (kbd "M-<up>") 'dt/move-text-up)
 
+(defun scroll-half-page-down ()
+  "scroll down half the page"
+  (interactive)
+  (scroll-down (/ (window-body-height) 2)))
+
+(defun scroll-half-page-up ()
+  "scroll up half the page"
+  (interactive)
+  (scroll-up (/ (window-body-height) 2)))
+(global-set-key (kbd "C-v") 'scroll-half-page-up)
+(global-set-key (kbd "M-v") 'scroll-half-page-down)
+
 (use-package projectile
   :init
   (projectile-mode)
@@ -257,7 +269,6 @@
   :config
   (exec-path-from-shell-copy-envs '("PATH" "SONARQUBE_TOKEN_CODEANALYZER" "JAVA_HOME" "M2_HOME" "M2" "MAVEN_OPTS" "GOPRIVATE" "GOPROXY")))
 
-(use-package yaml-mode)
 (use-package json-mode)
 (use-package go-mode)
 (use-package dockerfile-mode)
@@ -269,8 +280,6 @@
   (append
     '(
        ("\\.el\\'" . emacs-lisp-mode)
-       ("\\.yaml\\'" . yaml-mode)
-       ("\\.yml\\'" . yaml-mode)
        ("\\.tpl\\'" . k8s-mode)
        ("\\.go\\'" . go-mode)
        ("\\.py\\'" . python-mode)
@@ -297,5 +306,14 @@
 (add-hook 'python-mode-hook 'dt/set-up-whitespace-handling)
 (add-hook 'compilation-filter-hook 'dt/apply-ansi-colors)
 
+(use-package treesit-auto
+  :config
+  (global-treesit-auto-mode))
+
+(setq treesit-auto-langs '(python yaml java go))
+(setq treesit-auto-install 'prompt)
+
+(setq org-todo-keywords
+      '((sequence "TODO" "ONGOING" "TESTING" "IN REVIEW" "ON HOLD" "DONE" "ABANDONED")))
 ;; Load post-init.el
 (dt/load-user-init "post-init.el")

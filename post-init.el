@@ -369,16 +369,6 @@ Unlike `comment-dwim', this always comments whole lines."
       (flycheck-add-next-checker 'go-vet 'go-build)
       ))
 
-;; Generate pylint rc: pylint --generate-rcfile > ~/.pylintrc
-(add-hook 'python-mode-hook
-  #'(lambda ()
-      (rainbow-mode 1)
-      (flymake-mode 0)
-      (flycheck-mode 1)
-      (flycheck-checker 'python-flake8)
-      (flycheck-add-next-checker 'python-flake8 'python-pylint)
-      (flycheck-add-next-checker 'python-pylint 'python-pycompile)
-      ))
 
 (use-package highlight-indentation
   :config
@@ -386,5 +376,41 @@ Unlike `comment-dwim', this always comments whole lines."
 
 (add-to-list 'compilation-error-regexp-alist
              '("^\\([0-9.]+\\-[a-z0-9]+\\.*\\): digest: sha256:\\([a-f0-9]+\\) size: \\([0-9]+\\)$" 1 2 3))
+
+
+(defun parse-env-file (file)
+  "Parse a .env FILE and set the environment variables in Emacs."
+  (when (file-exists-p file)
+    (with-temp-buffer
+      (insert-file-contents file)
+      (goto-char (point-min))
+      (while (re-search-forward "\\([^#\n]+\\)=" nil t)
+        (let ((key (match-string 1))
+              (value (progn (re-search-forward "\"\\([^\"]+\\)\"" nil t)
+                            (match-string 1))))
+          (setenv key value)
+          (message "Set environment variable: %s=%s" key value))))))
+
+(defun projectile-load-env-vars ()
+  "Load environment variables from the .env file in the root of the Projectile project."
+  (let ((env-file (expand-file-name ".env" (projectile-project-root))))
+    (parse-env-file env-file)))
+
+;; Hook to load .env when entering a new Projectile project
+(add-hook 'projectile-after-switch-project-hook #'projectile-load-env-vars)
+
+(setq major-mode-remap-alist
+  '((yaml-mode . yaml-ts-mode)))
+
+(add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
+(add-to-list 'major-mode-remap-alist '(yaml-mode . yaml-ts-mode))
+(add-to-list 'major-mode-remap-alist '(go-mode . go-ts-mode))
+
+(setq treesit-language-source-alist
+  '(
+     (go . ("https://github.com/tree-sitter/tree-sitter-go"))
+     (go-mod .("https://github.com/camdencheek/tree-sitter-go-mod"))
+     (yaml . ("https://github.com/ikatyang/tree-sitter-yaml"))
+     (python . ("https://github.com/tree-sitter/tree-sitter-python"))))
 
 ;;; post-init.el ends here

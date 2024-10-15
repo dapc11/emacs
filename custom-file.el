@@ -19,6 +19,7 @@
            (setq indent-tabs-mode t)
            (setq tab-width 4)
            (setq python-indent-offset 4)))))
+ '(org-agenda-files '("~/notes/todo.md"))
  '(package-selected-packages
     '(eglot-java eglot embark highlight-indentation hydra xterm-color flycheck dumb-jump rainbow-mode tabbar go-mode cape corfu embark-consult consult smartparens expand-region json-mode k8s-mode yaml-mode lua-mode dockerfile-mode rg ripgrep exec-path-from-shell ag projectile magit vertico orderless multiple-cursors))
  '(safe-local-variable-values '((eval when (fboundp 'rainbow-mode) (rainbow-mode 1))))
