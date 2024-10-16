@@ -253,20 +253,22 @@ will be snake_case with a .md extension."
     (defun tabbar-buffer-tab-label (tab)
       "Return a label for TAB that includes the Git repository name, if available."
       (let* ((buffer (tabbar-tab-value tab))
-              (label (format "%s" (buffer-name buffer)))
+              (label (format " %s " (buffer-name buffer)))
               (git-root (with-current-buffer buffer
                           (vc-root-dir)))
               (repo-name (if git-root
                            (file-name-nondirectory (directory-file-name git-root))
                            "")))
         (if (and git-root (not (string= repo-name "")))
-          (format "[%s] %s " repo-name label)
+          (format " [%s] %s" repo-name label)
           label)))
 
     (custom-set-variables
       '(tabbar-separator (quote (0.5))))))
 
 (setq tabbar-buffer-groups-function (lambda () (list "All")))
+
+(setq tabbar-use-images nil)
 
 (defun dt/tabbar-buffer-list ()
   "Return the list of buffers to show in tabs.
@@ -399,18 +401,29 @@ Unlike `comment-dwim', this always comments whole lines."
 ;; Hook to load .env when entering a new Projectile project
 (add-hook 'projectile-after-switch-project-hook #'projectile-load-env-vars)
 
-(setq major-mode-remap-alist
-  '((yaml-mode . yaml-ts-mode)))
-
-(add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
-(add-to-list 'major-mode-remap-alist '(yaml-mode . yaml-ts-mode))
-(add-to-list 'major-mode-remap-alist '(go-mode . go-ts-mode))
-
 (setq treesit-language-source-alist
   '(
      (go . ("https://github.com/tree-sitter/tree-sitter-go"))
      (go-mod .("https://github.com/camdencheek/tree-sitter-go-mod"))
      (yaml . ("https://github.com/ikatyang/tree-sitter-yaml"))
      (python . ("https://github.com/tree-sitter/tree-sitter-python"))))
+
+
+(setq auto-mode-alist
+  (append
+    '(
+       ("Dockerfile\\'" . dockerfile-ts-mode)
+       ("\\.el\\'" . emacs-lisp-mode)
+       ("\\.go\\'" . go-ts-mode)
+       ("\\.json\\'" . smartparens-mode)
+       ("\\.lua\\'" . smartparens-mode)
+       ("\\.py\\'" . python-ts-mode)
+       ("\\.sh\\'" . bash-ts-mode)
+       ("\\.tpl\\'" . k8s-mode)
+       ("\\.yaml\\'" . yaml-ts-mode)
+       ("\\.yml\\'" . yaml-ts-mode)
+       )
+    auto-mode-alist)
+  )
 
 ;;; post-init.el ends here

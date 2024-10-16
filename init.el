@@ -276,35 +276,14 @@
 (use-package k8s-mode)
 (use-package ansi-color)
 
-(setq auto-mode-alist
-  (append
-    '(
-       ("\\.el\\'" . emacs-lisp-mode)
-       ("\\.tpl\\'" . k8s-mode)
-       ("\\.go\\'" . go-mode)
-       ("\\.py\\'" . python-mode)
-       ("\\.py\\'" . smartparens-mode)
-       ("\\.yaml\\'" . smartparens-mode)
-       ("\\.yml\\'" . smartparens-mode)
-       ("\\.tpl\\'" . smartparens-mode)
-       ("\\.go\\'" . smartparens-mode)
-       ("\\.lua\\'" . smartparens-mode)
-       ("\\.json\\'" . smartparens-mode)
-       ("\\.sh\\'" . smartparens-mode)
-       ("\\.sh\\'" . shell-script-mode)
-       ("Dockerfile\\'" . dockerfile-mode)
-       )
-    auto-mode-alist)
-  )
-
-(add-hook 'yaml-mode-hook 'dt/set-up-whitespace-handling)
-(add-hook 'go-mode-hook 'dt/set-up-whitespace-handling)
-(add-hook 'lua-mode-hook 'dt/set-up-whitespace-handling)
-(add-hook 'json-mode-hook 'dt/set-up-whitespace-handling)
+(add-hook 'compilation-filter-hook 'dt/apply-ansi-colors)
 (add-hook 'emacs-lisp-mode-hook 'dt/set-up-whitespace-handling)
 (add-hook 'git-commit-setup-hook 'dt/set-up-whitespace-handling)
+(add-hook 'go-mode-hook 'dt/set-up-whitespace-handling)
+(add-hook 'json-mode-hook 'dt/set-up-whitespace-handling)
+(add-hook 'lua-mode-hook 'dt/set-up-whitespace-handling)
 (add-hook 'python-mode-hook 'dt/set-up-whitespace-handling)
-(add-hook 'compilation-filter-hook 'dt/apply-ansi-colors)
+(add-hook 'yaml-mode-hook 'dt/set-up-whitespace-handling)
 
 (use-package treesit-auto
   :config
