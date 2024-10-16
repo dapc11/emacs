@@ -49,7 +49,7 @@
 
 (dt/load-user-init "gruber-darker-theme.el")
 
-(load-theme 'gruber-darker)
+(load-theme 'github-dark-vscode)
 
 (dt/load-user-init "utils.el")
 
