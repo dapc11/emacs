@@ -248,7 +248,7 @@ will be snake_case with a .md extension."
 
   :init
   (progn
-    (tabbar-mode t)
+    (tabbar-mode -1)
 
     (defun tabbar-buffer-tab-label (tab)
       "Return a label for TAB that includes the Git repository name, if available."
