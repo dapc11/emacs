@@ -169,56 +169,6 @@ will be snake_case with a .md extension."
 
 (global-set-key (kbd "C-f") 'dt/consult-line)
 
-(use-package corfu
-  :ensure t
-  :defer t
-  :commands (corfu-mode global-corfu-mode)
-
-  :hook ((prog-mode . corfu-mode))
-
-  ;; Enable Corfu
-  :config
-  (global-corfu-mode)
-
-  :bind (:map corfu-map
-          ("M-SPC"      . corfu-insert-separator)
-          ("TAB"        . corfu-next)
-          ([tab]        . corfu-next)
-          ("S-TAB"      . corfu-previous)
-          ([backtab]    . corfu-previous)
-          ("S-<return>" . nil)
-          ("RET"        . corfu-insert))
-
-  :custom
-  (corfu-cycle t)
-  (corfu-auto t)
-  (corfu-auto-prefix 2)
-  (corfu-auto-delay 0.1)
-  (corfu-popupinfo-delay '(0.4 . 0.2)))
-
-(use-package cape
-  :ensure t
-  :defer t
-  :commands (cape-dabbrev cape-file cape-symbol cape-elisp-block)
-
-  :config
-  (setq cape-dabbrev-check-other-buffers nil)
-
-  ;; Set up CAPF with `cape-dabbrev` and other sources
-  (defun dt/setup-capf ()
-    "Set up completion-at-point-functions with cape and dabbrev."
-    (setq-local completion-at-point-functions
-                (list
-               ;; Combine eglot with cape sources
-               (cape-capf-buster
-                #'eglot-completion-at-point
-                #'cape-dabbrev
-                #'cape-file
-                #'cape-symbol))))
-  ;; Add CAPF setup to programming modes
-  (add-hook 'prog-mode-hook #'dt/setup-capf))
-
-;; Ag the current word from project root
 (defun dt/ag-at-point ()
   "Search for the text between delimiters using ag in the project."
   (interactive)
@@ -371,7 +321,6 @@ Unlike `comment-dwim', this always comments whole lines."
      (yaml . ("https://github.com/ikatyang/tree-sitter-yaml"))
      (python . ("https://github.com/tree-sitter/tree-sitter-python"))))
 
-
 (setq auto-mode-alist
   (append
     '(
@@ -388,5 +337,40 @@ Unlike `comment-dwim', this always comments whole lines."
        )
     auto-mode-alist)
   )
+
+;; Auto completion
+(use-package corfu
+  :custom
+  (corfu-cycle t)
+  (corfu-auto t)
+  (corfu-auto-prefix 2)
+  (corfu-auto-delay 0.1)
+  (corfu-popupinfo-delay '(0.4 . 0.2))
+  :init
+  (global-corfu-mode)
+  :config
+  (keymap-set corfu-map "RET" `( menu-item "" nil :filter
+                                 ,(lambda (&optional _)
+                                    (and (derived-mode-p 'eshell-mode 'comint-mode)
+                                      #'corfu-send)))))
+
+(use-package emacs
+  :custom
+  (tab-always-indent 'complete)
+  (text-mode-ispell-word-completion nil)
+  (read-extended-command-predicate #'command-completion-default-include-p))
+
+(use-package cape
+  :init
+  ;; Add to the global default value of `completion-at-point-functions' which is
+  ;; used by `completion-at-point'.  The order of the functions matters, the
+  ;; first function returning a result wins.  Note that the list of buffer-local
+  ;; completion functions takes precedence over the global list.
+  (add-hook 'completion-at-point-functions #'cape-dabbrev)
+  (add-hook 'completion-at-point-functions #'cape-keyword)
+  (add-hook 'completion-at-point-functions #'eglot-completion-at-point)
+  (add-hook 'completion-at-point-functions #'cape-file)
+  (add-hook 'completion-at-point-functions #'cape-elisp-block)
+)
 
 ;;;post-init.el ends here

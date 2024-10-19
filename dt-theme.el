@@ -126,6 +126,12 @@ FACE is the face name (symbol) and ARGS are the attributes for `set-face-attribu
   (my-set-face-attribute 'magit-section-highlight nil
     :background "#31353f")
 
+  (my-set-face-attribute 'corfu-current nil
+    :background "#3b3f4c"
+    :weight 'bold)
+
+  (my-set-face-attribute 'corfu-default nil
+    :background "#31353f")
 
   (my-set-face-attribute 'isearch nil
     :foreground my-orange
