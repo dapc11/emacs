@@ -166,7 +166,6 @@
         eglot-connect-timeout nil
         eglot-autoshutdown t
         eglot-send-changes-idle-time 0.5
-        eglot-events-buffer-size 0
         eglot-report-progress t
         eglot-ignored-server-capabilities '(:documentHighlightProvider
                                             :foldingRangeProvider)
@@ -293,6 +292,11 @@
 (setq treesit-auto-install 'prompt)
 
 (setq org-todo-keywords
-      '((sequence "TODO" "ONGOING" "TESTING" "IN REVIEW" "ON HOLD" "DONE" "ABANDONED")))
+  '((sequence "TODO" "ONGOING" "TESTING" "IN REVIEW" "ON HOLD" "DONE" "ABANDONED")))
+
+(add-hook 'after-init-hook
+  (lambda ()
+    (dt/load-user-init "dt-theme.el")))
+
 ;; Load post-init.el
 (dt/load-user-init "post-init.el")

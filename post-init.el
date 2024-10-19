@@ -2,18 +2,15 @@
 ;; contents of a buffer to reflect changes made to the underlying file
 ;; on disk.
 (add-hook 'after-init-hook #'global-auto-revert-mode)
-
 ;; recentf is an Emacs package that maintains a list of recently
 ;; accessed files, making it easier to reopen files you have worked on
 ;; recently.
 (add-hook 'after-init-hook #'recentf-mode)
-
 ;; savehist is an Emacs feature that preserves the minibuffer history between
 ;; sessions. It saves the history of inputs in the minibuffer, such as commands,
 ;; search strings, and other prompts, to a file. This allows users to retain
 ;; their minibuffer history across Emacs restarts.
 (add-hook 'after-init-hook #'savehist-mode)
-
 ;; save-place-mode enables Emacs to remember the last location within a file
 ;; upon reopening. This feature is particularly beneficial for resuming work at
 ;; the precise point where you previously left off.
@@ -247,6 +244,10 @@ will be snake_case with a .md extension."
   ("<C-tab>" . tabbar-forward)
 
   :init
+  (setq
+    tabbar-buffer-groups-function (lambda () (list "All"))
+    tabbar-use-images nil)
+
   (progn
     (tabbar-mode -1)
 
@@ -266,9 +267,6 @@ will be snake_case with a .md extension."
     (custom-set-variables
       '(tabbar-separator (quote (0.5))))))
 
-(setq tabbar-buffer-groups-function (lambda () (list "All")))
-
-(setq tabbar-use-images nil)
 
 (defun dt/tabbar-buffer-list ()
   "Return the list of buffers to show in tabs.
@@ -322,44 +320,14 @@ Unlike `comment-dwim', this always comments whole lines."
        (apply #'max range)))
     (unless (natnump n) (setq this-command 'comment-line-backward))))
 
-
-
 (global-set-key (kbd "C-/") nil)
 (global-set-key (kbd "C-/") 'dt/comment-line)
 
 (use-package flycheck
   :ensure t)
 
-(use-package hydra
-  :defer 2
-  :bind ("C-c f" . hydra-flycheck/body))
-
-(defhydra hydra-flycheck (:color blue)
-  "
-  ^
-  ^Flycheck^          ^Errors^            ^Checker^
-  ^────────^──────────^──────^────────────^───────^─────
-  _q_ quit            _>_ previous        _?_ describe
-  _M_ manual          _<_ next            _d_ disable
-  _v_ verify setup    _f_ check           _m_ mode
-  ^^                  _l_ list            _s_ select
-  ^^                  ^^                  ^^
-  "
-  ("q" nil)
-  (">" flycheck-previous-error :color pink)
-  ("<" flycheck-next-error :color pink)
-  ("?" flycheck-describe-checker)
-  ("M" flycheck-manual)
-  ("d" flycheck-disable-checker)
-  ("f" flycheck-buffer)
-  ("l" flycheck-list-errors)
-  ("m" flycheck-mode)
-  ("s" flycheck-select-checker)
-  ("v" flycheck-verify-setup))
-
 (global-set-key (kbd "M-n") 'flycheck-next-error)
 (global-set-key (kbd "M-b") 'flycheck-previous-error)
-
 
 (add-hook 'go-mode-hook
   #'(lambda ()
@@ -370,11 +338,6 @@ Unlike `comment-dwim', this always comments whole lines."
       (flycheck-add-next-checker 'go-gofmt 'go-vet)
       (flycheck-add-next-checker 'go-vet 'go-build)
       ))
-
-
-(use-package highlight-indentation
-  :config
-  (set-face-background 'highlight-indentation-face "#212121"))
 
 (add-to-list 'compilation-error-regexp-alist
              '("^\\([0-9.]+\\-[a-z0-9]+\\.*\\): digest: sha256:\\([a-f0-9]+\\) size: \\([0-9]+\\)$" 1 2 3))
@@ -426,4 +389,4 @@ Unlike `comment-dwim', this always comments whole lines."
     auto-mode-alist)
   )
 
-;;; post-init.el ends here
+;;;post-init.el ends here
