@@ -9,6 +9,7 @@
 (setq line-spacing 0.1)
 (setq ring-bell-function 'ignore)
 (setq custom-file "~/.emacs.d/custom-file.el")
+(setq my/home-dir (getenv "HOME"))
 (setopt use-short-answers t)
 
 (defvar dt/user-directory user-emacs-directory
@@ -47,7 +48,7 @@
   (setq use-package-always-ensure t
     use-package-expand-minimally t))
 
-(dt/load-user-init "gruber-darker-theme.el")
+;; (dt/load-user-init "gruber-darker-theme.el")
 
 (load-theme 'github-dark-vscode)
 
@@ -160,6 +161,14 @@
   (let ((indent-tabs-mode nil))
     ad-do-it))
 
+(use-package go-mode)
+(use-package python-mode)
+(use-package json-mode)
+(use-package dockerfile-mode)
+(use-package lua-mode)
+(use-package k8s-mode)
+(use-package ansi-color)
+
 (use-package eglot
   :init
   (setq eglot-sync-connect 3
@@ -176,14 +185,34 @@
           ("C-c c a" . eglot-code-actions)
           ("C-c c f" . eglot-format)
           ("C-c c r" . eglot-rename)
+          ("M-n" . flymake-goto-next-error)
+          ("M-b" . flymake-goto-prev-error)
           ("C-c c c" . eglot-code-action-quickfix)
           ("C-c c e" . eglot-code-action-extract)
           ("C-c c i" . eglot-code-action-inline)))
-;;; JAVA START
+
+(add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
+(add-to-list 'auto-mode-alist '("\\.el\\'" . emacs-lisp-mode))
+(add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+(add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+(add-to-list 'auto-mode-alist '("\\.sh\\'" . bash-mode))
+(add-to-list 'auto-mode-alist '("\\.tpl\\'" . k8s-mode))
+(add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+    '(python-mode . ("pyright-langserver" "--stdio"))
+    '(go-mode . ("gopls" "serve"))))
+
+(add-hook 'python-mode-hook 'eglot-ensure)
+(add-hook 'go-mode-hook 'eglot-ensure)
+
+;; JAVA START
 
 (defvar my/local-dir (concat user-emacs-directory ".local/") "Local state directory")
 (defvar lsp-java-workspace-dir (expand-file-name "lsp/workspace/data" my/local-dir) "LSP data directory for Java")
-(defvar java-home "/home/daniel/.sdkman/candidates/java/current" "The home dir of the jdk")
+(defvar java-home (format "%s/.sdkman/candidates/java/current" my/home-dir) "The home dir of the jdk")
 (defvar java-bin (format "%s/bin/java" java-home) "The path to the java binary")
 (defvar jdtls-home "/opt/eclipse.jdt.ls" "The path to eclipse.jdt.ls installation")
 (defvar jdtls-config (format "%s/config_linux" jdtls-home) "The path to eclipse.jdt.ls installation")
@@ -191,7 +220,7 @@
 (defun my/jdtls-start-command (arg)
   "Creates the command to start jdtls"
   (let ((jdtls-jar (replace-regexp-in-string "\n\\'" "" (shell-command-to-string (format "find %s/plugins -iname '*launcher_*.jar'" jdtls-home)) "The jar file that starts jdtls")))
-    `(,java-bin "-jar" ,jdtls-jar "-data" ,(format "/home/daniel/.cache/lsp/project/%s" (project-name (project-current))) "-configuration" ,jdtls-config
+    `(,java-bin "-jar" ,jdtls-jar "-data" ,(format "%s/.cache/lsp/project/%s" my/home-dir (project-name (project-current))) "-configuration" ,jdtls-config
        "--add-modules=ALL-SYSTEM"
        "--add-opens java.base/java.util=ALL-UNNAMED"
        "--add-opens java.base/java.lang=ALL-UNNAMED"
@@ -226,7 +255,7 @@
 
 ;; mkdir -p ~/.emacs.d/.local/lsp/eclipse.jdt.ls
 ;; pushd ~/.emacs.d/.local/lsp/eclipse.jdt.ls
-;; curl -s -L https://www.eclipse.org/downloads/download.php?file=/jdtls/milestones/1.26.0/jdt-language-server-1.26.0-202307271613.tar.gz | tar zxv
+;; curl -s -L https://www.eclipse.org/downloads/download.php?file=/jdtls/milestones/1.37.0/jdt-language-server-1.37.0-202406271335.tar.gz | tar zxv
 ;; mkdir bundles
 ;; pushd bundles
 ;; curl -O https://github.com/dgileadi/vscode-java-decompiler/raw/master/server/dg.jdt.ls.decompiler.cfr-0.0.3.jar
@@ -258,7 +287,7 @@
   (advice-add 'eglot-java--init :after (lambda() (remove-hook 'project-find-functions  #'eglot-java--project-try)))
   :hook (java-mode . eglot-java-mode))
 
-;;; JAVA END
+;; JAVA END
 
 (use-package exec-path-from-shell
   :init
@@ -268,13 +297,6 @@
   :config
   (exec-path-from-shell-copy-envs '("PATH" "SONARQUBE_TOKEN_CODEANALYZER" "JAVA_HOME" "M2_HOME" "M2" "MAVEN_OPTS" "GOPRIVATE" "GOPROXY")))
 
-(use-package json-mode)
-(use-package go-mode)
-(use-package dockerfile-mode)
-(use-package lua-mode)
-(use-package k8s-mode)
-(use-package ansi-color)
-
 (add-hook 'compilation-filter-hook 'dt/apply-ansi-colors)
 (add-hook 'emacs-lisp-mode-hook 'dt/set-up-whitespace-handling)
 (add-hook 'git-commit-setup-hook 'dt/set-up-whitespace-handling)
@@ -283,6 +305,7 @@
 (add-hook 'lua-mode-hook 'dt/set-up-whitespace-handling)
 (add-hook 'python-mode-hook 'dt/set-up-whitespace-handling)
 (add-hook 'yaml-mode-hook 'dt/set-up-whitespace-handling)
+(add-hook 'java-mode-hook 'dt/set-up-whitespace-handling)
 
 (use-package treesit-auto
   :config

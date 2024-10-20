@@ -273,22 +273,6 @@ Unlike `comment-dwim', this always comments whole lines."
 (global-set-key (kbd "C-/") nil)
 (global-set-key (kbd "C-/") 'dt/comment-line)
 
-(use-package flycheck
-  :ensure t)
-
-(global-set-key (kbd "M-n") 'flycheck-next-error)
-(global-set-key (kbd "M-b") 'flycheck-previous-error)
-
-(add-hook 'go-mode-hook
-  #'(lambda ()
-      (rainbow-mode 1)
-      (flymake-mode 0)
-      (flycheck-mode 1)
-      (flycheck-checker 'go-gofmt)
-      (flycheck-add-next-checker 'go-gofmt 'go-vet)
-      (flycheck-add-next-checker 'go-vet 'go-build)
-      ))
-
 (add-to-list 'compilation-error-regexp-alist
              '("^\\([0-9.]+\\-[a-z0-9]+\\.*\\): digest: sha256:\\([a-f0-9]+\\) size: \\([0-9]+\\)$" 1 2 3))
 
@@ -321,22 +305,6 @@ Unlike `comment-dwim', this always comments whole lines."
      (yaml . ("https://github.com/ikatyang/tree-sitter-yaml"))
      (python . ("https://github.com/tree-sitter/tree-sitter-python"))))
 
-(setq auto-mode-alist
-  (append
-    '(
-       ("Dockerfile\\'" . dockerfile-ts-mode)
-       ("\\.el\\'" . emacs-lisp-mode)
-       ("\\.go\\'" . go-ts-mode)
-       ("\\.json\\'" . smartparens-mode)
-       ("\\.lua\\'" . smartparens-mode)
-       ("\\.py\\'" . python-ts-mode)
-       ("\\.sh\\'" . bash-ts-mode)
-       ("\\.tpl\\'" . k8s-mode)
-       ("\\.yaml\\'" . yaml-ts-mode)
-       ("\\.yml\\'" . yaml-ts-mode)
-       )
-    auto-mode-alist)
-  )
 
 ;; Auto completion
 (use-package corfu
