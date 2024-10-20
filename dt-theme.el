@@ -87,11 +87,11 @@ FACE is the face name (symbol) and ARGS are the attributes for `set-face-attribu
   (my-set-face-attribute 'mode-line-inactive nil
     :background "#21252b"
     :foreground my-foreground
-    :box (list :line-width 1 :color "#21252b" :style nil))
+    :box nil)
 
   (my-set-face-attribute 'mode-line-active nil
     :inherit 'mode-line
-    :box (list :line-width 1 :color my-blue :style nil))
+    :box nil)
 
   (my-set-face-attribute 'mode-line-buffer-id nil
     :foreground my-blue)
@@ -137,6 +137,11 @@ FACE is the face name (symbol) and ARGS are the attributes for `set-face-attribu
     :foreground my-orange
     :background "#31353f"
     :underline (list :color my-orange :style 'line)
+    :weight 'extrabold)
+
+  (my-set-face-attribute 'isearch-fail nil
+    :foreground my-red
+    :background my-background
     :weight 'extrabold)
 
   (my-set-face-attribute 'tabbar-default nil
