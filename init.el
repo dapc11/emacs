@@ -168,6 +168,8 @@
 (use-package lua-mode)
 (use-package k8s-mode)
 (use-package ansi-color)
+(use-package blacken)
+(use-package markdown-mode)
 
 (use-package eglot
   :init
@@ -194,19 +196,13 @@
 (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
 (add-to-list 'auto-mode-alist '("\\.el\\'" . emacs-lisp-mode))
 (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+(add-to-list 'auto-mode-alist '("\\.java\\'" . java-mode))
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-to-list 'auto-mode-alist '("\\.sh\\'" . bash-mode))
 (add-to-list 'auto-mode-alist '("\\.tpl\\'" . k8s-mode))
 (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
 
-(with-eval-after-load 'eglot
-  (add-to-list 'eglot-server-programs
-    '(python-mode . ("pyright-langserver" "--stdio"))
-    '(go-mode . ("gopls" "serve"))))
-
-(add-hook 'python-mode-hook 'eglot-ensure)
-(add-hook 'go-mode-hook 'eglot-ensure)
 
 ;; JAVA START
 
@@ -289,6 +285,21 @@
 
 ;; JAVA END
 
+
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+    '(python-mode . ("pyright-langserver" "--stdio"))))
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+    '(java-mode . ("jdtls"))))
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+    '(go-mode . ("gopls" "serve"))))
+
+(add-hook 'python-mode-hook 'eglot-ensure)
+(add-hook 'go-mode-hook 'eglot-ensure)
+(add-hook 'java-mode-hook 'eglot-ensure)
+
 (use-package exec-path-from-shell
   :init
   (setq exec-path-from-shell-shell-name "/bin/zsh")
@@ -306,13 +317,6 @@
 (add-hook 'python-mode-hook 'dt/set-up-whitespace-handling)
 (add-hook 'yaml-mode-hook 'dt/set-up-whitespace-handling)
 (add-hook 'java-mode-hook 'dt/set-up-whitespace-handling)
-
-(use-package treesit-auto
-  :config
-  (global-treesit-auto-mode))
-
-(setq treesit-auto-langs '(python yaml java go))
-(setq treesit-auto-install 'prompt)
 
 (setq org-todo-keywords
   '((sequence "TODO" "ONGOING" "TESTING" "IN REVIEW" "ON HOLD" "DONE" "ABANDONED")))

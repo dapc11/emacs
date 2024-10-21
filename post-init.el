@@ -298,14 +298,6 @@ Unlike `comment-dwim', this always comments whole lines."
 ;; Hook to load .env when entering a new Projectile project
 (add-hook 'projectile-after-switch-project-hook #'projectile-load-env-vars)
 
-(setq treesit-language-source-alist
-  '(
-     (go . ("https://github.com/tree-sitter/tree-sitter-go"))
-     (go-mod .("https://github.com/camdencheek/tree-sitter-go-mod"))
-     (yaml . ("https://github.com/ikatyang/tree-sitter-yaml"))
-     (python . ("https://github.com/tree-sitter/tree-sitter-python"))))
-
-
 ;; Auto completion
 (use-package corfu
   :custom

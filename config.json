@@ -1,88 +1,126 @@
-  {
-  "settings": {
-    "java": {
-      "maxConcurrentBuilds": 1,
-      "autobuild": {
-        "enabled": false
-      },
-      "import": {
-        "maven": {
-          "enabled": true
-        },
-        "exclusions": [
-          "**/node_modules/**",
-          "**/.metadata/**",
-          "**/archetype-resources/**",
-          "**/META-INF/maven/**"
-        ]
-      },
-      "configuration": {
-        "updateBuildConfiguration": "automatic",
-        "checkProjectSettingsExclusions": true,
-        "runtimes": [
-          {
-            "name": "JavaSE-11",
-            "path": "/home/daniel/.sdkman/candidates/java/11.0.24-tem"
-          },
-          {
-            "name": "JavaSE-17",
-            "path": "/home/daniel/.sdkman/candidates/java/17.0.12-oracle",
-            "default": true
-          }
-        ]
-      },
-      "project": {
-        "importHint": true,
-        "importOnFirstTimeStartup": "automatic",
-        "referencedLibraries": [
-          "lib/**"
-        ],
-        "resourceFilters": [
-          "node_modules",
-          "\\.git",
-          ".metadata",
-          "archetype-resources",
-          "META-INF/maven"
-        ]
-      },
-      "server": {
-        "launchMode": "Hybrid"
-      },
-      "format": {
-        "settings": {
-          "url": "/home/daniel/.emacs.d/eclipse-format.xml",
-          "profile": "Quarkus"
+{
+    "settings": {
+        "java": {
+            "maxConcurrentBuilds": 1,
+            "autobuild": {
+                "enabled": false
+            },
+            "import": {
+                "maven": {
+                    "enabled": true
+                },
+                "exclusions": [
+                    "**/node_modules/**",
+                    "**/.metadata/**",
+                    "**/archetype-resources/**",
+                    "**/META-INF/maven/**"
+                ]
+            },
+            "configuration": {
+                "updateBuildConfiguration": "automatic",
+                "checkProjectSettingsExclusions": true,
+                "runtimes": [
+                    {
+                        "name": "JavaSE-11",
+                        "path": "~/.sdkman/candidates/java/11.0.24-tem"
+                    },
+                    {
+                        "name": "JavaSE-17",
+                        "path": "~/.sdkman/candidates/java/17.0.12-tem",
+                        "default": true
+                    }
+                ]
+            },
+            "project": {
+                "importHint": true,
+                "importOnFirstTimeStartup": "automatic",
+                "referencedLibraries": [
+                    "lib/**"
+                ],
+                "resourceFilters": [
+                    "node_modules",
+                    "\\.git",
+                    ".metadata",
+                    "archetype-resources",
+                    "META-INF/maven"
+                ]
+            },
+            "server": {
+                "launchMode": "Hybrid"
+            },
+            "format": {
+                "comments": { "enabled": false },
+                "enabled": true,
+                "insertSpaces": true,
+                "tabSize": 4,
+                "settings": {
+                    "url": "~/.emacs.d/eclipse-format.xml",
+                    "profile": "Code"
+                }
+            },
+            "contentProvider": {
+                "preferred": "fernflower"
+            },
+            "saveActions": {
+                "organizeImports": true,
+            },
+            "cleanup": [
+                "qualifyMembers",
+                "qualifyStaticMembers",
+                "addOverride",
+                "addDeprecated",
+                "stringConcatToTextBlock",
+                "invertEquals",
+                "addFinalModifier",
+                "instanceofPatternMatch",
+                "lambdaExpression",
+                "switchExpression",
+            ],
+            "sources": {
+                "organizeImports": {
+                    "starThreshold": 9999,
+                    "staticStarThreshold": 9999,
+                },
+            },
+            "references": {
+                "includeDecompiledSources": true,
+            },
+            "inlayHints": {
+                "parameterNames": {
+                    "enabled": "all",
+                },
+            },
+            "completion": {
+                "guessMethodArguments": true,
+                "overwrite": true,
+                "enabled": true,
+                "favoriteStaticMembers": [
+                    "java",
+                    "javax",
+                    "org",
+                    "",
+                    "com",
+                ],
+                "importOrder": [
+                    "java",
+                    "javax",
+                    "org",
+                    "",
+                    "junitparams",
+                    "",
+                    "com",
+                ],
+            }
         }
-      },
-      "contentProvider": {
-        "preferred": "fernflower"
-      },
-      "completion": {
-        "guessMethodArguments": true,
-        "overwrite": true,
-        "enabled": true,
-        "favoriteStaticMembers": [
-          "org.junit.Assert.*",
-          "org.junit.Assume.*",
-          "org.junit.jupiter.api.Assertions.*",
-          "org.junit.jupiter.api.Assumptions.*",
-          "org.junit.jupiter.api.DynamicContainer.*",
-          "org.junit.jupiter.api.DynamicTest.*",
-          "org.mockito.Mockito.*",
-          "org.mockito.ArgumentMatchers.*",
-          "org.mockito.Answers.*"
-        ]
-      }
-    }
-  },
-  "extendedClientCapabilities": {
-    "classFileContentsSupport": true,
-    "overrideMethodsPromptSupport": true
-  },
-  "bundles":[
-    "/home/daniel/.emacs.d/.local/lsp/eclispe.jdt.ls/bundles/dg.jdt.ls.decompiler.cfr-0.0.3.jar",
-    "/home/daniel/.emacs.d/.local/lsp/eclipse.jdt.ls/bundles/dg.jdt.ls.decompiler.common-0.0.3.jar",
-    "/home/daniel/.emacs.d/.local/lsp/eclipse.jdt.ls/bundles/dg.jdt.ls.decompiler.fernflower-0.0.3.jar",
-    "/home/daniel/.emacs.d/.local/lsp/eclipse.jdt.ls/bundles/dg.jdt.ls.decompiler.procyon-0.0.3.jar"
-  ]
+    },
+    "extendedClientCapabilities": {
+        "classFileContentsSupport": true,
+        "overrideMethodsPromptSupport": true
+    },
+    "bundles":[
+        "~/.emacs.d/.local/lsp/eclispe.jdt.ls/bundles/dg.jdt.ls.decompiler.cfr-0.0.3.jar",
+        "~/.emacs.d/.local/lsp/eclipse.jdt.ls/bundles/dg.jdt.ls.decompiler.common-0.0.3.jar",
+        "~/.emacs.d/.local/lsp/eclipse.jdt.ls/bundles/dg.jdt.ls.decompiler.fernflower-0.0.3.jar",
+        "~/.emacs.d/.local/lsp/eclipse.jdt.ls/bundles/dg.jdt.ls.decompiler.procyon-0.0.3.jar"
+    ]
 }
