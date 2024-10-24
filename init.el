@@ -200,9 +200,8 @@
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-to-list 'auto-mode-alist '("\\.sh\\'" . bash-mode))
 (add-to-list 'auto-mode-alist '("\\.tpl\\'" . k8s-mode))
-(add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode))
-(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
-
+(add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-ts-mode))
 
 ;; JAVA START
 
@@ -306,7 +305,7 @@
   (when (daemonp)
     (exec-path-from-shell-initialize))
   :config
-  (exec-path-from-shell-copy-envs '("PATH" "SONARQUBE_TOKEN_CODEANALYZER" "JAVA_HOME" "M2_HOME" "M2" "MAVEN_OPTS" "GOPRIVATE" "GOPROXY")))
+  (exec-path-from-shell-copy-envs '("PYTHONDONTWRITEBYTECODE" "PATH" "SONARQUBE_TOKEN_CODEANALYZER" "JAVA_HOME" "M2_HOME" "M2" "MAVEN_OPTS" "GOPRIVATE" "GOPROXY")))
 
 (add-hook 'compilation-filter-hook 'dt/apply-ansi-colors)
 (add-hook 'emacs-lisp-mode-hook 'dt/set-up-whitespace-handling)

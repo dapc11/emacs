@@ -10,7 +10,7 @@ FACE is the face name (symbol) and ARGS are the attributes for `set-face-attribu
     (message "Face '%s' does not exist. Skipping..." face)))
 
 (setq my-foreground "#b6bdca")
-(setq my-background "#25292e")
+(setq my-background "#23252e")
 (setq my-background-darker "#21252b")
 (setq my-blue "#729fdd")
 (setq my-green "#57ab5a")
@@ -35,8 +35,7 @@ FACE is the face name (symbol) and ARGS are the attributes for `set-face-attribu
       :weight 'regular
       :height 138
       :width 'normal
-      :foundry "JB"
-      :family "JetBrains Mono"))
+      :family "Fira Code"))
 
   (my-set-face-attribute 'ansi-color-blue nil
     :background my-blue
