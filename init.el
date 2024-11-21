@@ -132,6 +132,13 @@
 (global-set-key (kbd "M-<down>") 'dt/move-text-down)
 (global-set-key (kbd "M-<up>") 'dt/move-text-up)
 
+(setq magit-blame-styles
+           '((margin
+              (margin-format " %s%f" " %C %a" " %H")
+              (margin-width . 42)
+              (margin-face . magit-blame-margin)
+              (margin-body-face magit-blame-dimmed))))
+
 (defun isearch-forward-at-point-or-region ()
   "Start isearch forward with the selected region, or the word under the cursor if no region is selected.
 Deactivate the mark after starting the search."
