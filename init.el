@@ -48,9 +48,9 @@
   (setq use-package-always-ensure t
     use-package-expand-minimally t))
 
-;; (dt/load-user-init "gruber-darker-theme.el")
+(dt/load-user-init "gruber-darker-theme.el")
 
-(load-theme 'github-dark-vscode)
+(load-theme 'gruber-darker)
 
 (dt/load-user-init "utils.el")
 
@@ -327,9 +327,9 @@
 (setq org-todo-keywords
   '((sequence "TODO" "ONGOING" "TESTING" "IN REVIEW" "ON HOLD" "DONE" "ABANDONED")))
 
-(add-hook 'after-init-hook
-  (lambda ()
-    (dt/load-user-init "dt-theme.el")))
+;; (add-hook 'after-init-hook
+;;   (lambda ()
+;;     (dt/load-user-init "dt-theme.el")))
 
 ;; Load post-init.el
 (dt/load-user-init "post-init.el")
