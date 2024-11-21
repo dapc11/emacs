@@ -54,7 +54,6 @@
 
 (dt/load-user-init "utils.el")
 
-
 (use-package savehist)
 
 (use-package multiple-cursors

@@ -29,26 +29,6 @@
   (completion-category-defaults nil)
   (completion-category-overrides '((file (styles partial-completion)))))
 
-(use-package embark
-  :ensure t
-  :bind (
-          ("C-c e" . embark-export)
-          ("C-." . embark-act)
-          ("C-;" . embark-dwim))
-  :init
-  (setq prefix-help-command #'embark-prefix-help-command)
-
-  :config
-  (add-to-list 'display-buffer-alist
-               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                 nil
-                 (window-parameters (mode-line-format . none)))))
-
-(use-package embark-consult
-  :ensure t
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
-
 (defun dt/consult-line ()
   "Search for a line using `consult-line`.
 
@@ -187,50 +167,6 @@ will be snake_case with a .md extension."
     (set-mark start)                   ;; Set the mark at the start
     (goto-char end)))                  ;; Move point to the end position
 
-(use-package tabbar
-  :ensure t
-  :bind
-  ("<C-S-iso-lefttab>" . tabbar-backward)
-  ("<C-tab>" . tabbar-forward)
-
-  :init
-  (setq
-    tabbar-buffer-groups-function (lambda () (list "All"))
-    tabbar-use-images nil)
-
-  (progn
-    (tabbar-mode -1)
-
-    (defun tabbar-buffer-tab-label (tab)
-      "Return a label for TAB that includes the Git repository name, if available."
-      (let* ((buffer (tabbar-tab-value tab))
-              (label (format " %s " (buffer-name buffer)))
-              (git-root (with-current-buffer buffer
-                          (vc-root-dir)))
-              (repo-name (if git-root
-                           (file-name-nondirectory (directory-file-name git-root))
-                           "")))
-        (if (and git-root (not (string= repo-name "")))
-          (format " [%s] %s" repo-name label)
-          label)))
-
-    (custom-set-variables
-      '(tabbar-separator (quote (0.5))))))
-
-
-(defun dt/tabbar-buffer-list ()
-  "Return the list of buffers to show in tabs.
-Exclude buffers whose names start and end with '*', and magit buffers."
-  (delq nil
-        (mapcar #'(lambda (b)
-                    (let ((name (buffer-name b)))
-                      (if (and (not (string-prefix-p " " name))
-                               (not (string-match "^\\*.*\\*$" name))
-                               (not (string-prefix-p "magit" name)))
-                          b)))
-                (buffer-list))))
-
-(setq tabbar-buffer-list-function 'dt/tabbar-buffer-list)
 
 (global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "C-S-z") 'undo-redo)
@@ -275,7 +211,6 @@ Unlike `comment-dwim', this always comments whole lines."
 
 (add-to-list 'compilation-error-regexp-alist
              '("^\\([0-9.]+\\-[a-z0-9]+\\.*\\): digest: sha256:\\([a-f0-9]+\\) size: \\([0-9]+\\)$" 1 2 3))
-
 
 (defun parse-env-file (file)
   "Parse a .env FILE and set the environment variables in Emacs."
