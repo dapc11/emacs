@@ -132,6 +132,25 @@
 (global-set-key (kbd "M-<down>") 'dt/move-text-down)
 (global-set-key (kbd "M-<up>") 'dt/move-text-up)
 
+(defun isearch-forward-at-point-or-region ()
+  "Start isearch forward with the selected region, or the word under the cursor if no region is selected.
+Deactivate the mark after starting the search."
+  (interactive)
+  (let ((search-string
+         (if (use-region-p)
+             (progn
+               (let ((region (buffer-substring-no-properties (region-beginning) (region-end))))
+                 (deactivate-mark)
+                 region))
+           (thing-at-point 'word t))))
+    (if search-string
+        (progn
+          (isearch-forward nil t)
+          (isearch-yank-string search-string))
+      (isearch-forward nil t))))
+
+(global-set-key (kbd "C-S-s") 'isearch-forward-at-point-or-region)
+
 (defun scroll-half-page-down ()
   "scroll down half the page"
   (interactive)
