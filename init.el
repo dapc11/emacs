@@ -101,6 +101,14 @@
           ("M-S-<right>" . er/expand-region)
           ("M-S-<left>" . er/contract-region)))
 
+(defun join-line-above ()
+  "Join the current line with the line above."
+  (interactive)
+  (forward-line 1)
+  (end-of-line)
+  (delete-indentation))
+
+(global-set-key (kbd "C-S-j") 'join-line-above)
 (global-set-key (kbd "<mouse-4>") 'previous-line)
 (global-set-key (kbd "<mouse-5>") 'next-line)
 (global-set-key (kbd "C-c <right>") 'windmove-right)
@@ -115,7 +123,6 @@
 (global-set-key (kbd "C-S-r") 'isearch-query-replace)
 (global-set-key (kbd "C-n") 'next-error)
 (global-set-key (kbd "C-b") 'previous-error)
-(global-set-key (kbd "C-S-j") 'join-line)
 (global-set-key (kbd "C-c n") 'projectile-find-file)
 (global-set-key [prior] 'move-beginning-of-line)
 (global-set-key [next] 'move-end-of-line)
