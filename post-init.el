@@ -67,8 +67,8 @@ The region is deactivated after the selected text is grabbed."
           ("M-g i" . consult-imenu)
           ("C-c l" . consult-goto-line)
           ("C-c r" . consult-recent-file)
-          ("C-c N" . consult-fd)
           ("C-S-f" . ag-project)
+          ("C-c N" . consult-fd)
           ("C-c z b" . dt/fd-notes)
           ("C-c z f" . dt/rg-notes)
           ("C-c z n" . dt/new-note)
@@ -263,8 +263,121 @@ Unlike `comment-dwim', this always comments whole lines."
   ;; completion functions takes precedence over the global list.
   (add-hook 'completion-at-point-functions #'cape-dabbrev)
   (add-hook 'completion-at-point-functions #'cape-keyword)
+  (add-hook 'completion-at-point-functions #'cape-keyword)
   (add-hook 'completion-at-point-functions #'cape-file)
   (add-hook 'completion-at-point-functions #'cape-elisp-block)
 )
+
+(require 'dired)
+;; TODO: map backspace to go out to parent dir
+
+(defun my/dired-unpack-archive-to-directory ()
+  "Unpack the archive file under the cursor in dired to a hardcoded directory with a unique index and open dired there."
+  (interactive)
+  (let* ((file (dired-get-file-for-visit))
+         (base-dir "/home/epedape/test_reports/")  ; Change this to your desired directory
+         (unique-dir (my/generate-sequential-dir-name base-dir))
+         (command (my/get-extract-command file unique-dir)))
+    (if command
+        (progn
+          (make-directory unique-dir t)
+          (shell-command command)
+          (message "Unpacked %s to %s" file unique-dir)
+          (dired unique-dir))  ; Open dired in the unpacked directory
+      (message "Not a valid archive file."))))
+
+(defun my/get-extract-command (file target-dir)
+  "Return the appropriate shell command to extract FILE into TARGET-DIR based on the file extension."
+  (cond
+   ((string-match-p "\\.tar\\'" file)
+    (format "tar -xf %s -C %s" (shell-quote-argument file) (shell-quote-argument target-dir)))
+   ((or (string-match-p "\\.tar\\.gz\\'" file)
+        (string-match-p "\\.tgz\\'" file))
+    (format "tar -xzf %s -C %s" (shell-quote-argument file) (shell-quote-argument target-dir)))
+   ((string-match-p "\\.zip\\'" file)
+    (format "unzip %s -d %s" (shell-quote-argument file) (shell-quote-argument target-dir)))
+   (t nil)))  ; Return nil if the file type is not supported
+
+(defun my/generate-sequential-dir-name (base-dir)
+  "Generate a sequentially numbered unique directory name under BASE-DIR."
+  (let* ((existing-dirs (directory-files base-dir t "unpacked-[0-9]+"))
+         (indices (mapcar (lambda (dir)
+                            (string-to-number (replace-regexp-in-string ".*unpacked-\\([0-9]+\\)" "\\1" dir)))
+                          existing-dirs))
+         (max-index (if indices (apply 'max indices) -1)))
+    (concat base-dir "unpacked-" (number-to-string (1+ max-index)))))
+
+;; Bind the function to a key in dired mode
+(define-key dired-mode-map (kbd "U") 'my/dired-unpack-archive-to-directory)
+
+(defun close-other-buffers ()
+  "Close all buffers except the current one."
+  (interactive)
+  (mapc (lambda (buffer)
+          (unless (eq buffer (current-buffer))
+            (kill-buffer buffer)))
+        (buffer-list))
+  (message "Closed all other buffers."))
+
+(defun replace-escaped-newlines-br-tags-and-url-encoded-chars ()
+  "Replace escaped newlines (\\n), <br/> tags, &gt; and &lt;, and URL-encoded characters with their textual representations."
+  (interactive)
+
+  ;; Helper function to perform search-and-replace
+  (defun replace-all (pattern replacement)
+    (goto-char (point-min))
+    (while (search-forward pattern nil t)
+      (replace-match replacement nil t)))
+
+  ;; Replace escaped newlines (\\n) with actual newlines
+  (replace-all "\\\\n" "\n")
+
+  ;; Replace <br/> or <br> tags with newlines
+  (replace-all "<br\\s-*/?>" "\n")
+
+  (replace-html-entities-in-buffer)
+  (message "Processed newlines, <br/> tags, HTML entities, and URL-encoded characters."))
+
+;; Usage: Run with M-x replace-escaped-newlines-br-tags-and-url-encoded-chars
+
+(defun replace-html-entities-in-buffer ()
+  "Replace HTML character entities in the current buffer with their corresponding characters."
+  (interactive)
+  (let ((content (buffer-string)))
+    (delete-region (point-min) (point-max))
+    (insert (replace-html-entities-with-characters content))))
+
+(defun replace-html-entities-with-characters (string)
+  "Replace HTML character entities in STRING with their corresponding characters."
+  (let ((entities '(("&lt;" . "<")
+                    ("&gt;" . ">")
+                    ("&amp;" . "&")
+                    ("&quot;" . "\"")
+                    ("&apos;" . "'")
+                     ("&nbsp;" . " ")
+                     ("&#x27;" . "'")
+                    ;; Add more HTML entities as needed
+                    )))
+    (dolist (pair entities string)
+      (setq string (replace-regexp-in-string (car pair) (cdr pair) string)))))
+
+(defun open-current-file-in-chrome ()
+  "Open the current file in Google Chrome."
+  (interactive)
+  (if (buffer-file-name)
+      (start-process "open-chrome" nil "google-chrome" (buffer-file-name))
+    (message "Buffer is not visiting a file")))
+
+
+(defun sanitize-html-report ()
+  "Render ANSI color codes and replace HTML entities (&gt; and &lt;) in the current buffer."
+  (interactive)
+  ;; Replace &gt; with > and &lt; with <
+  (replace-escaped-newlines-br-tags-and-url-encoded-chars)
+  (dt/apply-ansi-colors)
+  (open-current-file-in-chrome)
+  (message "Processed ANSI colors and sanitized report."))
+
+;; You can call this function interactively using M-x close-other-buffers
 
 ;;;post-init.el ends here

@@ -12,6 +12,7 @@
 (setq my/home-dir (getenv "HOME"))
 (setopt use-short-answers t)
 
+
 (defvar dt/user-directory user-emacs-directory
   "The default value of the `user-emacs-directory' variable.")
 
@@ -48,10 +49,8 @@
   (setq use-package-always-ensure t
     use-package-expand-minimally t))
 
-(dt/load-user-init "gruber-darker-theme.el")
-
-(load-theme 'gruber-darker)
-
+(dt/load-user-init "dt-github-theme.el")
+(load-theme 'dt-github)
 (dt/load-user-init "utils.el")
 
 (use-package savehist)
@@ -202,28 +201,31 @@ Deactivate the mark after starting the search."
 (use-package ansi-color)
 (use-package blacken)
 (use-package markdown-mode)
+(with-eval-after-load 'markdown-mode
+  (setq markdown-mode-map (make-sparse-keymap)))
 
-(use-package eglot
-  :init
-  (setq eglot-sync-connect 3
-        eglot-connect-timeout nil
-        eglot-autoshutdown t
-        eglot-send-changes-idle-time 0.5
-        eglot-report-progress t
-        eglot-ignored-server-capabilities '(:documentHighlightProvider
-                                            :foldingRangeProvider)
-        ;; NOTE We disable eglot-auto-display-help-buffer because :select t
-        ;;      its popup rule causes eglot to steal focus too often.
-    eglot-auto-display-help-buffer nil)
-  :bind (
-          ("C-c c a" . eglot-code-actions)
-          ("C-c c f" . eglot-format)
-          ("C-c c r" . eglot-rename)
-          ("M-n" . flymake-goto-next-error)
-          ("M-b" . flymake-goto-prev-error)
-          ("C-c c c" . eglot-code-action-quickfix)
-          ("C-c c e" . eglot-code-action-extract)
-          ("C-c c i" . eglot-code-action-inline)))
+
+;; (use-package eglot
+;;   :init
+;;   (setq eglot-sync-connect 3
+;;         eglot-connect-timeout nil
+;;         eglot-autoshutdown t
+;;         eglot-send-changes-idle-time 0.5
+;;         eglot-report-progress t
+;;         eglot-ignored-server-capabilities '(:documentHighlightProvider
+;;                                             :foldingRangeProvider)
+;;         ;; NOTE We disable eglot-auto-display-help-buffer because :select t
+;;         ;;      its popup rule causes eglot to steal focus too often.
+;;     eglot-auto-display-help-buffer nil)
+;;   :bind (
+;;           ("C-c c a" . eglot-code-actions)
+;;           ("C-c c f" . eglot-format)
+;;           ("C-c c r" . eglot-rename)
+;;           ("M-n" . flymake-goto-next-error)
+;;           ("M-b" . flymake-goto-prev-error)
+;;           ("C-c c c" . eglot-code-action-quickfix)
+;;           ("C-c c e" . eglot-code-action-extract)
+;;           ("C-c c i" . eglot-code-action-inline)))
 
 (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
 (add-to-list 'auto-mode-alist '("\\.el\\'" . emacs-lisp-mode))
@@ -317,19 +319,19 @@ Deactivate the mark after starting the search."
 ;; JAVA END
 
 
-(with-eval-after-load 'eglot
-  (add-to-list 'eglot-server-programs
-    '(python-mode . ("pyright-langserver" "--stdio"))))
-(with-eval-after-load 'eglot
-  (add-to-list 'eglot-server-programs
-    '(java-mode . ("jdtls"))))
-(with-eval-after-load 'eglot
-  (add-to-list 'eglot-server-programs
-    '(go-mode . ("gopls" "serve"))))
+;; (with-eval-after-load 'eglot
+;;   (add-to-list 'eglot-server-programs
+;;     '(python-mode . ("pyright-langserver" "--stdio"))))
+;; (with-eval-after-load 'eglot
+;;   (add-to-list 'eglot-server-programs
+;;     '(java-mode . ("jdtls"))))
+;; (with-eval-after-load 'eglot
+;;   (add-to-list 'eglot-server-programs
+;;     '(go-mode . ("gopls" "serve"))))
 
-(add-hook 'python-mode-hook 'eglot-ensure)
-(add-hook 'go-mode-hook 'eglot-ensure)
-(add-hook 'java-mode-hook 'eglot-ensure)
+;; (add-hook 'python-mode-hook 'eglot-ensure)
+;; (add-hook 'go-mode-hook 'eglot-ensure)
+;; (add-hook 'java-mode-hook 'eglot-ensure)
 
 (use-package exec-path-from-shell
   :init
@@ -340,14 +342,15 @@ Deactivate the mark after starting the search."
   (exec-path-from-shell-copy-envs '("PYTHONDONTWRITEBYTECODE" "PATH" "SONARQUBE_TOKEN_CODEANALYZER" "JAVA_HOME" "M2_HOME" "M2" "MAVEN_OPTS" "GOPRIVATE" "GOPROXY")))
 
 (add-hook 'compilation-filter-hook 'dt/apply-ansi-colors)
-(add-hook 'emacs-lisp-mode-hook 'dt/set-up-whitespace-handling)
-(add-hook 'git-commit-setup-hook 'dt/set-up-whitespace-handling)
-(add-hook 'go-mode-hook 'dt/set-up-whitespace-handling)
-(add-hook 'json-mode-hook 'dt/set-up-whitespace-handling)
-(add-hook 'lua-mode-hook 'dt/set-up-whitespace-handling)
-(add-hook 'python-mode-hook 'dt/set-up-whitespace-handling)
-(add-hook 'yaml-mode-hook 'dt/set-up-whitespace-handling)
-(add-hook 'java-mode-hook 'dt/set-up-whitespace-handling)
+(add-hook 'html-mode-hook 'dt/apply-ansi-colors)
+;; (add-hook 'emacs-lisp-mode-hook 'dt/set-up-whitespace-handling)
+;; (add-hook 'git-commit-setup-hook 'dt/set-up-whitespace-handling)
+;; (add-hook 'go-mode-hook 'dt/set-up-whitespace-handling)
+;; (add-hook 'json-mode-hook 'dt/set-up-whitespace-handling)
+;; (add-hook 'lua-mode-hook 'dt/set-up-whitespace-handling)
+;; (add-hook 'python-mode-hook 'dt/set-up-whitespace-handling)
+;; (add-hook 'yaml-mode-hook 'dt/set-up-whitespace-handling)
+;; (add-hook 'java-mode-hook 'dt/set-up-whitespace-handling)
 
 (setq org-todo-keywords
   '((sequence "TODO" "ONGOING" "TESTING" "IN REVIEW" "ON HOLD" "DONE" "ABANDONED")))

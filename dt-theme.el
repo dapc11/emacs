@@ -80,8 +80,12 @@ FACE is the face name (symbol) and ARGS are the attributes for `set-face-attribu
 
 
   (my-set-face-attribute 'mode-line nil
-    :background my-background-darker
+    :background "#31353f"
     :foreground my-foreground)
+
+
+  (my-set-face-attribute 'consult-buffer nil
+    :inherit nil)
 
   (my-set-face-attribute 'mode-line-inactive nil
     :background "#21252b"
