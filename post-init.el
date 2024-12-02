@@ -269,7 +269,13 @@ Unlike `comment-dwim', this always comments whole lines."
 )
 
 (require 'dired)
-;; TODO: map backspace to go out to parent dir
+(defun my-dired-up-directory ()
+  "Go up to the parent directory in dired."
+  (interactive)
+  (dired-up-directory))
+
+(with-eval-after-load 'dired
+  (define-key dired-mode-map (kbd "<backspace>") 'my-dired-up-directory))
 
 (defun my/dired-unpack-archive-to-directory ()
   "Unpack the archive file under the cursor in dired to a hardcoded directory with a unique index and open dired there."

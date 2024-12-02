@@ -130,6 +130,7 @@
 (global-set-key (kbd "C-c C-x") 'dt/unpop-to-mark-command)
 (global-set-key (kbd "M-<down>") 'dt/move-text-down)
 (global-set-key (kbd "M-<up>") 'dt/move-text-up)
+(global-set-key (kbd "M-e") 'treemacs)
 
 (setq magit-blame-styles
            '((margin
