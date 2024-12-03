@@ -209,8 +209,17 @@ Unlike `comment-dwim', this always comments whole lines."
 (global-set-key (kbd "C-/") nil)
 (global-set-key (kbd "C-/") 'dt/comment-line)
 
-(add-to-list 'compilation-error-regexp-alist
-             '("^\\([0-9.]+\\-[a-z0-9]+\\.*\\): digest: sha256:\\([a-f0-9]+\\) size: \\([0-9]+\\)$" 1 2 3))
+;; (add-to-list 'compilation-error-regexp-alist
+;;   '("^\\([0-9.]+\\-[a-z0-9]+\\.*\\): digest: sha256:\\([a-f0-9]+\\) size: \\([0-9]+\\)$" 1 2 3))
+
+;; Add custom regex for semantic version with hash
+(add-to-list 'compilation-error-regexp-alist-alist
+             '(custom-semver
+               "\\b\\(\\d+\\.\\d+\\.\\d+-[a-z0-9]+\\(?:\\.dirty\\.epedape\\)?\\)\\b"
+               0))
+
+(add-to-list 'compilation-error-regexp-alist 'custom-semver)
+(setq compilation-find-file-no-prompt t) ;; Always use default without asking
 
 (defun parse-env-file (file)
   "Parse a .env FILE and set the environment variables in Emacs."
@@ -408,7 +417,8 @@ Unlike `comment-dwim', this always comments whole lines."
   (add-hook 'find-file-hooks   #'bm-buffer-restore)
   (add-hook 'after-revert-hook #'bm-buffer-restore)
   (add-hook 'vc-before-checkin-hook #'bm-buffer-save)
-  :bind (("M-." . bm-next)
-          ("M-," . bm-previous)
-          ("M-m" . bm-toggle)))
+  :bind (("C-c ." . bm-next)
+          ("C-c ," . bm-previous)
+          ("C-c m" . bm-toggle)))
+
 ;;;post-init.el ends here

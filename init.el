@@ -11,6 +11,7 @@
 (setq custom-file "~/.emacs.d/custom-file.el")
 (setq my/home-dir (getenv "HOME"))
 (setopt use-short-answers t)
+;; (setq debug-on-error t)
 
 
 (defvar dt/user-directory user-emacs-directory
@@ -159,12 +160,12 @@ Deactivate the mark after starting the search."
 (global-set-key (kbd "C-S-s") 'isearch-forward-at-point-or-region)
 
 (defun scroll-half-page-down ()
-  "scroll down half the page"
+  "Scroll down half the page."
   (interactive)
   (scroll-down (/ (window-body-height) 2)))
 
 (defun scroll-half-page-up ()
-  "scroll up half the page"
+  "Scroll up half the page."
   (interactive)
   (scroll-up (/ (window-body-height) 2)))
 (global-set-key (kbd "C-v") 'scroll-half-page-up)
@@ -326,12 +327,12 @@ Deactivate the mark after starting the search."
 ;; (with-eval-after-load 'eglot
 ;;   (add-to-list 'eglot-server-programs
 ;;     '(java-mode . ("jdtls"))))
-;; (with-eval-after-load 'eglot
-;;   (add-to-list 'eglot-server-programs
-;;     '(go-mode . ("gopls" "serve"))))
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+    '(go-mode . ("gopls" "serve"))))
 
 ;; (add-hook 'python-mode-hook 'eglot-ensure)
-;; (add-hook 'go-mode-hook 'eglot-ensure)
+(add-hook 'go-mode-hook 'eglot-ensure)
 ;; (add-hook 'java-mode-hook 'eglot-ensure)
 
 (use-package exec-path-from-shell
@@ -344,21 +345,17 @@ Deactivate the mark after starting the search."
 
 (add-hook 'compilation-filter-hook 'dt/apply-ansi-colors)
 (add-hook 'html-mode-hook 'dt/apply-ansi-colors)
-;; (add-hook 'emacs-lisp-mode-hook 'dt/set-up-whitespace-handling)
-;; (add-hook 'git-commit-setup-hook 'dt/set-up-whitespace-handling)
-;; (add-hook 'go-mode-hook 'dt/set-up-whitespace-handling)
-;; (add-hook 'json-mode-hook 'dt/set-up-whitespace-handling)
-;; (add-hook 'lua-mode-hook 'dt/set-up-whitespace-handling)
-;; (add-hook 'python-mode-hook 'dt/set-up-whitespace-handling)
-;; (add-hook 'yaml-mode-hook 'dt/set-up-whitespace-handling)
-;; (add-hook 'java-mode-hook 'dt/set-up-whitespace-handling)
+(add-hook 'emacs-lisp-mode-hook 'dt/set-up-whitespace-handling)
+(add-hook 'git-commit-setup-hook 'dt/set-up-whitespace-handling)
+(add-hook 'go-mode-hook 'dt/set-up-whitespace-handling)
+(add-hook 'java-mode-hook 'dt/set-up-whitespace-handling)
+(add-hook 'json-mode-hook 'dt/set-up-whitespace-handling)
+(add-hook 'lua-mode-hook 'dt/set-up-whitespace-handling)
+(add-hook 'python-mode-hook 'dt/set-up-whitespace-handling)
+(add-hook 'yaml-mode-hook 'dt/set-up-whitespace-handling)
 
 (setq org-todo-keywords
   '((sequence "TODO" "ONGOING" "TESTING" "IN REVIEW" "ON HOLD" "DONE" "ABANDONED")))
-
-;; (add-hook 'after-init-hook
-;;   (lambda ()
-;;     (dt/load-user-init "dt-theme.el")))
 
 ;; Load post-init.el
 (dt/load-user-init "post-init.el")

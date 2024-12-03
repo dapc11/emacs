@@ -121,7 +121,7 @@ conventions are checked."
 
 (defun dt/set-up-whitespace-handling ()
   (interactive)
-  (add-to-list 'write-file-functions 'delete-trailing-whitespace))
+  (whitespace-mode 1))
 
 (defun dt/apply-ansi-colors ()
   (let ((inhibit-read-only t))

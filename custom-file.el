@@ -33,18 +33,33 @@
  '(mode-require-final-newline t)
  '(org-agenda-files '("~/notes/todo.md"))
  '(package-selected-packages
-    '(bm git-timemachine treemacs-all-the-icons all-the-icons treemacs git-blamed rgb markdown-mode blacken python-mode eterm-256color pandoc github-dark-vscode-theme eglot-java eglot embark highlight-indentation hydra xterm-color flycheck dumb-jump rainbow-mode tabbar go-mode cape corfu embark-consult consult smartparens expand-region json-mode k8s-mode yaml-mode lua-mode dockerfile-mode rg ripgrep exec-path-from-shell ag projectile magit vertico orderless multiple-cursors))
+    '(treemacs-projectile bm git-timemachine treemacs-all-the-icons all-the-icons treemacs git-blamed rgb markdown-mode blacken python-mode eterm-256color pandoc github-dark-vscode-theme eglot-java eglot embark highlight-indentation hydra xterm-color flycheck dumb-jump rainbow-mode tabbar go-mode cape corfu embark-consult consult smartparens expand-region json-mode k8s-mode yaml-mode lua-mode dockerfile-mode rg ripgrep exec-path-from-shell ag projectile magit vertico orderless multiple-cursors))
  '(require-final-newline 'visit-save)
  '(safe-local-variable-values '((eval when (fboundp 'rainbow-mode) (rainbow-mode 1))))
  '(tabbar-separator '(0.5))
  '(tabbar-use-images nil)
+ '(treemacs-collapse-dirs 3)
+ '(treemacs-filewatch-mode t)
+ '(treemacs-follow-mode t)
+ '(treemacs-git-mode t)
+ '(treemacs-project-follow-mode t)
+ '(treemacs-select-when-already-in-treemacs 'next-or-back)
  '(use-package-always-ensure t)
  '(use-package-expand-minimally t)
  '(whitespace-style
-    '(face tabs trailing space-before-tab newline empty space-after-tab tab-mark)))
+    '(face trailing tabs spaces missing-newline-at-eof empty indentation space-after-tab space-before-tab space-mark tab-mark)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(whitespace-big-indent ((t (:background "#f97583" :foreground "#f97583"))))
+ '(whitespace-empty ((t (:extend t :background "#ffea7f" :foreground "#f97583"))))
+ '(whitespace-hspace ((t (:background "#24292e" :foreground "#39414a"))))
+ '(whitespace-indentation ((t (:background "#ffea7f" :foreground "#f97583"))))
+ '(whitespace-missing-newline-at-eof ((t (:background "#ffea7f" :foreground "#181818"))))
+ '(whitespace-space ((t (:background "#24292e" :foreground "#39414a"))))
+ '(whitespace-space-after-tab ((t (:background "#ffea7f" :foreground "#f97583"))))
+ '(whitespace-space-before-tab ((t (:background "ffab70" :foreground "#f97583"))))
+ '(whitespace-tab ((t (:background "#24292e" :foreground "#39414a"))))
+ '(whitespace-trailing ((t (:background "#f97583" :foreground "#ffea7f" :weight bold)))))
