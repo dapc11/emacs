@@ -376,5 +376,8 @@ Deactivate the mark after starting the search."
 (setq org-todo-keywords
   '((sequence "TODO" "ONGOING" "TESTING" "IN REVIEW" "ON HOLD" "DONE" "ABANDONED")))
 
+(add-hook 'treemacs-mode-hook (lambda()(display-line-numbers-mode -1)))
+(window-divider-mode 1)
+
 ;; Load post-init.el
 (dt/load-user-init "post-init.el")

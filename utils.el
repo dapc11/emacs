@@ -121,7 +121,9 @@ conventions are checked."
 
 (defun dt/set-up-whitespace-handling ()
   (interactive)
-  (whitespace-mode 1))
+  (whitespace-mode 1)
+  (load-theme 'dt-github)
+  )
 
 (defun dt/apply-ansi-colors ()
   (let ((inhibit-read-only t))

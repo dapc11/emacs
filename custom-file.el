@@ -48,19 +48,14 @@
  '(use-package-always-ensure t)
  '(use-package-expand-minimally t)
  '(whitespace-style
-    '(face trailing tabs spaces missing-newline-at-eof empty indentation space-after-tab space-before-tab space-mark tab-mark)))
+    '(face trailing tabs spaces missing-newline-at-eof empty indentation space-after-tab space-before-tab space-mark tab-mark))
+ '(window-divider-default-right-width 1))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(whitespace-big-indent ((t (:background "#f97583" :foreground "#f97583"))))
- '(whitespace-empty ((t (:extend t :background "#ffea7f" :foreground "#f97583"))))
- '(whitespace-hspace ((t (:background "#24292e" :foreground "#39414a"))))
- '(whitespace-indentation ((t (:background "#ffea7f" :foreground "#f97583"))))
- '(whitespace-missing-newline-at-eof ((t (:background "#ffea7f" :foreground "#181818"))))
- '(whitespace-space ((t (:background "#24292e" :foreground "#39414a"))))
- '(whitespace-space-after-tab ((t (:background "#ffea7f" :foreground "#f97583"))))
- '(whitespace-space-before-tab ((t (:background "ffab70" :foreground "#f97583"))))
- '(whitespace-tab ((t (:background "#24292e" :foreground "#39414a"))))
- '(whitespace-trailing ((t (:background "#f97583" :foreground "#ffea7f" :weight bold)))))
+ '(treemacs-hl-line-face ((t (:inherit hl-line :background "#24292e" :weight bold))))
+ '(treemacs-window-background-face ((t (:background "#2f363d"))))
+ '(whitespace-space ((t (:background "#24292e" :foreground "#444d56"))))
+ '(window-divider ((t (:foreground "#444d56")))))
