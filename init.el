@@ -362,6 +362,12 @@ Deactivate the mark after starting the search."
   :config
   (exec-path-from-shell-copy-envs '("PYTHONDONTWRITEBYTECODE" "PATH" "SONARQUBE_TOKEN_CODEANALYZER" "JAVA_HOME" "M2_HOME" "M2" "MAVEN_OPTS" "GOPRIVATE" "GOPROXY")))
 
+;; Whitespace mode
+(defun dt/set-up-whitespace-handling ()
+  (interactive)
+  (whitespace-mode 1)
+  (add-to-list 'write-file-functions 'delete-trailing-whitespace))
+
 (add-hook 'compilation-filter-hook 'dt/apply-ansi-colors)
 (add-hook 'html-mode-hook 'dt/apply-ansi-colors)
 (add-hook 'emacs-lisp-mode-hook 'dt/set-up-whitespace-handling)

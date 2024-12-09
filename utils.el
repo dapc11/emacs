@@ -65,16 +65,28 @@ conventions are checked."
   )
 
 (defun dt/duplicate-line ()
-  "Duplicate current line"
+  "Duplicate current line, or duplicate the selected region if the mark is set."
   (interactive)
   (let ((column (- (point) (point-at-bol)))
-         (line (let ((s (thing-at-point 'line t)))
-                 (if s (string-remove-suffix "\n" s) ""))))
-    (move-end-of-line 1)
-    (newline)
-    (insert line)
-    (move-beginning-of-line 1)
-    (forward-char column)))
+        (line (if (use-region-p)
+                  (buffer-substring-no-properties (region-beginning) (region-end))
+                (let ((s (thing-at-point 'line t)))
+                  (if s (string-remove-suffix "\n" s) "")))))
+    (if (use-region-p)
+        (progn
+          ;; Duplicate the selected region
+          (let ((region-text (buffer-substring-no-properties (region-beginning) (region-end))))
+            (goto-char (region-end))
+            (newline)
+            (insert region-text)))
+      (progn
+        ;; Duplicate the current line
+        (move-end-of-line 1)
+        (newline)
+        (insert line)
+        (move-beginning-of-line 1)
+        (forward-char column)))))
+
 
 (defun dt/unpop-to-mark-command ()
   "Unpop off mark ring. Does nothing if mark ring is empty."
@@ -118,12 +130,6 @@ conventions are checked."
   arg lines up."
   (interactive "*p")
   (dt/move-text-internal (- arg)))
-
-(defun dt/set-up-whitespace-handling ()
-  (interactive)
-  (whitespace-mode 1)
-  (load-theme 'dt-github)
-  )
 
 (defun dt/apply-ansi-colors ()
   (let ((inhibit-read-only t))
