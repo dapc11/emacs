@@ -5,6 +5,8 @@
  ;; If there is more than one, they won't work right.
  '(ag-arguments '("--smart-case" "--stats" "--vimgrep"))
  '(auto-save-visited-interval 40)
+ '(compilation-error-regexp-alist
+    '(go-test ant bash python-tracebacks-and-caml comma java javac maven cucumber shellcheck))
  '(compilation-scroll-output t)
  '(custom-safe-themes t)
  '(eglot-connect-timeout nil)
@@ -41,7 +43,8 @@
  '(treemacs-collapse-dirs 3)
  '(treemacs-filewatch-mode t)
  '(treemacs-follow-mode t)
- '(treemacs-git-mode t)
+ '(treemacs-fringe-indicator-mode nil)
+ '(treemacs-git-mode nil)
  '(treemacs-project-follow-mode t)
  '(treemacs-select-when-already-in-treemacs 'next-or-back)
  '(use-package-always-ensure t)

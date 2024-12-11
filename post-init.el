@@ -215,7 +215,7 @@ Unlike `comment-dwim', this always comments whole lines."
 ;; Add custom regex for semantic version with hash
 (add-to-list 'compilation-error-regexp-alist-alist
              '(custom-semver
-               "\\(-[0-9]+\\.[0-9]+\\.[0-9]+-h[a-f0-9]+\\(?:\\.dirty\\.[a-zA-Z0-9]+\\)?\\(?:\\.[a-zA-Z0-9]+\\)?\\)"
+               "\\([0-9]+\\.[0-9]+\\.[0-9]+-[a-zA-Z0-9]+\\(?:\\.dirty\\.[a-zA-Z0-9]+\\)?\\(?:\\.[a-zA-Z0-9]+\\)?\\)"
                1))
 
 (add-to-list 'compilation-error-regexp-alist 'custom-semver)
@@ -333,16 +333,14 @@ Unlike `comment-dwim', this always comments whole lines."
             (kill-buffer buffer)))
         (buffer-list))
   (message "Closed all other buffers."))
+(defun replace-all (pattern replacement)
+    (goto-char (point-min))
+    (while (search-forward pattern nil t)
+      (replace-match replacement nil t)))
 
 (defun replace-escaped-newlines-br-tags-and-url-encoded-chars ()
   "Replace escaped newlines (\\n), <br/> tags, &gt; and &lt;, and URL-encoded characters with their textual representations."
   (interactive)
-
-  ;; Helper function to perform search-and-replace
-  (defun replace-all (pattern replacement)
-    (goto-char (point-min))
-    (while (search-forward pattern nil t)
-      (replace-match replacement nil t)))
 
   ;; Replace escaped newlines (\\n) with actual newlines
   (replace-all "\\\\n" "\n")
