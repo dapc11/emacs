@@ -215,8 +215,8 @@ Unlike `comment-dwim', this always comments whole lines."
 ;; Add custom regex for semantic version with hash
 (add-to-list 'compilation-error-regexp-alist-alist
              '(custom-semver
-               "\\b\\(\\d+\\.\\d+\\.\\d+-[a-z0-9]+\\(?:\\.dirty\\.epedape\\)?\\)\\b"
-               0))
+               "\\(-[0-9]+\\.[0-9]+\\.[0-9]+-h[a-f0-9]+\\(?:\\.dirty\\.[a-zA-Z0-9]+\\)?\\(?:\\.[a-zA-Z0-9]+\\)?\\)"
+               1))
 
 (add-to-list 'compilation-error-regexp-alist 'custom-semver)
 (setq compilation-find-file-no-prompt t) ;; Always use default without asking
@@ -414,7 +414,7 @@ Unlike `comment-dwim', this always comments whole lines."
                                  (bm-buffer-save-all)
                                  (bm-repository-save)))
   (add-hook 'after-save-hook #'bm-buffer-save)
-  (add-hook 'find-file-hooks   #'bm-buffer-restore)
+  (add-hook 'find-file-hook   #'bm-buffer-restore)
   (add-hook 'after-revert-hook #'bm-buffer-restore)
   (add-hook 'vc-before-checkin-hook #'bm-buffer-save)
   :bind (("C-c ." . bm-next)

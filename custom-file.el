@@ -5,7 +5,6 @@
  ;; If there is more than one, they won't work right.
  '(ag-arguments '("--smart-case" "--stats" "--vimgrep"))
  '(auto-save-visited-interval 40)
- '(before-save-hook '(delete-trailing-whitespace))
  '(compilation-scroll-output t)
  '(custom-safe-themes t)
  '(eglot-connect-timeout nil)
@@ -55,7 +54,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(treemacs-hl-line-face ((t (:inherit hl-line :background "#24292e" :weight bold))))
- '(treemacs-window-background-face ((t (:background "#2f363d"))))
- '(whitespace-space ((t (:background "#24292e" :foreground "#444d56"))))
  '(window-divider ((t (:foreground "#444d56")))))
