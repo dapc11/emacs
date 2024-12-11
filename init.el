@@ -385,5 +385,27 @@ Deactivate the mark after starting the search."
 (add-hook 'treemacs-mode-hook (lambda()(display-line-numbers-mode -1)))
 (window-divider-mode 1)
 
+;; Functions to increase and decrease font size
+(defun my-increase-font-size ()
+  "Increase the font size globally."
+  (interactive)
+  (let ((current-size (face-attribute 'default :height)))
+    (set-face-attribute 'default nil :height (+ current-size 10))))
+
+(defun my-decrease-font-size ()
+  "Decrease the font size globally."
+  (interactive)
+  (let ((current-size (face-attribute 'default :height)))
+    (set-face-attribute 'default nil :height (- current-size 10))))
+
+;; Keybindings for Ctrl-+ and Ctrl--
+(global-set-key (kbd "C-+") 'my-increase-font-size)
+(global-set-key (kbd "C--") 'my-decrease-font-size)
+
+(add-hook 'after-save-hook
+          (lambda ()
+            (when (string= (file-name-extension buffer-file-name) "el")
+              (byte-compile-file buffer-file-name))))
+
 ;; Load post-init.el
 (dt/load-user-init "post-init.el")
