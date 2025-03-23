@@ -1,7 +1,7 @@
 (deftheme dt-github)
 (let
-  ((fg1       "#d2d5d9")
-    (fg2      "#c2c6cb")
+  ((fg1       "#e1e4e8")
+    (fg2      "#d1d5da")
     (fg3      "#bdc0c3")
     (fg4      "#404247")
     (fg5      "#bfcde5")
