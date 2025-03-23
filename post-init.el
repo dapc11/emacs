@@ -440,12 +440,31 @@
   (gptel-api-key "eli-1a7b5447-3c6c-48bf-a7b8-2756f81ea26d")
   :config
 
-  (setq
-    gptel-log-level 'debug
-    gptel-use-curl nil
-    gptel-backend  (gptel-make-openai "open"
-                    :host "gateway.eli.gaia.gic.ericsson.se"
-                    :endpoint "/api/openai/v1/chat/completions"
-                    :stream t
-                    :key #'gptel-api-key
-                    :models '(llama3.1-8b))))
+  ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
+
+;; Consult users will also want the embark-consult package.
+(use-package embark-consult
+  :ensure t ; only need to install it, embark loads it after consult if found
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
+
+(defun my-isearch-forward-prepopulate ()
+  "Start isearch with the active region as initial input, if any."
+  (interactive)
+  (let ((initial (if (use-region-p)
+                     (buffer-substring-no-properties (region-beginning) (region-end))
+                   "")))
+    (when (and initial (not (string= initial "")))
+      (deactivate-mark))
+    (isearch-mode t nil nil nil)
+    (when (and initial (not (string= initial "")))
+      (isearch-yank-string initial))))
+
+(global-set-key (kbd "C-s") 'my-isearch-forward-prepopulate)
+
+
+;;;post-init.el ends here

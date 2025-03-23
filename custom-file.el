@@ -6,14 +6,16 @@
  '(ag-arguments '("--smart-case" "--stats" "--vimgrep"))
  '(auto-save-visited-interval 40)
  '(compilation-error-regexp-alist
-    '(go-test ant bash python-tracebacks-and-caml comma java javac maven cucumber shellcheck))
+    '(go-test ant bash python-tracebacks-and-caml comma java javac maven
+       cucumber shellcheck))
  '(compilation-scroll-output t)
  '(custom-safe-themes t)
  '(eglot-connect-timeout nil)
  '(gnutls-algorithm-priority "normal:-vers-tls1.3")
  '(grep-command "rg --vimgrep ")
  '(grep-find-command
-    '("find . -type f -exec grep --color=auto -nH --null -e  \\{\\} +" . 54))
+    '("find . -type f -exec grep --color=auto -nH --null -e  \\{\\} +"
+       . 54))
  '(grep-find-template
     "find -H <D> <X> -type f <F> -exec grep <C> -nH --null -e <R> \\{\\} +")
  '(grep-find-use-xargs 'exec-plus)
@@ -27,15 +29,21 @@
          '(warning . python-pylint))
        (flycheck-checker . python-flake8)
        (add-hook 'python-mode-hook
-         (lambda nil
-           (setq indent-tabs-mode t)
-           (setq tab-width 4)
-           (setq python-indent-offset 4)))))
+         (lambda nil (setq indent-tabs-mode t)
+           (setq tab-width 4) (setq python-indent-offset 4)))))
  '(magit-auto-revert-mode t)
  '(mode-require-final-newline t)
  '(org-agenda-files '("~/notes/todo.md"))
  '(package-selected-packages
-    '(llm gptel transpose-frame treemacs-projectile bm git-timemachine treemacs-all-the-icons all-the-icons treemacs git-blamed rgb markdown-mode blacken python-mode eterm-256color pandoc github-dark-vscode-theme eglot-java eglot embark highlight-indentation hydra xterm-color flycheck dumb-jump rainbow-mode tabbar go-mode cape corfu embark-consult consult smartparens  json-mode k8s-mode yaml-mode lua-mode dockerfile-mode rg ripgrep exec-path-from-shell ag projectile vertico orderless multiple-cursors))
+    '(ag all-the-icons blacken bm cape consult corfu dockerfile-mode
+       dumb-jump eglot eglot-java embark embark-consult eterm-256color
+       exec-path-from-shell expand-region flycheck git-blamed
+       git-timemachine github-dark-vscode-theme go-mode gptel
+       highlight-indentation hydra json-mode k8s-mode lua-mode magit
+       markdown-mode multiple-cursors orderless pandoc projectile
+       python-mode rainbow-mode rg rgb ripgrep smartparens tabbar
+       transpose-frame treemacs treemacs-all-the-icons
+       treemacs-projectile vertico xterm-color yaml-mode))
  '(require-final-newline 'visit-save)
  '(safe-local-variable-values '((eval when (fboundp 'rainbow-mode) (rainbow-mode 1))))
  '(tabbar-separator '(0.5))
@@ -50,7 +58,8 @@
  '(use-package-always-ensure t)
  '(use-package-expand-minimally t)
  '(whitespace-style
-    '(face trailing tabs spaces missing-newline-at-eof empty indentation space-after-tab space-before-tab space-mark tab-mark))
+    '(face trailing tabs spaces missing-newline-at-eof empty indentation
+       space-after-tab space-before-tab space-mark tab-mark))
  '(window-divider-default-right-width 1))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -58,4 +67,4 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(hl-line ((t (:extend t))))
- '(window-divider ((t (:foreground "#444d56")))))
+ '(window-divider ((t (:foreground "#444d56" :box (:line-width (2 . 2) :color "#444d56" :style released-button))))))
