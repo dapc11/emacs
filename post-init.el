@@ -45,15 +45,14 @@ The region is deactivated after the selected text is grabbed."
     ;; When not in minibuffer..
     (progn
       (let* ((vertico-count 10)
-             (selected-text (when (region-active-p)
-                              (buffer-substring-no-properties
-                               (region-beginning)
-                               (region-end)))))
+              (selected-text (when (region-active-p)
+                               (buffer-substring-no-properties
+                                 (region-beginning)
+                                 (region-end)))))
         (deactivate-mark)  ;; Deactivate the region after grabbing the text
         (if selected-text
-            (consult-line selected-text) ;; Pre-populate if text is selected
-          (consult-line)))))  ;; Default behavior if no region is selected
-  )
+          (consult-line selected-text) ;; Pre-populate if text is selected
+          (consult-line))))))
 
 
 (use-package consult
@@ -101,7 +100,7 @@ The title will be injected as the first header (# Title),
 capitalized according to Chicago style, and the filename
 will be snake_case with a .md extension."
     (interactive)
-    (let* ((title (read-string "Title: "))   ;; Prompt user for the title
+    (let* ((title (read-string "Title: "))
             (chicago-title (with-temp-buffer
                              (insert title)
                              (goto-char (point-min))
@@ -209,14 +208,11 @@ Unlike `comment-dwim', this always comments whole lines."
 (global-set-key (kbd "C-/") nil)
 (global-set-key (kbd "C-/") 'dt/comment-line)
 
-;; (add-to-list 'compilation-error-regexp-alist
-;;   '("^\\([0-9.]+\\-[a-z0-9]+\\.*\\): digest: sha256:\\([a-f0-9]+\\) size: \\([0-9]+\\)$" 1 2 3))
-
 ;; Add custom regex for semantic version with hash
 (add-to-list 'compilation-error-regexp-alist-alist
-             '(custom-semver
-               "\\([0-9]+\\.[0-9]+\\.[0-9]+-[a-zA-Z0-9]+\\(?:\\.dirty\\.[a-zA-Z0-9]+\\)?\\(?:\\.[a-zA-Z0-9]+\\)?\\)"
-               1))
+  '(custom-semver
+     "\\([0-9]+\\.[0-9]+\\.[0-9]+-[a-zA-Z0-9]+\\(?:\\.dirty\\.[a-zA-Z0-9]+\\)?\\(?:\\.[a-zA-Z0-9]+\\)?\\)"
+     1))
 
 (add-to-list 'compilation-error-regexp-alist 'custom-semver)
 (setq compilation-find-file-no-prompt t) ;; Always use default without asking
@@ -278,21 +274,21 @@ Unlike `comment-dwim', this always comments whole lines."
 )
 
 (require 'dired)
-(defun my-dired-up-directory ()
+(defun dt/dired-up-directory ()
   "Go up to the parent directory in dired."
   (interactive)
   (dired-up-directory))
 
 (with-eval-after-load 'dired
-  (define-key dired-mode-map (kbd "<backspace>") 'my-dired-up-directory))
+  (define-key dired-mode-map (kbd "<backspace>") 'dt/dired-up-directory))
 
-(defun my/dired-unpack-archive-to-directory ()
+(defun dt/dired-unpack-archive-to-directory ()
   "Unpack the archive file under the cursor in dired to a hardcoded directory with a unique index and open dired there."
   (interactive)
   (let* ((file (dired-get-file-for-visit))
          (base-dir "/home/epedape/test_reports/")  ; Change this to your desired directory
-         (unique-dir (my/generate-sequential-dir-name base-dir))
-         (command (my/get-extract-command file unique-dir)))
+         (unique-dir (dt/generate-sequential-dir-name base-dir))
+         (command (dt/get-extract-command file unique-dir)))
     (if command
         (progn
           (make-directory unique-dir t)
@@ -301,7 +297,7 @@ Unlike `comment-dwim', this always comments whole lines."
           (dired unique-dir))  ; Open dired in the unpacked directory
       (message "Not a valid archive file."))))
 
-(defun my/get-extract-command (file target-dir)
+(defun dt/get-extract-command (file target-dir)
   "Return the appropriate shell command to extract FILE into TARGET-DIR based on the file extension."
   (cond
    ((string-match-p "\\.tar\\'" file)
@@ -311,9 +307,9 @@ Unlike `comment-dwim', this always comments whole lines."
     (format "tar -xzf %s -C %s" (shell-quote-argument file) (shell-quote-argument target-dir)))
    ((string-match-p "\\.zip\\'" file)
     (format "unzip %s -d %s" (shell-quote-argument file) (shell-quote-argument target-dir)))
-   (t nil)))  ; Return nil if the file type is not supported
+   (t nil)))
 
-(defun my/generate-sequential-dir-name (base-dir)
+(defun dt/generate-sequential-dir-name (base-dir)
   "Generate a sequentially numbered unique directory name under BASE-DIR."
   (let* ((existing-dirs (directory-files base-dir t "unpacked-[0-9]+"))
          (indices (mapcar (lambda (dir)
@@ -323,7 +319,7 @@ Unlike `comment-dwim', this always comments whole lines."
     (concat base-dir "unpacked-" (number-to-string (1+ max-index)))))
 
 ;; Bind the function to a key in dired mode
-(define-key dired-mode-map (kbd "U") 'my/dired-unpack-archive-to-directory)
+(define-key dired-mode-map (kbd "U") 'dt/dired-unpack-archive-to-directory)
 
 (defun close-other-buffers ()
   "Close all buffers except the current one."
@@ -341,17 +337,10 @@ Unlike `comment-dwim', this always comments whole lines."
 (defun replace-escaped-newlines-br-tags-and-url-encoded-chars ()
   "Replace escaped newlines (\\n), <br/> tags, &gt; and &lt;, and URL-encoded characters with their textual representations."
   (interactive)
-
-  ;; Replace escaped newlines (\\n) with actual newlines
   (replace-all "\\\\n" "\n")
-
-  ;; Replace <br/> or <br> tags with newlines
   (replace-all "<br\\s-*/?>" "\n")
-
   (replace-html-entities-in-buffer)
   (message "Processed newlines, <br/> tags, HTML entities, and URL-encoded characters."))
-
-;; Usage: Run with M-x replace-escaped-newlines-br-tags-and-url-encoded-chars
 
 (defun replace-html-entities-in-buffer ()
   "Replace HTML character entities in the current buffer with their corresponding characters."
@@ -363,14 +352,13 @@ Unlike `comment-dwim', this always comments whole lines."
 (defun replace-html-entities-with-characters (string)
   "Replace HTML character entities in STRING with their corresponding characters."
   (let ((entities '(("&lt;" . "<")
-                    ("&gt;" . ">")
-                    ("&amp;" . "&")
-                    ("&quot;" . "\"")
-                    ("&apos;" . "'")
+                     ("&gt;" . ">")
+                     ("&amp;" . "&")
+                     ("&quot;" . "\"")
+                     ("&apos;" . "'")
                      ("&nbsp;" . " ")
                      ("&#x27;" . "'")
-                    ;; Add more HTML entities as needed
-                    )))
+                     )))
     (dolist (pair entities string)
       (setq string (replace-regexp-in-string (car pair) (cdr pair) string)))))
 
@@ -381,7 +369,6 @@ Unlike `comment-dwim', this always comments whole lines."
       (start-process "open-chrome" nil "google-chrome" (buffer-file-name))
     (message "Buffer is not visiting a file")))
 
-
 (defun sanitize-html-report ()
   "Render ANSI color codes and replace HTML entities (&gt; and &lt;) in the current buffer."
   (interactive)
@@ -391,7 +378,18 @@ Unlike `comment-dwim', this always comments whole lines."
   (open-current-file-in-chrome)
   (message "Processed ANSI colors and sanitized report."))
 
-;; You can call this function interactively using M-x close-other-buffers
+(defun open-jira-issue ()
+  "Open the Jira issue at the cursor in the default web browser."
+  (interactive)
+  (let ((jira-base-url "https://eteamproject.internal.ericsson.com/browse/")
+        (jira-id-regex "\\bADPPRG-[0-9]+\\b"))
+    (save-excursion
+      ;; Get the entire line as a string
+      (let ((line (thing-at-point 'line t)))
+        (if (and line (string-match jira-id-regex line))
+            (let ((jira-id (match-string 0 line)))
+              (browse-url (concat jira-base-url jira-id)))
+          (message "No Jira ID found on the current line!"))))))
 
 (use-package bm
   :ensure t
@@ -400,7 +398,6 @@ Unlike `comment-dwim', this always comments whole lines."
   :init
   ;; restore on load (even before you require bm)
   (setq bm-restore-repository-on-load t)
-
 
   :config
   (setq bm-cycle-all-buffers t)
@@ -418,41 +415,5 @@ Unlike `comment-dwim', this always comments whole lines."
   :bind (("C-c ." . bm-next)
           ("C-c ," . bm-previous)
           ("C-c m" . bm-toggle)))
-
-(use-package embark
-  :ensure t
-
-  :bind
-  (("C-." . embark-act)         ;; pick some comfortable binding
-   ("C-;" . embark-dwim)        ;; good alternative: M-.
-   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
-
-  :init
-
-  ;; Optionally replace the key help with a completing-read interface
-  (setq prefix-help-command #'embark-prefix-help-command)
-
-  ;; Show the Embark target at point via Eldoc. You may adjust the
-  ;; Eldoc strategy, if you want to see the documentation from
-  ;; multiple providers. Beware that using this can be a little
-  ;; jarring since the message shown in the minibuffer can be more
-  ;; than one line, causing the modeline to move up and down:
-
-  ;; (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
-  ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
-
-  :config
-
-  ;; Hide the mode line of the Embark live/completions buffers
-  (add-to-list 'display-buffer-alist
-               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                 nil
-                 (window-parameters (mode-line-format . none)))))
-
-;; Consult users will also want the embark-consult package.
-(use-package embark-consult
-  :ensure t ; only need to install it, embark loads it after consult if found
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
 
 ;;;post-init.el ends here

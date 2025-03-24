@@ -9,10 +9,9 @@
 (setq line-spacing 0.1)
 (setq ring-bell-function 'ignore)
 (setq custom-file "~/.emacs.d/custom-file.el")
-(setq my/home-dir (getenv "HOME"))
+(setq dt/home-dir (getenv "HOME"))
 (setopt use-short-answers t)
 ;; (setq debug-on-error t)
-
 
 (defvar dt/user-directory user-emacs-directory
   "The default value of the `user-emacs-directory' variable.")
@@ -25,7 +24,21 @@
     (when (file-exists-p user-init-file)
       (load user-init-file nil t))))
 
-(set-frame-font "Fira Code" nil)
+(defun dt/set-font-based-on-dpi ()
+  "Set font based on screen DPI (HiDPI vs standard)."
+  (let ((font-name "Fira Code")
+         (hidpi-font-size 16)          ;; Font size for HiDPI screens
+        (standard-font-size 14)        ;; Font size for standard DPI screens
+        (dpi-threshold 100))           ;; DPI threshold for HiDPI
+    (let* ((dpi (/ (display-pixel-width) (/ (display-mm-width) 25.4))) ;; Calculate DPI
+           (font-size (if (> dpi dpi-threshold)
+                          hidpi-font-size
+                        standard-font-size)))
+      (if (member font-name (font-family-list))
+          (set-face-attribute 'default nil :font (format "%s-%d" font-name font-size))
+        (message "Font %s is not available on this system" font-name)))))
+(dt/set-font-based-on-dpi)
+
 (tool-bar-mode 0)
 (show-paren-mode 1)
 (menu-bar-mode 0)
@@ -260,23 +273,23 @@ Deactivate the mark after starting the search."
 
 ;; JAVA START
 
-(defvar my/local-dir (concat user-emacs-directory ".local/") "Local state directory")
-(defvar lsp-java-workspace-dir (expand-file-name "lsp/workspace/data" my/local-dir) "LSP data directory for Java")
-(defvar java-home (format "%s/.sdkman/candidates/java/current" my/home-dir) "The home dir of the jdk")
+(defvar dt/local-dir (concat user-emacs-directory ".local/") "Local state directory")
+(defvar lsp-java-workspace-dir (expand-file-name "lsp/workspace/data" dt/local-dir) "LSP data directory for Java")
+(defvar java-home (format "%s/.sdkman/candidates/java/current" dt/home-dir) "The home dir of the jdk")
 (defvar java-bin (format "%s/bin/java" java-home) "The path to the java binary")
 (defvar jdtls-home "/opt/eclipse.jdt.ls" "The path to eclipse.jdt.ls installation")
 (defvar jdtls-config (format "%s/config_linux" jdtls-home) "The path to eclipse.jdt.ls installation")
 
-(defun my/jdtls-start-command (arg)
+(defun dt/jdtls-start-command (arg)
   "Creates the command to start jdtls"
   (let ((jdtls-jar (replace-regexp-in-string "\n\\'" "" (shell-command-to-string (format "find %s/plugins -iname '*launcher_*.jar'" jdtls-home)) "The jar file that starts jdtls")))
-    `(,java-bin "-jar" ,jdtls-jar "-data" ,(format "%s/.cache/lsp/project/%s" my/home-dir (project-name (project-current))) "-configuration" ,jdtls-config
+    `(,java-bin "-jar" ,jdtls-jar "-data" ,(format "%s/.cache/lsp/project/%s" dt/home-dir (project-name (project-current))) "-configuration" ,jdtls-config
        "--add-modules=ALL-SYSTEM"
        "--add-opens java.base/java.util=ALL-UNNAMED"
        "--add-opens java.base/java.lang=ALL-UNNAMED"
        "-XX:+UseAdaptiveSizePolicy" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Xmx8G" "-Xms2G" "-Xverify:none")))
 
-(defun my/java-setup-project-workspace ()
+(defun dt/java-setup-project-workspace ()
   "Setup a local java workspace for the current project."
   (interactive)
   (let* ((project-root (project-root (project-current)))
@@ -295,7 +308,7 @@ Deactivate the mark after starting the search."
       (insert (format "%s\n" (pp-to-string content)))
       (write-file file-path))))
 
-(defun my/java-clear-project-workspace ()
+(defun dt/java-clear-project-workspace ()
   "Setup a local java workspace for the current project."
   (interactive)
   (let ((directory lsp-java-workspace-dir))
@@ -318,9 +331,9 @@ Deactivate the mark after starting the search."
 (use-package eglot-java
   :custom
   (eglot-java-eclipse-jdt-ls-download-url "https://www.eclipse.org/downloads/download.php?file=/jdtls/milestones/1.37.0/jdt-language-server-1.37.0-202406271335.tar.gz")
-  (eglot-java-server-install-dir (file-name-concat my/local-dir "lsp" "eclipse.jdt.ls"))
+  (eglot-java-server-install-dir (file-name-concat dt/local-dir "lsp" "eclipse.jdt.ls"))
   (eglot-java-eclipse-jdt-args '("-XX:+UseAdaptiveSizePolicy" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Xmx8G" "-Xms2G"))
-  (eglot-java-eclipse-jdt-data-root-dir (file-name-concat my/local-dir "lsp" "eclipse.jdt.ls" "data"))
+  (eglot-java-eclipse-jdt-data-root-dir (file-name-concat dt/local-dir "lsp" "eclipse.jdt.ls" "data"))
   :init
 
   (defun jdtls-initialization-options ()
@@ -406,6 +419,35 @@ Deactivate the mark after starting the search."
           (lambda ()
             (when (string= (file-name-extension buffer-file-name) "el")
               (byte-compile-file buffer-file-name))))
+
+(defun dt/guess-indent-width ()
+  "Guess the indentation width by analyzing the current buffer."
+  (or (and (boundp 'tab-width) tab-width) ; Use `tab-width` if set.
+      4)) ; Default to 4 spaces if `tab-width` is unavailable.
+
+(defun dt/deindent-line-or-region ()
+  "De-indent the current line or the active region based on current file's indentation width."
+  (interactive)
+  (let ((indent-width (dt/guess-indent-width))) ; Get the current file's indentation width.
+    (if (use-region-p)
+        ;; If a region is active, de-indent the entire region.
+        (let ((deactivate-mark nil)) ; Preserve the region after de-indenting.
+          (indent-rigidly (region-beginning) (region-end) (- indent-width)))
+      ;; If no region is active, de-indent the current line.
+      (let ((current-indentation (current-indentation)))
+        (if (> current-indentation 0)
+            (indent-line-to (max 0 (- current-indentation indent-width))))))))
+
+;; Bind the function to Shift-Tab.
+(global-set-key (kbd "<backtab>") #'dt/deindent-line-or-region)
+
+(add-to-list 'default-frame-alist '(undecorated . t))
+
+(use-package treesit-auto
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (global-treesit-auto-mode))
 
 ;; Load post-init.el
 (dt/load-user-init "post-init.el")

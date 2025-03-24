@@ -35,7 +35,7 @@
  '(mode-require-final-newline t)
  '(org-agenda-files '("~/notes/todo.md"))
  '(package-selected-packages
-    '(transpose-frame treemacs-projectile bm git-timemachine treemacs-all-the-icons all-the-icons treemacs git-blamed rgb markdown-mode blacken python-mode eterm-256color pandoc github-dark-vscode-theme eglot-java eglot embark highlight-indentation hydra xterm-color flycheck dumb-jump rainbow-mode tabbar go-mode cape corfu embark-consult consult smartparens expand-region json-mode k8s-mode yaml-mode lua-mode dockerfile-mode rg ripgrep exec-path-from-shell ag projectile magit vertico orderless multiple-cursors))
+    '(treesit-auto treesit transpose-frame treemacs-projectile bm git-timemachine treemacs-all-the-icons all-the-icons treemacs git-blamed rgb markdown-mode blacken python-mode eterm-256color pandoc github-dark-vscode-theme eglot-java eglot embark highlight-indentation hydra xterm-color flycheck dumb-jump rainbow-mode tabbar go-mode cape corfu embark-consult consult smartparens expand-region json-mode k8s-mode yaml-mode lua-mode dockerfile-mode rg ripgrep exec-path-from-shell ag projectile magit vertico orderless multiple-cursors))
  '(require-final-newline 'visit-save)
  '(safe-local-variable-values '((eval when (fboundp 'rainbow-mode) (rainbow-mode 1))))
  '(tabbar-separator '(0.5))
