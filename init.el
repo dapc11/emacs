@@ -1,15 +1,17 @@
+;;; init.el --- init file -*- lexical-binding: t; -*-
 (setq inhibit-startup-message t)
 (setq lisp-indent-offset 2)
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
-(setq c-basic-offset 4)
-(setq c-basic-indent 4)
+(setq-default c-basic-offset 4)
+(setq-default c-basic-indent 4)
 (setq column-number-mode t)
 (setq backup-directory-alist '(("." . "~/.emacsbackup")))
 (setq line-spacing 0.1)
 (setq ring-bell-function 'ignore)
 (setq custom-file "~/.emacs.d/custom-file.el")
-(setq dt/home-dir (getenv "HOME"))
+(defconst dt/home-dir (expand-file-name "~/")
+  "User's home directory.")
 (setopt use-short-answers t)
 ;; (setq debug-on-error t)
 
@@ -54,8 +56,9 @@
 (load-file custom-file)
 
 (require 'package)
-(add-to-list 'package-archives '("gnu"   . "https://elpa.gnu.org/packages/"))
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(setq package-archives
+      '(("gnu"   . "https://elpa.gnu.org/packages/")
+        ("melpa" . "https://melpa.org/packages/")))
 (package-initialize)
 
 (unless (package-installed-p 'use-package)
@@ -205,23 +208,28 @@ Deactivate the mark after starting the search."
 (global-set-key (kbd "M-v") 'scroll-half-page-down)
 
 (use-package projectile
+  :ensure t
   :init
-  (projectile-mode)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  (add-to-list 'projectile-globally-ignored-directories "^bob$")
-  (add-to-list 'projectile-globally-ignored-directories "^batteries$")
-  (add-to-list 'projectile-globally-ignored-directories "^\\.bob$")
-  (add-to-list 'projectile-globally-ignored-directories "^automation$")
-  (add-to-list 'projectile-globally-ignored-directories "^httpprobe$")
-  (add-to-list 'projectile-globally-ignored-directories "^__pycache__$")
-  (add-to-list 'projectile-globally-ignored-directories "^vendor$")
-  (add-to-list 'projectile-globally-ignored-directories "^target$")
+  (projectile-mode +1)
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
 
-  :config
-  (setq
-    projectile-indexing-method 'native
-    projectile-completion-system 'auto
-    projectile-project-search-path '(("~/repos" . 1))))
+  :custom
+  (projectile-indexing-method 'native)
+  (projectile-completion-system 'auto)
+  (projectile-generic-command "fd . --type f --color=never")
+  (projectile-enable-caching t)
+  (projectile-project-search-path '(("~/repos" . 1)))
+  (projectile-globally-ignored-directories
+   '("bob"
+     "batteries"
+     ".bob"
+     "automation"
+     "httpprobe"
+     "__pycache__"
+     "vendor"
+     "target")))
+
 
 (use-package go-mode)
 (use-package python-mode)
@@ -258,15 +266,17 @@ Deactivate the mark after starting the search."
 ;;           ("C-c c e" . eglot-code-action-extract)
 ;;           ("C-c c i" . eglot-code-action-inline)))
 
-(add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
-(add-to-list 'auto-mode-alist '("\\.el\\'" . emacs-lisp-mode))
-(add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
-(add-to-list 'auto-mode-alist '("\\.java\\'" . java-mode))
-(add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-(add-to-list 'auto-mode-alist '("\\.sh\\'" . bash-mode))
-(add-to-list 'auto-mode-alist '("\\.tpl\\'" . k8s-mode))
-(add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-ts-mode))
-(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-ts-mode))
+(dolist (mode-spec
+         '(("Dockerfile\\'"      . dockerfile-mode)
+           ("\\.el\\'"           . emacs-lisp-mode)
+           ("\\.go\\'"           . go-mode)
+           ("\\.java\\'"         . java-mode)
+           ("\\.py\\'"           . python-mode)
+           ("\\.sh\\'"           . bash-mode)
+           ("\\.tpl\\'"          . k8s-mode)
+           ("\\.yaml\\'"         . yaml-ts-mode)
+           ("\\.yml\\'"          . yaml-ts-mode)))
+  (add-to-list 'auto-mode-alist mode-spec))
 
 ;; JAVA START
 
@@ -379,15 +389,15 @@ Deactivate the mark after starting the search."
   (add-to-list 'write-file-functions 'delete-trailing-whitespace))
 
 (add-hook 'compilation-filter-hook 'dt/apply-ansi-colors)
-(add-hook 'html-mode-hook 'dt/apply-ansi-colors)
-(add-hook 'emacs-lisp-mode-hook 'dt/set-up-whitespace-handling)
-(add-hook 'git-commit-setup-hook 'dt/set-up-whitespace-handling)
-(add-hook 'go-mode-hook 'dt/set-up-whitespace-handling)
-(add-hook 'java-mode-hook 'dt/set-up-whitespace-handling)
-(add-hook 'json-mode-hook 'dt/set-up-whitespace-handling)
-(add-hook 'lua-mode-hook 'dt/set-up-whitespace-handling)
-(add-hook 'python-mode-hook 'dt/set-up-whitespace-handling)
-(add-hook 'yaml-mode-hook 'dt/set-up-whitespace-handling)
+(add-hook 'html-mode-hook          'dt/apply-ansi-colors)
+(add-hook 'emacs-lisp-mode-hook    'dt/set-up-whitespace-handling)
+(add-hook 'git-commit-setup-hook   'dt/set-up-whitespace-handling)
+(add-hook 'go-mode-hook            'dt/set-up-whitespace-handling)
+(add-hook 'java-mode-hook          'dt/set-up-whitespace-handling)
+(add-hook 'json-mode-hook          'dt/set-up-whitespace-handling)
+(add-hook 'lua-mode-hook           'dt/set-up-whitespace-handling)
+(add-hook 'python-mode-hook        'dt/set-up-whitespace-handling)
+(add-hook 'yaml-mode-hook          'dt/set-up-whitespace-handling)
 
 (setq org-todo-keywords
   '((sequence "TODO" "ONGOING" "TESTING" "IN REVIEW" "ON HOLD" "DONE" "ABANDONED")))
