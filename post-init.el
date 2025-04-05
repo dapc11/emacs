@@ -1,3 +1,5 @@
+;;; post-init.el --- Post init file -*- lexical-binding: t; -*-
+
 ;; Auto-revert in Emacs is a feature that automatically updates the
 ;; contents of a buffer to reflect changes made to the underlying file
 ;; on disk.
@@ -24,36 +26,34 @@
   (vertico-mode))
 
 (use-package orderless
+  :ensure t
   :custom
-  (completion-styles '(orderless basic))
-  (completion-category-defaults nil)
-  (completion-category-overrides '((file (styles partial-completion)))))
+  (completion-styles '(orderless basic))  ;; use orderless as the main style
+  (completion-category-defaults nil)      ;; disable all default category overrides
+  (completion-category-overrides
+   '((file (styles partial-completion))))) ;; use partial-completion for file paths
 
 (defun dt/consult-line ()
-  "Search for a line using `consult-line`.
-
-If the function is called within the minibuffer, it moves to the next candidate
-in the `vertico` completion menu using `vertico-next`.
-
-Region will pre the prepopulated input if active.
-The region is deactivated after the selected text is grabbed."
+  "Enhanced `consult-line`:
+- If called from the minibuffer, move to next Vertico candidate.
+- If region is active, use it as the initial input.
+- Deactivates region after selection."
   (interactive)
   (if (minibufferp)
-      ;; When in minibuffer..
-      (progn
-        (vertico-next))
-    ;; When not in minibuffer..
-    (progn
-      (let* ((vertico-count 10)
-              (selected-text (when (region-active-p)
-                               (buffer-substring-no-properties
-                                 (region-beginning)
-                                 (region-end)))))
-        (deactivate-mark)  ;; Deactivate the region after grabbing the text
-        (if selected-text
-          (consult-line selected-text) ;; Pre-populate if text is selected
-          (consult-line))))))
+      (vertico-next)
+    (let* ((vertico-count 10)
+           (selected-text (when (use-region-p)
+                            (buffer-substring-no-properties
+                             (region-beginning)
+                             (region-end)))))
+      (when selected-text
+        (deactivate-mark))
+      (consult-line selected-text))))
 
+(defun dt/consult-project-ripgrep ()
+  "Run `consult-ripgrep` in the current project."
+  (interactive)
+  (consult-ripgrep (project-root (project-current t))))
 
 (use-package consult
   :bind (
@@ -66,7 +66,7 @@ The region is deactivated after the selected text is grabbed."
           ("M-g i" . consult-imenu)
           ("C-c l" . consult-goto-line)
           ("C-c r" . consult-recent-file)
-          ("C-S-f" . ag-project)
+          ("C-S-f" . dt/consult-project-ripgrep)
           ("C-c N" . consult-fd)
           ("C-c z b" . dt/fd-notes)
           ("C-c z f" . dt/rg-notes)
@@ -95,24 +95,21 @@ The region is deactivated after the selected text is grabbed."
     (interactive)
     (consult-ripgrep "~/notes"))
   (defun dt/new-note ()
-    "Create a new markdown file in ~/notes with a title.
-The title will be injected as the first header (# Title),
-capitalized according to Chicago style, and the filename
-will be snake_case with a .md extension."
-    (interactive)
-    (let* ((title (read-string "Title: "))
-            (chicago-title (with-temp-buffer
-                             (insert title)
-                             (goto-char (point-min))
-                             (capitalize-region (point-min) (point-max))
-                             (string-trim (buffer-string))))  ;; Chicago-style capitalization
-            (filename (concat "~/notes/"
-                        (replace-regexp-in-string " " "_" (downcase title)) ".md"))) ;; Create snake_case filename
-      ;; Create new file with title as the first header
-      (find-file filename)
-      (insert (concat "# " chicago-title "\n\n")) ;; Insert title as header
-      (save-buffer)
-      (message "Markdown file created: %s" filename)))
+  "Create a new markdown note in ~/notes with a title.
+- Title becomes the first-level header.
+- Filename is snake_case.
+- Ensures the notes directory exists."
+  (interactive)
+  (let* ((title (read-string "Title: "))
+         (title-cap (capitalize title))
+         (filename (concat (expand-file-name "~/notes/")
+                           (replace-regexp-in-string " " "_" (downcase title)) ".md")))
+    (make-directory (file-name-directory filename) :parents)
+    (find-file filename)
+    (when (= (point-max) (point-min)) ;; Only insert if file is new/empty
+      (insert (concat "# " title-cap "\n\n"))
+      (save-buffer))
+    (message "Markdown note created: %s" filename)))
 
   (consult-customize
     consult-ripgrep consult-git-grep consult-grep
@@ -175,35 +172,39 @@ will be snake_case with a .md extension."
   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
 (defun dt/comment-line (n)
-  "Comment or uncomment current line and leave point after it.
-With positive prefix, apply to N lines including current one.
-With negative prefix, apply to -N lines above. Also, further
-consecutive invocations of this command will inherit the negative
-argument.
+  "Comment or uncomment line(s) in a consistent way.
 
-If region is active, comment lines in active region instead.
-Unlike `comment-dwim', this always comments whole lines."
+- With active region: comment or uncomment all lines in the region.
+- With prefix arg N:
+  - Positive N: apply to current line and N-1 lines downward.
+  - Negative N: apply to current line and -N-1 lines upward.
+  - Repeated invocations inherit negative prefix.
+- Keeps point at the end of the last affected line.
+- Always comments whole lines (not partial)."
   (interactive "p")
   (if (use-region-p)
-      (progn
-        (comment-or-uncomment-region
-         (save-excursion
-           (goto-char (region-beginning))
-           (line-beginning-position))
-         (save-excursion
-           (goto-char (region-end))
-           (line-end-position)))
-        (setq deactivate-mark nil))  ;; Keep region active after commenting
+      (let ((start (save-excursion
+                     (goto-char (region-beginning))
+                     (line-beginning-position)))
+            (end (save-excursion
+                   (goto-char (region-end))
+                   (line-end-position))))
+        (comment-or-uncomment-region start end)
+        (setq deactivate-mark nil)) ;; keep region active
+    ;; Handle negative prefix logic
     (when (and (eq last-command 'comment-line-backward)
                (natnump n))
       (setq n (- n)))
-    (let ((range
-           (list (line-beginning-position)
-                 (goto-char (line-end-position n)))))
-      (comment-or-uncomment-region
-       (apply #'min range)
-       (apply #'max range)))
-    (unless (natnump n) (setq this-command 'comment-line-backward))))
+    (let* ((start (line-beginning-position))
+           (end (save-excursion
+                  (forward-line (1- n))
+                  (line-end-position))))
+      (comment-or-uncomment-region (min start end) (max start end))
+      (goto-char (line-end-position)))
+    ;; Set command to inherit negative motion
+    (unless (natnump n)
+      (setq this-command 'comment-line-backward))))
+
 
 (global-set-key (kbd "C-/") nil)
 (global-set-key (kbd "C-/") 'dt/comment-line)
@@ -381,7 +382,7 @@ Unlike `comment-dwim', this always comments whole lines."
 (defun open-jira-issue ()
   "Open the Jira issue at the cursor in the default web browser."
   (interactive)
-  (let ((jira-base-url "https://eteamproject.internal.ericsson.com/browse/")
+  (let ((jira-base-url "https://eteamproject-alpha.internal.ericsson.com/browse/")
         (jira-id-regex "\\bADPPRG-[0-9]+\\b"))
     (save-excursion
       ;; Get the entire line as a string
@@ -396,24 +397,55 @@ Unlike `comment-dwim', this always comments whole lines."
   :demand t
 
   :init
-  ;; restore on load (even before you require bm)
-  (setq bm-restore-repository-on-load t)
+  (setq bm-restore-repository-on-load t
+        bm-cycle-all-buffers t
+        bm-repository-file (expand-file-name "bm-repository" user-emacs-directory)
+        bm-buffer-persistence t)
 
   :config
-  (setq bm-cycle-all-buffers t)
-  (setq bm-repository-file "~/.emacs.d/bm-repository")
-  (setq-default bm-buffer-persistence t)
-  (add-hook 'after-init-hook 'bm-repository-load)
-  (add-hook 'kill-buffer-hook #'bm-buffer-save)
-  (add-hook 'kill-emacs-hook #'(lambda nil
-                                 (bm-buffer-save-all)
-                                 (bm-repository-save)))
-  (add-hook 'after-save-hook #'bm-buffer-save)
-  (add-hook 'find-file-hook   #'bm-buffer-restore)
-  (add-hook 'after-revert-hook #'bm-buffer-restore)
-  (add-hook 'vc-before-checkin-hook #'bm-buffer-save)
-  :bind (("C-c ." . bm-next)
-          ("C-c ," . bm-previous)
-          ("C-c m" . bm-toggle)))
+  ;; Restore bookmarks after init
+  (add-hook 'after-init-hook #'bm-repository-load)
 
-;;;post-init.el ends here
+  ;; Save bookmarks at appropriate lifecycle points
+  (add-hook 'kill-buffer-hook     #'bm-buffer-save)
+  (add-hook 'after-save-hook      #'bm-buffer-save)
+  (add-hook 'after-revert-hook    #'bm-buffer-restore)
+  (add-hook 'find-file-hook       #'bm-buffer-restore)
+  (add-hook 'vc-before-checkin-hook #'bm-buffer-save)
+  (add-hook 'kill-emacs-hook
+            (lambda ()
+              (bm-buffer-save-all)
+              (bm-repository-save)))
+
+  :bind (("C-c ." . bm-next)
+         ("C-c ," . bm-previous)
+         ("C-c m" . bm-toggle)))
+
+
+(defmacro gptel--json-read ()
+  (if (fboundp 'json-parse-buffer)
+      `(json-parse-buffer
+        :object-type 'plist
+        :null-object nil
+        :false-object :json-false)
+    `(progn
+      (require 'json)
+      (defvar json-object-type)
+      (declare-function json-read "json" ())
+      (let ((json-object-type 'plist))
+        (json-read)))))
+
+(use-package gptel
+  :custom
+  (gptel-api-key "eli-1a7b5447-3c6c-48bf-a7b8-2756f81ea26d")
+  :config
+
+  (setq
+    gptel-log-level 'debug
+    gptel-use-curl nil
+    gptel-backend  (gptel-make-openai "open"
+                    :host "gateway.eli.gaia.gic.ericsson.se"
+                    :endpoint "/api/openai/v1/chat/completions"
+                    :stream t
+                    :key #'gptel-api-key
+                    :models '(llama3.1-8b))))

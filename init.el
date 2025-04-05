@@ -39,6 +39,8 @@
         (message "Font %s is not available on this system" font-name)))))
 (dt/set-font-based-on-dpi)
 
+(which-key-mode 1)
+(global-font-lock-mode 1)
 (tool-bar-mode 0)
 (show-paren-mode 1)
 (menu-bar-mode 0)
@@ -75,11 +77,11 @@
   :bind (
           ("M-<right>". mc/mark-next-like-this)
           ("M-<left>" . mc/mark-previous-like-this)))
-
 (use-package magit
-  :ensure t
+  :defer t
   :bind (("C-c g" . magit-status))
-  :custom
+  :commands (magit-status)
+    :custom
   (ediff-diff-options "")
   (ediff-custom-diff-options "-u")
   (ediff-window-setup-function 'ediff-setup-windows-plain)
@@ -90,8 +92,7 @@
   (add-hook 'after-save-hook 'magit-after-save-refresh-status t)
   (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
   (setq magit-blame-echo-style 'headings)
-  (add-to-list 'git-commit-finish-query-functions
-    #'dt/git-commit-check-style-conventions))
+  (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1))
 
 (use-package git-commit
   :ensure nil
@@ -221,10 +222,6 @@ Deactivate the mark after starting the search."
     projectile-indexing-method 'native
     projectile-completion-system 'auto
     projectile-project-search-path '(("~/repos" . 1))))
-
-(defadvice align-regexp (around align-regexp-with-spaces activate)
-  (let ((indent-tabs-mode nil))
-    ad-do-it))
 
 (use-package go-mode)
 (use-package python-mode)
@@ -442,12 +439,6 @@ Deactivate the mark after starting the search."
 (global-set-key (kbd "<backtab>") #'dt/deindent-line-or-region)
 
 (add-to-list 'default-frame-alist '(undecorated . t))
-
-(use-package treesit-auto
-  :custom
-  (treesit-auto-install 'prompt)
-  :config
-  (global-treesit-auto-mode))
 
 ;; Load post-init.el
 (dt/load-user-init "post-init.el")
