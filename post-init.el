@@ -452,6 +452,24 @@
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
+(defun cc/--next-sexp-raw ()
+  "Raw implementation to move point to the beginning of the next sexp.
+
+This function has no error checking."
+  (forward-sexp 2)
+  (backward-sexp))
+
+(defun cc/next-sexp ()
+  "Move point to beginning of the next balanced expression (sexp)."
+  (interactive)
+  (condition-case nil
+      (cc/--next-sexp-raw)
+    (error (condition-case nil
+               (forward-sexp)
+             (error
+              (message
+               "Unable to move point to next balanced expression (sexp)."))))))
+
 (defun my-isearch-forward-prepopulate ()
   "Start isearch with the active region as initial input, if any."
   (interactive)
