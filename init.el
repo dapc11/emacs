@@ -30,14 +30,14 @@
   "Set font based on screen DPI (HiDPI vs standard)."
   (let ((font-name "Jetbrains Mono")
          (hidpi-font-size 16)          ;; Font size for HiDPI screens
-        (standard-font-size 15)        ;; Font size for standard DPI screens
-        (dpi-threshold 100))           ;; DPI threshold for HiDPI
+         (standard-font-size 15)        ;; Font size for standard DPI screens
+         (dpi-threshold 100))           ;; DPI threshold for HiDPI
     (let* ((dpi (/ (display-pixel-width) (/ (display-mm-width) 25.4))) ;; Calculate DPI
-           (font-size (if (> dpi dpi-threshold)
-                          hidpi-font-size
-                        standard-font-size)))
+            (font-size (if (> dpi dpi-threshold)
+                         hidpi-font-size
+                         standard-font-size)))
       (if (member font-name (font-family-list))
-          (set-face-attribute 'default nil :font (format "%s-%d" font-name font-size))
+        (set-face-attribute 'default nil :font (format "%s-%d" font-name font-size))
         (message "Font %s is not available on this system" font-name)))))
 (dt/set-font-based-on-dpi)
 
@@ -57,8 +57,8 @@
 
 (require 'package)
 (setq package-archives
-      '(("gnu"   . "https://elpa.gnu.org/packages/")
-        ("melpa" . "https://melpa.org/packages/")))
+  '(("gnu"   . "https://elpa.gnu.org/packages/")
+     ("melpa" . "https://melpa.org/packages/")))
 (package-initialize)
 
 (unless (package-installed-p 'use-package)
@@ -84,7 +84,7 @@
   :defer t
   :bind (("C-c g" . magit-status))
   :commands (magit-status)
-    :custom
+  :custom
   (ediff-diff-options "")
   (ediff-custom-diff-options "-u")
   (ediff-window-setup-function 'ediff-setup-windows-plain)
@@ -129,19 +129,19 @@
   "Invoke `next-error`, falling back to `flymake-goto-next-error` if no errors."
   (interactive)
   (condition-case nil
-      (next-error)
+    (next-error)
     (error
-     (when (bound-and-true-p flymake-mode)
-       (flymake-goto-next-error)))))
+      (when (bound-and-true-p flymake-mode)
+        (flymake-goto-next-error)))))
 
 (defun my-previous-error-or-flymake-prev ()
   "Invoke `previous-error`, falling back to `flymake-goto-prev-error` if no errors."
   (interactive)
   (condition-case nil
-      (previous-error)
+    (previous-error)
     (error
-     (when (bound-and-true-p flymake-mode)
-       (flymake-goto-prev-error)))))
+      (when (bound-and-true-p flymake-mode)
+        (flymake-goto-prev-error)))))
 
 (global-set-key (kbd "C-S-j") 'join-line-above)
 (global-set-key (kbd "<mouse-4>") 'previous-line)
@@ -170,27 +170,27 @@
 (global-set-key (kbd "M-e") 'treemacs)
 
 (setq magit-blame-styles
-           '((margin
-              (margin-format " %s%f" " %C %a" " %H")
-              (margin-width . 42)
-              (margin-face . magit-blame-margin)
-              (margin-body-face magit-blame-dimmed))))
+  '((margin
+      (margin-format " %s%f" " %C %a" " %H")
+      (margin-width . 42)
+      (margin-face . magit-blame-margin)
+      (margin-body-face magit-blame-dimmed))))
 
 (defun isearch-forward-at-point-or-region ()
   "Start isearch forward with the selected region, or the word under the cursor if no region is selected.
 Deactivate the mark after starting the search."
   (interactive)
   (let ((search-string
-         (if (use-region-p)
-             (progn
-               (let ((region (buffer-substring-no-properties (region-beginning) (region-end))))
-                 (deactivate-mark)
-                 region))
-           (thing-at-point 'word t))))
+          (if (use-region-p)
+            (progn
+              (let ((region (buffer-substring-no-properties (region-beginning) (region-end))))
+                (deactivate-mark)
+                region))
+            (thing-at-point 'word t))))
     (if search-string
-        (progn
-          (isearch-forward nil t)
-          (isearch-yank-string search-string))
+      (progn
+        (isearch-forward nil t)
+        (isearch-yank-string search-string))
       (isearch-forward nil t))))
 
 (global-set-key (kbd "C-S-s") 'isearch-forward-at-point-or-region)
@@ -221,14 +221,14 @@ Deactivate the mark after starting the search."
   (projectile-enable-caching t)
   (projectile-project-search-path '(("~/repos" . 1)))
   (projectile-globally-ignored-directories
-   '("bob"
-     "batteries"
-     ".bob"
-     "automation"
-     "httpprobe"
-     "__pycache__"
-     "vendor"
-     "target")))
+    '("bob"
+       "batteries"
+       ".bob"
+       "automation"
+       "httpprobe"
+       "__pycache__"
+       "vendor"
+       "target")))
 
 
 (use-package go-mode)
@@ -267,15 +267,15 @@ Deactivate the mark after starting the search."
 ;;           ("C-c c i" . eglot-code-action-inline)))
 
 (dolist (mode-spec
-         '(("Dockerfile\\'"      . dockerfile-mode)
-           ("\\.el\\'"           . emacs-lisp-mode)
-           ("\\.go\\'"           . go-mode)
-           ("\\.java\\'"         . java-mode)
-           ("\\.py\\'"           . python-mode)
-           ("\\.sh\\'"           . bash-mode)
-           ("\\.tpl\\'"          . k8s-mode)
-           ("\\.yaml\\'"         . yaml-ts-mode)
-           ("\\.yml\\'"          . yaml-ts-mode)))
+          '(("Dockerfile\\'"      . dockerfile-mode)
+             ("\\.el\\'"           . emacs-lisp-mode)
+             ("\\.go\\'"           . go-mode)
+             ("\\.java\\'"         . java-mode)
+             ("\\.py\\'"           . python-mode)
+             ("\\.sh\\'"           . bash-mode)
+             ("\\.tpl\\'"          . k8s-mode)
+             ("\\.yaml\\'"         . yaml-ts-mode)
+             ("\\.yml\\'"          . yaml-ts-mode)))
   (add-to-list 'auto-mode-alist mode-spec))
 
 ;; JAVA START
@@ -379,15 +379,15 @@ Deactivate the mark after starting the search."
   :init
   (setq exec-path-from-shell-shell-name "/bin/zsh")
   (exec-path-from-shell-copy-envs
-   '("PYTHONDONTWRITEBYTECODE"
-     "PATH"
-     "SONARQUBE_TOKEN_CODEANALYZER"
-     "JAVA_HOME"
-     "M2_HOME"
-     "M2"
-     "MAVEN_OPTS"
-     "GOPRIVATE"
-     "GOPROXY"))
+    '("PYTHONDONTWRITEBYTECODE"
+       "PATH"
+       "SONARQUBE_TOKEN_CODEANALYZER"
+       "JAVA_HOME"
+       "M2_HOME"
+       "M2"
+       "MAVEN_OPTS"
+       "GOPRIVATE"
+       "GOPROXY"))
   :config
   ;; Ensure environment is loaded on GUI and daemon sessions
   (when (or (daemonp) (display-graphic-p))
@@ -435,27 +435,27 @@ Deactivate the mark after starting the search."
 (global-set-key (kbd "C--") 'my-decrease-font-size)
 
 (add-hook 'after-save-hook
-          (lambda ()
-            (when (string= (file-name-extension buffer-file-name) "el")
-              (byte-compile-file buffer-file-name))))
+  (lambda ()
+    (when (string= (file-name-extension buffer-file-name) "el")
+      (byte-compile-file buffer-file-name))))
 
 (defun dt/guess-indent-width ()
   "Guess the indentation width by analyzing the current buffer."
   (or (and (boundp 'tab-width) tab-width) ; Use `tab-width` if set.
-      4)) ; Default to 4 spaces if `tab-width` is unavailable.
+    4)) ; Default to 4 spaces if `tab-width` is unavailable.
 
 (defun dt/deindent-line-or-region ()
   "De-indent the current line or the active region based on current file's indentation width."
   (interactive)
   (let ((indent-width (dt/guess-indent-width))) ; Get the current file's indentation width.
     (if (use-region-p)
-        ;; If a region is active, de-indent the entire region.
-        (let ((deactivate-mark nil)) ; Preserve the region after de-indenting.
-          (indent-rigidly (region-beginning) (region-end) (- indent-width)))
+      ;; If a region is active, de-indent the entire region.
+      (let ((deactivate-mark nil)) ; Preserve the region after de-indenting.
+        (indent-rigidly (region-beginning) (region-end) (- indent-width)))
       ;; If no region is active, de-indent the current line.
       (let ((current-indentation (current-indentation)))
         (if (> current-indentation 0)
-            (indent-line-to (max 0 (- current-indentation indent-width))))))))
+          (indent-line-to (max 0 (- current-indentation indent-width))))))))
 
 ;; Bind the function to Shift-Tab.
 (global-set-key (kbd "<backtab>") #'dt/deindent-line-or-region)

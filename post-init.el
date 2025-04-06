@@ -31,7 +31,7 @@
   (completion-styles '(orderless basic))  ;; use orderless as the main style
   (completion-category-defaults nil)      ;; disable all default category overrides
   (completion-category-overrides
-   '((file (styles partial-completion))))) ;; use partial-completion for file paths
+    '((file (styles partial-completion))))) ;; use partial-completion for file paths
 
 (defun dt/consult-line ()
   "Enhanced `consult-line`:
@@ -40,12 +40,12 @@
 - Deactivates region after selection."
   (interactive)
   (if (minibufferp)
-      (vertico-next)
+    (vertico-next)
     (let* ((vertico-count 10)
-           (selected-text (when (use-region-p)
-                            (buffer-substring-no-properties
-                             (region-beginning)
-                             (region-end)))))
+            (selected-text (when (use-region-p)
+                             (buffer-substring-no-properties
+                               (region-beginning)
+                               (region-end)))))
       (when selected-text
         (deactivate-mark))
       (consult-line selected-text))))
@@ -95,21 +95,21 @@
     (interactive)
     (consult-ripgrep "~/notes"))
   (defun dt/new-note ()
-  "Create a new markdown note in ~/notes with a title.
+    "Create a new markdown note in ~/notes with a title.
 - Title becomes the first-level header.
 - Filename is snake_case.
 - Ensures the notes directory exists."
-  (interactive)
-  (let* ((title (read-string "Title: "))
-         (title-cap (capitalize title))
-         (filename (concat (expand-file-name "~/notes/")
-                           (replace-regexp-in-string " " "_" (downcase title)) ".md")))
-    (make-directory (file-name-directory filename) :parents)
-    (find-file filename)
-    (when (= (point-max) (point-min)) ;; Only insert if file is new/empty
-      (insert (concat "# " title-cap "\n\n"))
-      (save-buffer))
-    (message "Markdown note created: %s" filename)))
+    (interactive)
+    (let* ((title (read-string "Title: "))
+            (title-cap (capitalize title))
+            (filename (concat (expand-file-name "~/notes/")
+                        (replace-regexp-in-string " " "_" (downcase title)) ".md")))
+      (make-directory (file-name-directory filename) :parents)
+      (find-file filename)
+      (when (= (point-max) (point-min)) ;; Only insert if file is new/empty
+        (insert (concat "# " title-cap "\n\n"))
+        (save-buffer))
+      (message "Markdown note created: %s" filename)))
 
   (consult-customize
     consult-ripgrep consult-git-grep consult-grep
@@ -117,7 +117,7 @@
     consult--source-bookmark consult--source-file-register
     consult--source-recent-file consult--source-project-recent-file
     preview-key '([S-up] [S-down]))
-)
+  )
 
 (autoload 'projectile-project-root "projectile")
 (setq consult-project-function (lambda (_) (projectile-project-root)))
@@ -134,10 +134,10 @@
   "Command to enable/disable preview."
   (interactive)
   (if consult-toggle-preview-orig
-      (setq consult--preview-function consult-toggle-preview-orig
-            consult-toggle-preview-orig nil)
+    (setq consult--preview-function consult-toggle-preview-orig
+      consult-toggle-preview-orig nil)
     (setq consult-toggle-preview-orig consult--preview-function
-          consult--preview-function #'ignore)))
+      consult--preview-function #'ignore)))
 
 (define-key vertico-map (kbd "C-p") #'consult-toggle-preview)
 (define-key vertico-map (kbd "S-<up>") #'vertico-previous)
@@ -183,22 +183,22 @@
 - Always comments whole lines (not partial)."
   (interactive "p")
   (if (use-region-p)
-      (let ((start (save-excursion
-                     (goto-char (region-beginning))
-                     (line-beginning-position)))
-            (end (save-excursion
-                   (goto-char (region-end))
-                   (line-end-position))))
-        (comment-or-uncomment-region start end)
-        (setq deactivate-mark nil)) ;; keep region active
+    (let ((start (save-excursion
+                   (goto-char (region-beginning))
+                   (line-beginning-position)))
+           (end (save-excursion
+                  (goto-char (region-end))
+                  (line-end-position))))
+      (comment-or-uncomment-region start end)
+      (setq deactivate-mark nil)) ;; keep region active
     ;; Handle negative prefix logic
     (when (and (eq last-command 'comment-line-backward)
-               (natnump n))
+            (natnump n))
       (setq n (- n)))
     (let* ((start (line-beginning-position))
-           (end (save-excursion
-                  (forward-line (1- n))
-                  (line-end-position))))
+            (end (save-excursion
+                   (forward-line (1- n))
+                   (line-end-position))))
       (comment-or-uncomment-region (min start end) (max start end))
       (goto-char (line-end-position)))
     ;; Set command to inherit negative motion
@@ -226,8 +226,8 @@
       (goto-char (point-min))
       (while (re-search-forward "\\([^#\n]+\\)=" nil t)
         (let ((key (match-string 1))
-              (value (progn (re-search-forward "\"\\([^\"]+\\)\"" nil t)
-                            (match-string 1))))
+               (value (progn (re-search-forward "\"\\([^\"]+\\)\"" nil t)
+                        (match-string 1))))
           (setenv key value)
           (message "Set environment variable: %s=%s" key value))))))
 
@@ -272,7 +272,7 @@
   (add-hook 'completion-at-point-functions #'cape-keyword)
   (add-hook 'completion-at-point-functions #'cape-file)
   (add-hook 'completion-at-point-functions #'cape-elisp-block)
-)
+  )
 
 (require 'dired)
 (defun dt/dired-up-directory ()
@@ -287,36 +287,36 @@
   "Unpack the archive file under the cursor in dired to a hardcoded directory with a unique index and open dired there."
   (interactive)
   (let* ((file (dired-get-file-for-visit))
-         (base-dir "/home/epedape/test_reports/")  ; Change this to your desired directory
-         (unique-dir (dt/generate-sequential-dir-name base-dir))
-         (command (dt/get-extract-command file unique-dir)))
+          (base-dir "/home/epedape/test_reports/")  ; Change this to your desired directory
+          (unique-dir (dt/generate-sequential-dir-name base-dir))
+          (command (dt/get-extract-command file unique-dir)))
     (if command
-        (progn
-          (make-directory unique-dir t)
-          (shell-command command)
-          (message "Unpacked %s to %s" file unique-dir)
-          (dired unique-dir))  ; Open dired in the unpacked directory
+      (progn
+        (make-directory unique-dir t)
+        (shell-command command)
+        (message "Unpacked %s to %s" file unique-dir)
+        (dired unique-dir))  ; Open dired in the unpacked directory
       (message "Not a valid archive file."))))
 
 (defun dt/get-extract-command (file target-dir)
   "Return the appropriate shell command to extract FILE into TARGET-DIR based on the file extension."
   (cond
-   ((string-match-p "\\.tar\\'" file)
-    (format "tar -xf %s -C %s" (shell-quote-argument file) (shell-quote-argument target-dir)))
-   ((or (string-match-p "\\.tar\\.gz\\'" file)
-        (string-match-p "\\.tgz\\'" file))
-    (format "tar -xzf %s -C %s" (shell-quote-argument file) (shell-quote-argument target-dir)))
-   ((string-match-p "\\.zip\\'" file)
-    (format "unzip %s -d %s" (shell-quote-argument file) (shell-quote-argument target-dir)))
-   (t nil)))
+    ((string-match-p "\\.tar\\'" file)
+      (format "tar -xf %s -C %s" (shell-quote-argument file) (shell-quote-argument target-dir)))
+    ((or (string-match-p "\\.tar\\.gz\\'" file)
+       (string-match-p "\\.tgz\\'" file))
+      (format "tar -xzf %s -C %s" (shell-quote-argument file) (shell-quote-argument target-dir)))
+    ((string-match-p "\\.zip\\'" file)
+      (format "unzip %s -d %s" (shell-quote-argument file) (shell-quote-argument target-dir)))
+    (t nil)))
 
 (defun dt/generate-sequential-dir-name (base-dir)
   "Generate a sequentially numbered unique directory name under BASE-DIR."
   (let* ((existing-dirs (directory-files base-dir t "unpacked-[0-9]+"))
-         (indices (mapcar (lambda (dir)
-                            (string-to-number (replace-regexp-in-string ".*unpacked-\\([0-9]+\\)" "\\1" dir)))
-                          existing-dirs))
-         (max-index (if indices (apply 'max indices) -1)))
+          (indices (mapcar (lambda (dir)
+                             (string-to-number (replace-regexp-in-string ".*unpacked-\\([0-9]+\\)" "\\1" dir)))
+                     existing-dirs))
+          (max-index (if indices (apply 'max indices) -1)))
     (concat base-dir "unpacked-" (number-to-string (1+ max-index)))))
 
 ;; Bind the function to a key in dired mode
@@ -328,12 +328,12 @@
   (mapc (lambda (buffer)
           (unless (eq buffer (current-buffer))
             (kill-buffer buffer)))
-        (buffer-list))
+    (buffer-list))
   (message "Closed all other buffers."))
 (defun replace-all (pattern replacement)
-    (goto-char (point-min))
-    (while (search-forward pattern nil t)
-      (replace-match replacement nil t)))
+  (goto-char (point-min))
+  (while (search-forward pattern nil t)
+    (replace-match replacement nil t)))
 
 (defun replace-escaped-newlines-br-tags-and-url-encoded-chars ()
   "Replace escaped newlines (\\n), <br/> tags, &gt; and &lt;, and URL-encoded characters with their textual representations."
@@ -367,7 +367,7 @@
   "Open the current file in Google Chrome."
   (interactive)
   (if (buffer-file-name)
-      (start-process "open-chrome" nil "google-chrome" (buffer-file-name))
+    (start-process "open-chrome" nil "google-chrome" (buffer-file-name))
     (message "Buffer is not visiting a file")))
 
 (defun sanitize-html-report ()
@@ -383,13 +383,13 @@
   "Open the Jira issue at the cursor in the default web browser."
   (interactive)
   (let ((jira-base-url "https://eteamproject-alpha.internal.ericsson.com/browse/")
-        (jira-id-regex "\\bADPPRG-[0-9]+\\b"))
+         (jira-id-regex "\\bADPPRG-[0-9]+\\b"))
     (save-excursion
       ;; Get the entire line as a string
       (let ((line (thing-at-point 'line t)))
         (if (and line (string-match jira-id-regex line))
-            (let ((jira-id (match-string 0 line)))
-              (browse-url (concat jira-base-url jira-id)))
+          (let ((jira-id (match-string 0 line)))
+            (browse-url (concat jira-base-url jira-id)))
           (message "No Jira ID found on the current line!"))))))
 
 (use-package bm
@@ -398,9 +398,9 @@
 
   :init
   (setq bm-restore-repository-on-load t
-        bm-cycle-all-buffers t
-        bm-repository-file (expand-file-name "bm-repository" user-emacs-directory)
-        bm-buffer-persistence t)
+    bm-cycle-all-buffers t
+    bm-repository-file (expand-file-name "bm-repository" user-emacs-directory)
+    bm-buffer-persistence t)
 
   :config
   ;; Restore bookmarks after init
@@ -413,27 +413,27 @@
   (add-hook 'find-file-hook       #'bm-buffer-restore)
   (add-hook 'vc-before-checkin-hook #'bm-buffer-save)
   (add-hook 'kill-emacs-hook
-            (lambda ()
-              (bm-buffer-save-all)
-              (bm-repository-save)))
+    (lambda ()
+      (bm-buffer-save-all)
+      (bm-repository-save)))
 
   :bind (("C-c ." . bm-next)
-         ("C-c ," . bm-previous)
-         ("C-c m" . bm-toggle)))
+          ("C-c ," . bm-previous)
+          ("C-c m" . bm-toggle)))
 
 
 (defmacro gptel--json-read ()
   (if (fboundp 'json-parse-buffer)
-      `(json-parse-buffer
-        :object-type 'plist
-        :null-object nil
-        :false-object :json-false)
+    `(json-parse-buffer
+       :object-type 'plist
+       :null-object nil
+       :false-object :json-false)
     `(progn
-      (require 'json)
-      (defvar json-object-type)
-      (declare-function json-read "json" ())
-      (let ((json-object-type 'plist))
-        (json-read)))))
+       (require 'json)
+       (defvar json-object-type)
+       (declare-function json-read "json" ())
+       (let ((json-object-type 'plist))
+         (json-read)))))
 
 (use-package gptel
   :custom
@@ -442,9 +442,9 @@
 
   ;; Hide the mode line of the Embark live/completions buffers
   (add-to-list 'display-buffer-alist
-               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                 nil
-                 (window-parameters (mode-line-format . none)))))
+    '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+       nil
+       (window-parameters (mode-line-format . none)))))
 
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
@@ -463,18 +463,18 @@ This function has no error checking."
   "Move point to beginning of the next balanced expression (sexp)."
   (interactive)
   (condition-case nil
-      (cc/--next-sexp-raw)
+    (cc/--next-sexp-raw)
     (error (condition-case nil
-               (forward-sexp)
+             (forward-sexp)
              (error
-              (message
-               "Unable to move point to next balanced expression (sexp)."))))))
+               (message
+                 "Unable to move point to next balanced expression (sexp)."))))))
 
 (defun my-isearch-forward-prepopulate ()
   "Start isearch with the active region as initial input, if any."
   (interactive)
   (let ((initial (if (use-region-p)
-                     (buffer-substring-no-properties (region-beginning) (region-end))
+                   (buffer-substring-no-properties (region-beginning) (region-end))
                    "")))
     (when (and initial (not (string= initial "")))
       (deactivate-mark))
