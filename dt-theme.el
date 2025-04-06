@@ -35,7 +35,7 @@ FACE is the face name (symbol) and ARGS are the attributes for `set-face-attribu
       :weight 'regular
       :height 138
       :width 'normal
-      :family "Fira Code"))
+      :family "Jetbrains Mono"))
 
   (my-set-face-attribute 'ansi-color-blue nil
     :background my-blue

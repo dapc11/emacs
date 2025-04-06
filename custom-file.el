@@ -35,15 +35,13 @@
  '(mode-require-final-newline t)
  '(org-agenda-files '("~/notes/todo.md"))
  '(package-selected-packages
-    '(ag all-the-icons blacken bm cape consult corfu dockerfile-mode
-       dumb-jump eglot eglot-java embark embark-consult eterm-256color
-       exec-path-from-shell expand-region flycheck git-blamed
-       git-timemachine github-dark-vscode-theme go-mode gptel
-       highlight-indentation hydra json-mode k8s-mode lua-mode magit
-       markdown-mode multiple-cursors orderless pandoc projectile
-       python-mode rainbow-mode rg rgb ripgrep smartparens tabbar
-       transpose-frame treemacs treemacs-all-the-icons
-       treemacs-projectile vertico xterm-color yaml-mode))
+    '(ag ansi back-button blacken bm cape corfu dockerfile-mode dumb-jump
+       eglot-java embark-consult eterm-256color exec-path-from-shell
+       expand-region flycheck git-timemachine go-mode gptel
+       highlight-indentation json-mode k8s-mode lua-mode magit
+       markdown-mode multiple-cursors orderless org-modern pandoc
+       projectile python-mode rainbow-mode rg ripgrep smartparens
+       tabbar treemacs treesit-auto vertico))
  '(require-final-newline 'visit-save)
  '(safe-local-variable-values '((eval when (fboundp 'rainbow-mode) (rainbow-mode 1))))
  '(tabbar-separator '(0.5))

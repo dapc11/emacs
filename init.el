@@ -28,9 +28,9 @@
 
 (defun dt/set-font-based-on-dpi ()
   "Set font based on screen DPI (HiDPI vs standard)."
-  (let ((font-name "Fira Code")
+  (let ((font-name "Jetbrains Mono")
          (hidpi-font-size 16)          ;; Font size for HiDPI screens
-        (standard-font-size 14)        ;; Font size for standard DPI screens
+        (standard-font-size 15)        ;; Font size for standard DPI screens
         (dpi-threshold 100))           ;; DPI threshold for HiDPI
     (let* ((dpi (/ (display-pixel-width) (/ (display-mm-width) 25.4))) ;; Calculate DPI
            (font-size (if (> dpi dpi-threshold)
@@ -68,8 +68,8 @@
   (setq use-package-always-ensure t
     use-package-expand-minimally t))
 
-(dt/load-user-init "dt-github-theme.el")
-(load-theme 'dt-github)
+(dt/load-user-init "gruber-darker-theme.el")
+(load-theme 'gruber-darker)
 (dt/load-user-init "utils.el")
 
 (use-package savehist)
@@ -375,12 +375,24 @@ Deactivate the mark after starting the search."
 ;; (add-hook 'java-mode-hook 'eglot-ensure)
 
 (use-package exec-path-from-shell
+  :if (display-graphic-p) ; Only necessary for GUI
   :init
   (setq exec-path-from-shell-shell-name "/bin/zsh")
-  (when (daemonp)
-    (exec-path-from-shell-initialize))
+  (exec-path-from-shell-copy-envs
+   '("PYTHONDONTWRITEBYTECODE"
+     "PATH"
+     "SONARQUBE_TOKEN_CODEANALYZER"
+     "JAVA_HOME"
+     "M2_HOME"
+     "M2"
+     "MAVEN_OPTS"
+     "GOPRIVATE"
+     "GOPROXY"))
   :config
-  (exec-path-from-shell-copy-envs '("PYTHONDONTWRITEBYTECODE" "PATH" "SONARQUBE_TOKEN_CODEANALYZER" "JAVA_HOME" "M2_HOME" "M2" "MAVEN_OPTS" "GOPRIVATE" "GOPROXY")))
+  ;; Ensure environment is loaded on GUI and daemon sessions
+  (when (or (daemonp) (display-graphic-p))
+    (exec-path-from-shell-initialize)))
+
 
 ;; Whitespace mode
 (defun dt/set-up-whitespace-handling ()

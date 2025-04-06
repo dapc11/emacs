@@ -484,5 +484,15 @@ This function has no error checking."
 
 (global-set-key (kbd "C-s") 'my-isearch-forward-prepopulate)
 
+(use-package back-button
+  :ensure t
+  :hook (after-init . back-button-mode)
+  :config
+  (define-key back-button-mode-map (kbd "C-i") nil)
+  :bind (:map back-button-mode-map
+          ("C-o"     . back-button-global-backward)
+          ("C-M-o"   . back-button-global-forward)))
+
+
 
 ;;;post-init.el ends here
