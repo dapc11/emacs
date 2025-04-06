@@ -1,18 +1,26 @@
 ;;; init.el --- init file -*- lexical-binding: t; -*-
-(setq inhibit-startup-message t)
-(setq lisp-indent-offset 2)
+
+(setopt
+  native-comp-async-report-warnings-errors 'silent
+  inhibit-startup-message t
+  lisp-indent-offset 2
+  column-number-mode t
+  line-spacing 0.1
+  ring-bell-function 'ignore
+  use-short-answers t)
+
+
+(when (fboundp 'pixel-scroll-precision-mode)
+  (pixel-scroll-precision-mode 1))
+
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 (setq-default c-basic-offset 4)
 (setq-default c-basic-indent 4)
-(setq column-number-mode t)
 (setq backup-directory-alist '(("." . "~/.emacsbackup")))
-(setq line-spacing 0.1)
-(setq ring-bell-function 'ignore)
 (setq custom-file "~/.emacs.d/custom-file.el")
 (defconst dt/home-dir (expand-file-name "~/")
   "User's home directory.")
-(setopt use-short-answers t)
 ;; (setq debug-on-error t)
 
 (defvar dt/user-directory user-emacs-directory
@@ -59,7 +67,6 @@
 (setq package-archives
   '(("gnu"   . "https://elpa.gnu.org/packages/")
      ("melpa" . "https://melpa.org/packages/")))
-(package-initialize)
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -72,7 +79,16 @@
 (load-theme 'gruber-darker)
 (dt/load-user-init "utils.el")
 
-(use-package savehist)
+(use-package savehist
+  :init
+  (savehist-mode 1))
+
+(use-package recentf
+  :init
+  (recentf-mode 1)
+  :custom
+  (recentf-max-saved-items 200)
+  (recentf-auto-cleanup 'never))
 
 (use-package multiple-cursors
   :ensure t
