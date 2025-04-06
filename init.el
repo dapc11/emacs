@@ -158,32 +158,37 @@
     (error
       (when (bound-and-true-p flymake-mode)
         (flymake-goto-prev-error)))))
+(keymap-global-set "C-S-j" #'join-line-above)
+(keymap-global-set "<mouse-4>" #'previous-line)
+(keymap-global-set "<mouse-5>" #'next-line)
 
-(global-set-key (kbd "C-S-j") 'join-line-above)
-(global-set-key (kbd "<mouse-4>") 'previous-line)
-(global-set-key (kbd "<mouse-5>") 'next-line)
-(global-set-key (kbd "C-c <right>") 'windmove-right)
-(global-set-key (kbd "C-c <left>") 'windmove-left)
-(global-set-key (kbd "C-c <up>") 'windmove-up)
-(global-set-key (kbd "C-c <down>") 'windmove-down)
-(global-set-key (kbd "C-c -") 'split-window-below)
-(global-set-key (kbd "C-c v") 'split-window-right)
-(global-set-key (kbd "C-c q") 'dt/kill-and-close-buffer)
-(global-set-key (kbd "C-c k") 'kill-this-buffer)
-(global-set-key (kbd "C-r") 'query-replace)
-(global-set-key (kbd "C-S-r") 'isearch-query-replace)
-(global-set-key (kbd "C-n") #'my-next-error-or-flymake-next)
-(global-set-key (kbd "C-b") #'my-previous-error-or-flymake-prev)
-(global-set-key (kbd "C-c n") 'projectile-find-file)
-(global-set-key [prior] 'move-beginning-of-line)
-(global-set-key [next] 'move-end-of-line)
-(global-set-key (kbd "M-;") 'dabbrev-expand)
-(global-set-key (kbd "C-c C-d") 'dt/duplicate-line)
-(global-set-key (kbd "C-c d") 'dt/duplicate-line)
-(global-set-key (kbd "C-c C-x") 'dt/unpop-to-mark-command)
-(global-set-key (kbd "M-<down>") 'dt/move-text-down)
-(global-set-key (kbd "M-<up>") 'dt/move-text-up)
-(global-set-key (kbd "M-e") 'treemacs)
+(keymap-global-set "C-c <right>" #'windmove-right)
+(keymap-global-set "C-c <left>"  #'windmove-left)
+(keymap-global-set "C-c <up>"    #'windmove-up)
+(keymap-global-set "C-c <down>"  #'windmove-down)
+
+(keymap-global-set "C-c -" #'split-window-below)
+(keymap-global-set "C-c v" #'split-window-right)
+(keymap-global-set "C-c q" #'dt/kill-and-close-buffer)
+(keymap-global-set "C-c k" #'kill-this-buffer)
+
+(keymap-global-set "C-r"     #'query-replace)
+(keymap-global-set "C-S-r"   #'isearch-query-replace)
+(keymap-global-set "C-n"     #'my-next-error-or-flymake-next)
+(keymap-global-set "C-b"     #'my-previous-error-or-flymake-prev)
+(keymap-global-set "C-c n"   #'projectile-find-file)
+
+(keymap-global-set "<prior>" #'move-beginning-of-line)
+(keymap-global-set "<next>"  #'move-end-of-line)
+
+(keymap-global-set "M-;"        #'dabbrev-expand)
+(keymap-global-set "C-c C-d"    #'dt/duplicate-line)
+(keymap-global-set "C-c d"      #'dt/duplicate-line)
+(keymap-global-set "C-c C-x"    #'dt/unpop-to-mark-command)
+(keymap-global-set "M-<down>"   #'dt/move-text-down)
+(keymap-global-set "M-<up>"     #'dt/move-text-up)
+
+(keymap-global-set "M-e" #'treemacs)
 
 (setq magit-blame-styles
   '((margin
@@ -209,7 +214,7 @@ Deactivate the mark after starting the search."
         (isearch-yank-string search-string))
       (isearch-forward nil t))))
 
-(global-set-key (kbd "C-S-s") 'isearch-forward-at-point-or-region)
+(keymap-global-set "C-S-s" #'isearch-forward-at-point-or-region)
 
 (defun scroll-half-page-down ()
   "Scroll down half the page."
@@ -220,8 +225,8 @@ Deactivate the mark after starting the search."
   "Scroll up half the page."
   (interactive)
   (scroll-up (/ (window-body-height) 2)))
-(global-set-key (kbd "C-v") 'scroll-half-page-up)
-(global-set-key (kbd "M-v") 'scroll-half-page-down)
+(keymap-global-set "C-v" #'scroll-half-page-up)
+(keymap-global-set "M-v" #'scroll-half-page-down)
 
 (use-package projectile
   :ensure t
@@ -447,8 +452,8 @@ Deactivate the mark after starting the search."
     (set-face-attribute 'default nil :height (- current-size 10))))
 
 ;; Keybindings for Ctrl-+ and Ctrl--
-(global-set-key (kbd "C-+") 'my-increase-font-size)
-(global-set-key (kbd "C--") 'my-decrease-font-size)
+(keymap-global-set "C-+" #'my-increase-font-size)
+(keymap-global-set "C--" #'my-decrease-font-size)
 
 (add-hook 'after-save-hook
   (lambda ()
@@ -474,7 +479,7 @@ Deactivate the mark after starting the search."
           (indent-line-to (max 0 (- current-indentation indent-width))))))))
 
 ;; Bind the function to Shift-Tab.
-(global-set-key (kbd "<backtab>") #'dt/deindent-line-or-region)
+(keymap-global-set "<backtab>" #'dt/deindent-line-or-region)
 
 (add-to-list 'default-frame-alist '(undecorated . t))
 

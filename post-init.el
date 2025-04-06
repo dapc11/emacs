@@ -143,7 +143,7 @@
 (define-key vertico-map (kbd "S-<up>") #'vertico-previous)
 (define-key vertico-map (kbd "S-<down>") #'vertico-next)
 
-(global-set-key (kbd "C-f") 'dt/consult-line)
+(keymap-global-set "C-f" #'dt/consult-line)
 
 (defun dt/ag-at-point ()
   "Search for the text between delimiters using ag in the project."
@@ -164,8 +164,8 @@
     (goto-char end)))                  ;; Move point to the end position
 
 
-(global-set-key (kbd "C-z") 'undo)
-(global-set-key (kbd "C-S-z") 'undo-redo)
+(keymap-global-set "C-z" #'undo)
+(keymap-global-set "C-S-z" #'undo-redo)
 
 (use-package dumb-jump
   :init
@@ -206,8 +206,8 @@
       (setq this-command 'comment-line-backward))))
 
 
-(global-set-key (kbd "C-/") nil)
-(global-set-key (kbd "C-/") 'dt/comment-line)
+(keymap-global-set "C-/" nil)
+(keymap-global-set "C-/" #'dt/comment-line)
 
 ;; Add custom regex for semantic version with hash
 (add-to-list 'compilation-error-regexp-alist-alist
@@ -482,7 +482,7 @@ This function has no error checking."
     (when (and initial (not (string= initial "")))
       (isearch-yank-string initial))))
 
-(global-set-key (kbd "C-s") 'my-isearch-forward-prepopulate)
+(keymap-global-set "C-s" #'my-isearch-forward-prepopulate)
 
 (use-package back-button
   :ensure t
