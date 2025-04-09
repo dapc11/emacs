@@ -41,7 +41,7 @@
        highlight-indentation json-mode k8s-mode lua-mode magit
        markdown-mode multiple-cursors orderless org-modern pandoc
        projectile python-mode rainbow-mode rg ripgrep smartparens
-       tabbar treemacs treesit-auto vertico))
+       tabbar treemacs treesit-auto vertico vscode-dark-plus-theme))
  '(require-final-newline 'visit-save)
  '(safe-local-variable-values '((eval when (fboundp 'rainbow-mode) (rainbow-mode 1))))
  '(tabbar-separator '(0.5))
@@ -64,5 +64,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(highlight ((t (:foreground "#4db2ff" :underline nil))))
  '(hl-line ((t (:extend t))))
+ '(lazy-highlight ((t (:background "dark slate gray" :foreground "gray"))))
+ '(mode-line ((t (:background "DeepSkyBlue4" :foreground "#fafafa" :weight normal))))
+ '(mode-line-inactive ((t (:background "gray24" :foreground "#d4d4d4" :weight normal))))
+ '(whitespace-hspace ((t (:inherit whitespace-space))))
+ '(whitespace-space ((t (:foreground "gray22"))))
+ '(whitespace-tab ((t (:inherit whitespace-space))))
  '(window-divider ((t (:foreground "#444d56" :box (:line-width (2 . 2) :color "#444d56" :style released-button))))))

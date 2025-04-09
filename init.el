@@ -76,7 +76,7 @@
     use-package-expand-minimally t))
 
 (dt/load-user-init "gruber-darker-theme.el")
-(load-theme 'gruber-darker)
+(load-theme 'vscode-dark-plus)
 (dt/load-user-init "utils.el")
 
 (use-package savehist
