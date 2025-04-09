@@ -196,25 +196,6 @@
       (margin-face . magit-blame-margin)
       (margin-body-face magit-blame-dimmed))))
 
-(defun isearch-forward-at-point-or-region ()
-  "Start isearch forward with the selected region, or the word under the cursor if no region is selected.
-Deactivate the mark after starting the search."
-  (interactive)
-  (let ((search-string
-          (if (use-region-p)
-            (progn
-              (let ((region (buffer-substring-no-properties (region-beginning) (region-end))))
-                (deactivate-mark)
-                region))
-            (thing-at-point 'word t))))
-    (if search-string
-      (progn
-        (isearch-forward nil t)
-        (isearch-yank-string search-string))
-      (isearch-forward nil t))))
-
-(keymap-global-set "C-S-s" #'isearch-forward-at-point-or-region)
-
 (defun scroll-half-page-down ()
   "Scroll down half the page."
   (interactive)
