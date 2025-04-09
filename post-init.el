@@ -33,23 +33,6 @@
   (completion-category-overrides
     '((file (styles partial-completion))))) ;; use partial-completion for file paths
 
-(defun dt/consult-line ()
-  "Enhanced `consult-line`:
-- If called from the minibuffer, move to next Vertico candidate.
-- If region is active, use it as the initial input.
-- Deactivates region after selection."
-  (interactive)
-  (if (minibufferp)
-    (vertico-next)
-    (let* ((vertico-count 10)
-            (selected-text (when (use-region-p)
-                             (buffer-substring-no-properties
-                               (region-beginning)
-                               (region-end)))))
-      (when selected-text
-        (deactivate-mark))
-      (consult-line selected-text))))
-
 (defun dt/consult-project-ripgrep ()
   "Run `consult-ripgrep` in the current project."
   (interactive)
@@ -142,8 +125,6 @@
 (define-key vertico-map (kbd "C-p") #'consult-toggle-preview)
 (define-key vertico-map (kbd "S-<up>") #'vertico-previous)
 (define-key vertico-map (kbd "S-<down>") #'vertico-next)
-
-(keymap-global-set "C-f" #'dt/consult-line)
 
 (defun dt/ag-at-point ()
   "Search for the text between delimiters using ag in the project."

@@ -53,8 +53,8 @@
 (global-font-lock-mode 1)
 (tool-bar-mode 0)
 (show-paren-mode 1)
-(menu-bar-mode 0)
-(scroll-bar-mode 0)
+(menu-bar-mode 1)
+(scroll-bar-mode 1)
 (delete-selection-mode)
 (global-hl-line-mode)
 (auto-save-visited-mode)
@@ -158,30 +158,26 @@
     (error
       (when (bound-and-true-p flymake-mode)
         (flymake-goto-prev-error)))))
-(keymap-global-set "C-S-j" #'join-line-above)
-(keymap-global-set "<mouse-4>" #'previous-line)
-(keymap-global-set "<mouse-5>" #'next-line)
 
+(keymap-global-set "C-S-j"       #'join-line-above)
+(keymap-global-set "<mouse-4>"   #'previous-line)
+(keymap-global-set "<mouse-5>"   #'next-line)
 (keymap-global-set "C-c <right>" #'windmove-right)
 (keymap-global-set "C-c <left>"  #'windmove-left)
 (keymap-global-set "C-c <up>"    #'windmove-up)
 (keymap-global-set "C-c <down>"  #'windmove-down)
-
-(keymap-global-set "C-c -" #'split-window-below)
-(keymap-global-set "C-c v" #'split-window-right)
-(keymap-global-set "C-c q" #'dt/kill-and-close-buffer)
-(keymap-global-set "C-c k" #'kill-this-buffer)
-
-(keymap-global-set "C-r"     #'query-replace)
-(keymap-global-set "C-S-r"   #'isearch-query-replace)
-(keymap-global-set "C-n"     #'my-next-error-or-flymake-next)
-(keymap-global-set "C-b"     #'my-previous-error-or-flymake-prev)
-(keymap-global-set "C-c n"   #'projectile-find-file)
-
-(keymap-global-set "<prior>" #'move-beginning-of-line)
-(keymap-global-set "<next>"  #'move-end-of-line)
-
-(keymap-global-set "M-;"        #'dabbrev-expand)
+(keymap-global-set "C-c -"       #'split-window-below)
+(keymap-global-set "C-c v"       #'split-window-right)
+(keymap-global-set "C-c q"       #'dt/kill-and-close-buffer)
+(keymap-global-set "C-c k"       #'kill-this-buffer)
+(keymap-global-set "C-r"         #'query-replace)
+(keymap-global-set "C-f"         #'occur)
+(keymap-global-set "C-n"         #'my-next-error-or-flymake-next)
+(keymap-global-set "C-b"         #'my-previous-error-or-flymake-prev)
+(keymap-global-set "C-c n"       #'projectile-find-file)
+(keymap-global-set "<prior>"     #'move-beginning-of-line)
+(keymap-global-set "<next>"      #'move-end-of-line)
+(keymap-global-set "M-;"         #'dabbrev-expand)
 (keymap-global-set "C-c C-d"     #'dt/duplicate-line)
 (keymap-global-set "C-c d"       #'dt/duplicate-line)
 (keymap-global-set "C-c C-x"     #'dt/unpop-to-mark-command)
@@ -191,8 +187,7 @@
 (keymap-global-set "C-M-<right>" #'windmove-swap-states-right)
 (keymap-global-set "C-M-<up>"    #'windmove-swap-states-up)
 (keymap-global-set "C-M-<down>"  #'windmove-swap-states-down)
-
-(keymap-global-set "M-e" #'treemacs)
+(keymap-global-set "M-e"         #'treemacs)
 
 (setq magit-blame-styles
   '((margin
