@@ -66,7 +66,7 @@
           ("M-g i" . consult-imenu)
           ("C-c l" . consult-goto-line)
           ("C-c r" . consult-recent-file)
-          ("C-S-f" . dt/consult-project-ripgrep)
+          ("C-S-M-f" . dt/consult-project-ripgrep)
           ("C-c N" . consult-fd)
           ("C-c z b" . dt/fd-notes)
           ("C-c z f" . dt/rg-notes)
@@ -493,6 +493,19 @@ This function has no error checking."
           ("C-o"     . back-button-global-backward)
           ("C-M-o"   . back-button-global-forward)))
 
+(defun jump-to-matching-delimiter ()
+  "Jump to the matching delimiter ((), {}, [], '', \"\")."
+  (interactive)
+  (cond
+   ;; If on an opening delimiter, move forward to match
+   ((member (char-after) '(?\( ?\[ ?\{ ?\" ?\'))
+    (forward-sexp 1))
+   ;; If on a closing delimiter, move backward to match
+   ((member (char-before) '(?\) ?\] ?\} ?\" ?\'))
+    (backward-sexp 1))
+   (t
+    (message "Not on a delimiter."))))
 
+(global-set-key (kbd "M-%") 'jump-to-matching-delimiter)
 
 ;;;post-init.el ends here

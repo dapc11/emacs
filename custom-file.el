@@ -67,6 +67,7 @@
  '(highlight ((t (:foreground "#4db2ff" :underline nil))))
  '(hl-line ((t (:extend t))))
  '(lazy-highlight ((t (:background "dark slate gray" :foreground "gray"))))
+ '(match ((t (:background "gray18" :weight medium))))
  '(mode-line ((t (:background "DeepSkyBlue4" :foreground "#fafafa" :weight normal))))
  '(mode-line-inactive ((t (:background "gray24" :foreground "#d4d4d4" :weight normal))))
  '(whitespace-hspace ((t (:inherit whitespace-space))))

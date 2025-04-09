@@ -182,11 +182,15 @@
 (keymap-global-set "<next>"  #'move-end-of-line)
 
 (keymap-global-set "M-;"        #'dabbrev-expand)
-(keymap-global-set "C-c C-d"    #'dt/duplicate-line)
-(keymap-global-set "C-c d"      #'dt/duplicate-line)
-(keymap-global-set "C-c C-x"    #'dt/unpop-to-mark-command)
-(keymap-global-set "M-<down>"   #'dt/move-text-down)
-(keymap-global-set "M-<up>"     #'dt/move-text-up)
+(keymap-global-set "C-c C-d"     #'dt/duplicate-line)
+(keymap-global-set "C-c d"       #'dt/duplicate-line)
+(keymap-global-set "C-c C-x"     #'dt/unpop-to-mark-command)
+(keymap-global-set "M-<down>"    #'dt/move-text-down)
+(keymap-global-set "M-<up>"      #'dt/move-text-up)
+(keymap-global-set "C-M-<left>"  #'windmove-swap-states-left)
+(keymap-global-set "C-M-<right>" #'windmove-swap-states-right)
+(keymap-global-set "C-M-<up>"    #'windmove-swap-states-up)
+(keymap-global-set "C-M-<down>"  #'windmove-swap-states-down)
 
 (keymap-global-set "M-e" #'treemacs)
 
@@ -234,7 +238,7 @@ Deactivate the mark after starting the search."
   (projectile-mode +1)
   :bind-keymap
   ("C-c p" . projectile-command-map)
-
+  :bind (("C-S-f" . projectile-ripgrep))
   :custom
   (projectile-indexing-method 'native)
   (projectile-completion-system 'auto)
