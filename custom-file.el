@@ -31,6 +31,7 @@
        (add-hook 'python-mode-hook
          (lambda nil (setq indent-tabs-mode t)
            (setq tab-width 4) (setq python-indent-offset 4)))))
+ '(js-indent-level 2)
  '(magit-auto-revert-mode t)
  '(mode-require-final-newline t)
  '(org-agenda-files '("~/notes/todo.md"))

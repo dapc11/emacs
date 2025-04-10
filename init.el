@@ -9,10 +9,6 @@
   ring-bell-function 'ignore
   use-short-answers t)
 
-
-(when (fboundp 'pixel-scroll-precision-mode)
-  (pixel-scroll-precision-mode 1))
-
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 (setq-default c-basic-offset 4)
