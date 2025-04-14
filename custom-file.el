@@ -5,12 +5,14 @@
  ;; If there is more than one, they won't work right.
  '(ag-arguments '("--smart-case" "--stats" "--vimgrep"))
  '(auto-save-visited-interval 40)
+ '(column-number-mode t)
  '(compilation-error-regexp-alist
     '(go-test ant bash python-tracebacks-and-caml comma java javac maven
        cucumber shellcheck))
  '(compilation-scroll-output t)
  '(custom-safe-themes t)
  '(eglot-connect-timeout nil)
+ '(global-display-line-numbers-mode t)
  '(gnutls-algorithm-priority "normal:-vers-tls1.3")
  '(grep-command "rg --vimgrep ")
  '(grep-find-command
@@ -42,16 +44,17 @@
        highlight-indentation json-mode k8s-mode lua-mode magit
        markdown-mode multiple-cursors orderless org-modern pandoc
        projectile python-mode rainbow-mode rg ripgrep smartparens
-       tabbar treemacs treesit-auto vertico vscode-dark-plus-theme))
+       treemacs treesit-auto vertico vscode-dark-plus-theme))
  '(require-final-newline 'visit-save)
  '(safe-local-variable-values '((eval when (fboundp 'rainbow-mode) (rainbow-mode 1))))
- '(tabbar-separator '(0.5))
- '(tabbar-use-images nil)
+ '(tab-bar-mode t)
+ '(tab-bar-show 1)
  '(treemacs-collapse-dirs 3)
  '(treemacs-filewatch-mode t)
  '(treemacs-follow-mode t)
  '(treemacs-fringe-indicator-mode nil)
  '(treemacs-git-mode nil)
+ '(treemacs-no-png-images t)
  '(treemacs-project-follow-mode t)
  '(treemacs-select-when-already-in-treemacs 'next-or-back)
  '(use-package-always-ensure t)
@@ -59,7 +62,8 @@
  '(whitespace-style
     '(face trailing tabs spaces missing-newline-at-eof empty indentation
        space-after-tab space-before-tab space-mark tab-mark))
- '(window-divider-default-right-width 1))
+ '(window-divider-default-right-width 6)
+ '(window-divider-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -69,9 +73,12 @@
  '(hl-line ((t (:extend t))))
  '(lazy-highlight ((t (:background "dark slate gray" :foreground "gray"))))
  '(match ((t (:background "gray18" :weight medium))))
- '(mode-line ((t (:background "DeepSkyBlue4" :foreground "#fafafa" :weight normal))))
- '(mode-line-inactive ((t (:background "gray24" :foreground "#d4d4d4" :weight normal))))
+ '(mode-line ((t (:background "#303030" :foreground "#fafafa" :weight normal))))
+ '(mode-line-inactive ((t (:background "#202020" :foreground "#d4d4d4" :weight normal))))
+ '(tab-bar ((t (:background "#303030"))))
+ '(tab-bar-tab ((t (:background "#434343" :foreground "#ffffff"))))
  '(whitespace-hspace ((t (:inherit whitespace-space))))
  '(whitespace-space ((t (:foreground "gray22"))))
  '(whitespace-tab ((t (:inherit whitespace-space))))
- '(window-divider ((t (:foreground "#444d56" :box (:line-width (2 . 2) :color "#444d56" :style released-button))))))
+ '(window-divider ((t (:foreground "#303030" :box (:line-width (4 . 4) :color "#444d56" :style released-button)))))
+ '(window-divider-first-pixel ((t (:foreground "#303030")))))
