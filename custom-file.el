@@ -25,14 +25,6 @@
  '(grep-template "grep <X> <C> -nH --null -e <R> <F>")
  '(grep-use-null-device nil)
  '(grep-use-null-filename-separator t)
- '(ignored-local-variable-values
-    '((lsp-diagnostics-disabled-modes python-mode)
-       (eval flycheck-add-next-checker 'python-flake8
-         '(warning . python-pylint))
-       (flycheck-checker . python-flake8)
-       (add-hook 'python-mode-hook
-         (lambda nil (setq indent-tabs-mode t)
-           (setq tab-width 4) (setq python-indent-offset 4)))))
  '(js-indent-level 2)
  '(magit-auto-revert-mode t)
  '(mode-require-final-newline t)
@@ -43,8 +35,8 @@
        expand-region flycheck git-timemachine go-mode gptel
        highlight-indentation json-mode k8s-mode lua-mode magit
        markdown-mode multiple-cursors orderless org-modern pandoc
-       projectile python-mode rainbow-mode rg ripgrep smartparens
-       treemacs treesit-auto vertico vscode-dark-plus-theme))
+       projectile rainbow-mode rg ripgrep smartparens treemacs
+       treesit-auto vertico vscode-dark-plus-theme))
  '(require-final-newline 'visit-save)
  '(safe-local-variable-values '((eval when (fboundp 'rainbow-mode) (rainbow-mode 1))))
  '(tab-bar-mode t)

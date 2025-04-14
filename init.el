@@ -230,7 +230,8 @@
 
 
 (use-package go-mode)
-(use-package python-mode)
+(use-package python
+  :ensure nil)
 (use-package json-mode)
 (use-package dockerfile-mode)
 (use-package lua-mode)
@@ -350,27 +351,6 @@
   (lambda ()
     (when (string= (file-name-extension buffer-file-name) "el")
       (byte-compile-file buffer-file-name))))
-
-(defun dt/guess-indent-width ()
-  "Guess the indentation width by analyzing the current buffer."
-  (or (and (boundp 'tab-width) tab-width) ; Use `tab-width` if set.
-    4)) ; Default to 4 spaces if `tab-width` is unavailable.
-
-(defun dt/deindent-line-or-region ()
-  "De-indent the current line or the active region based on current file's indentation width."
-  (interactive)
-  (let ((indent-width (dt/guess-indent-width))) ; Get the current file's indentation width.
-    (if (use-region-p)
-      ;; If a region is active, de-indent the entire region.
-      (let ((deactivate-mark nil)) ; Preserve the region after de-indenting.
-        (indent-rigidly (region-beginning) (region-end) (- indent-width)))
-      ;; If no region is active, de-indent the current line.
-      (let ((current-indentation (current-indentation)))
-        (if (> current-indentation 0)
-          (indent-line-to (max 0 (- current-indentation indent-width))))))))
-
-;; Bind the function to Shift-Tab.
-(keymap-global-set "<backtab>" #'dt/deindent-line-or-region)
 
 ;; Load post-init.el
 (dt/load-user-init "post-init.el")
