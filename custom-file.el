@@ -33,10 +33,13 @@
     '(ag ansi back-button blacken bm cape corfu dockerfile-mode dumb-jump
        eglot-java embark-consult eterm-256color exec-path-from-shell
        expand-region flycheck git-timemachine go-mode gptel
-       highlight-indentation json-mode k8s-mode lua-mode magit
-       markdown-mode multiple-cursors orderless org-modern pandoc
-       projectile rainbow-mode rg ripgrep smartparens treemacs
-       treesit-auto vertico vscode-dark-plus-theme))
+       highlight-indentation json-mode k8s-mode lua-mode
+       magit markdown-mode markdown-preview-eww multiple-cursors
+       orderless org-modern pandoc projectile rainbow-mode rg ripgrep
+       smartparens treemacs treesit-auto ultra-scroll vertico
+       vscode-dark-plus-theme))
+ '(package-vc-selected-packages
+    '((ultra-scroll :url "https://github.com/jdtsmith/ultra-scroll")))
  '(require-final-newline 'visit-save)
  '(safe-local-variable-values '((eval when (fboundp 'rainbow-mode) (rainbow-mode 1))))
  '(tab-bar-mode t)

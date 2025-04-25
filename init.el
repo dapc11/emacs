@@ -137,7 +137,6 @@
   (end-of-line)
   (delete-indentation))
 
-
 (defun my-next-error-or-flymake-next ()
   "Invoke `next-error`, falling back to `flymake-goto-next-error` if no errors."
   (interactive)
@@ -185,6 +184,8 @@
 (keymap-global-set "C-M-<up>"    #'windmove-swap-states-up)
 (keymap-global-set "C-M-<down>"  #'windmove-swap-states-down)
 (keymap-global-set "M-e"         #'treemacs)
+(keymap-global-set "C-+"         #'my-increase-font-size)
+(keymap-global-set "C--"         #'my-decrease-font-size)
 
 (setq magit-blame-styles
   '((margin
@@ -343,14 +344,19 @@
   (let ((current-size (face-attribute 'default :height)))
     (set-face-attribute 'default nil :height (- current-size 10))))
 
-;; Keybindings for Ctrl-+ and Ctrl--
-(keymap-global-set "C-+" #'my-increase-font-size)
-(keymap-global-set "C--" #'my-decrease-font-size)
-
 (add-hook 'after-save-hook
   (lambda ()
     (when (string= (file-name-extension buffer-file-name) "el")
       (byte-compile-file buffer-file-name))))
+
+(use-package ultra-scroll
+  :vc (:url "https://github.com/jdtsmith/ultra-scroll")
+  :init
+  (setq
+    scroll-conservatively 101 ; important!
+    scroll-margin 0)
+  :config
+  (ultra-scroll-mode 1))
 
 ;; Load post-init.el
 (dt/load-user-init "post-init.el")
