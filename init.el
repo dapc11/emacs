@@ -13,6 +13,9 @@
 (setq-default tab-width 4)
 (setq-default c-basic-offset 4)
 (setq-default c-basic-indent 4)
+;; set bar cursor
+(setq-default cursor-type 'bar)
+
 (setq backup-directory-alist '(("." . "~/.emacsbackup")))
 (setq custom-file "~/.emacs.d/custom-file.el")
 (defconst dt/home-dir (expand-file-name "~/")
@@ -51,7 +54,7 @@
 (show-paren-mode 1)
 (menu-bar-mode 1)
 (scroll-bar-mode 1)
-(delete-selection-mode)
+(delete-selection-mode 1)
 (global-hl-line-mode)
 (auto-save-visited-mode)
 (global-display-line-numbers-mode)
