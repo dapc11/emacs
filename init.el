@@ -361,5 +361,8 @@
   :config
   (ultra-scroll-mode 1))
 
+(dt/load-user-init "go-template-mode.el")
+(require 'go-template-mode)
+
 ;; Load post-init.el
 (dt/load-user-init "post-init.el")
