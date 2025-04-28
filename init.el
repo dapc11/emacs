@@ -33,20 +33,21 @@
     (when (file-exists-p user-init-file)
       (load user-init-file nil t))))
 
-(defun dt/set-font-based-on-dpi ()
-  "Set font based on screen DPI (HiDPI vs standard)."
-  (let ((font-name "Jetbrains Mono")
-         (hidpi-font-size 16)          ;; Font size for HiDPI screens
-         (standard-font-size 15)        ;; Font size for standard DPI screens
-         (dpi-threshold 100))           ;; DPI threshold for HiDPI
-    (let* ((dpi (/ (display-pixel-width) (/ (display-mm-width) 25.4))) ;; Calculate DPI
-            (font-size (if (> dpi dpi-threshold)
-                         hidpi-font-size
-                         standard-font-size)))
-      (if (member font-name (font-family-list))
-        (set-face-attribute 'default nil :font (format "%s-%d" font-name font-size))
-        (message "Font %s is not available on this system" font-name)))))
-(dt/set-font-based-on-dpi)
+;; (defun dt/set-font-based-on-dpi ()
+;;   "Set font based on screen DPI (HiDPI vs standard)."
+;;   ;; (let ((font-name "Jetbrains Mono")
+;;   (let ((font-name "HackNerdFont")
+;;          (hidpi-font-size 16)          ;; Font size for HiDPI screens
+;;          (standard-font-size 15)        ;; Font size for standard DPI screens
+;;          (dpi-threshold 100))           ;; DPI threshold for HiDPI
+;;     (let* ((dpi (/ (display-pixel-width) (/ (display-mm-width) 25.4))) ;; Calculate DPI
+;;             (font-size (if (> dpi dpi-threshold)
+;;                          hidpi-font-size
+;;                          standard-font-size)))
+;;       (if (member font-name (font-family-list))
+;;         (set-face-attribute 'default nil :font (format "%s-%d" font-name font-size))
+;; ;;         (message "Font %s is not available on this system" font-name)))))
+;; (dt/set-font-based-on-dpi)
 
 (which-key-mode 1)
 (global-font-lock-mode 1)

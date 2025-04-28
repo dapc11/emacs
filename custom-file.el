@@ -1,3 +1,5 @@
+;;; custom-file.el --- custom file -*- lexical-binding: t; -*-
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -11,7 +13,7 @@
        cucumber shellcheck))
  '(compilation-scroll-output t)
  '(custom-safe-themes t)
- '(eglot-connect-timeout nil)
+ '(eglot-connect-timeout nil t)
  '(global-display-line-numbers-mode t)
  '(gnutls-algorithm-priority "normal:-vers-tls1.3")
  '(grep-command "rg --vimgrep ")
@@ -33,15 +35,16 @@
     '(ag ansi back-button blacken bm cape corfu dockerfile-mode dumb-jump
        eglot-java embark-consult eterm-256color exec-path-from-shell
        expand-region flycheck git-timemachine go-mode gptel
-       highlight-indentation json-mode k8s-mode lua-mode
-       magit markdown-mode markdown-preview-eww multiple-cursors
-       orderless org-modern pandoc projectile rainbow-mode rg ripgrep
+       highlight-indentation json-mode k8s-mode lua-mode magit
+       markdown-mode markdown-preview-eww multiple-cursors orderless
+       org-modern pandoc projectile rainbow-mode rg ripgrep
        smartparens treemacs treesit-auto ultra-scroll vertico
        vscode-dark-plus-theme))
  '(package-vc-selected-packages
     '((ultra-scroll :url "https://github.com/jdtsmith/ultra-scroll")))
  '(require-final-newline 'visit-save)
  '(safe-local-variable-values '((eval when (fboundp 'rainbow-mode) (rainbow-mode 1))))
+ '(scroll-margin 3)
  '(tab-bar-mode t)
  '(tab-bar-show 1)
  '(treemacs-collapse-dirs 3)
@@ -64,6 +67,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :extend nil :stipple nil :background "#1e1e1e" :foreground "#d4d4d4" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 120 :width normal :foundry "CTDB" :family "HackNerdFont"))))
  '(highlight ((t (:foreground "#4db2ff" :underline nil))))
  '(hl-line ((t (:extend t))))
  '(lazy-highlight ((t (:background "dark slate gray" :foreground "gray"))))
