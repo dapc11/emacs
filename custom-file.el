@@ -11,7 +11,7 @@
        cucumber shellcheck))
  '(compilation-scroll-output t)
  '(custom-safe-themes t)
- '(eglot-connect-timeout nil)
+ '(eglot-connect-timeout nil t)
  '(global-display-line-numbers-mode t)
  '(gnutls-algorithm-priority "normal:-vers-tls1.3")
  '(grep-command "rg --vimgrep ")
@@ -32,10 +32,10 @@
  '(package-selected-packages
     '(ag ansi back-button blacken bm cape corfu dockerfile-mode dumb-jump
        eglot-java embark-consult eterm-256color exec-path-from-shell
-       expand-region flycheck git-timemachine go-mode gptel
-       highlight-indentation json-mode k8s-mode lua-mode magit
-       markdown-mode multiple-cursors orderless org-modern pandoc
-       projectile rainbow-mode rg ripgrep smartparens treemacs
+       expand-region flycheck git-gutter-fringe git-timemachine
+       go-mode gptel highlight-indentation json-mode k8s-mode lua-mode
+       magit markdown-mode multiple-cursors orderless org-modern
+       pandoc projectile rainbow-mode rg ripgrep smartparens treemacs
        treesit-auto vertico vscode-dark-plus-theme))
  '(require-final-newline 'visit-save)
  '(safe-local-variable-values '((eval when (fboundp 'rainbow-mode) (rainbow-mode 1))))

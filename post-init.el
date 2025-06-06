@@ -400,34 +400,10 @@
 
   :bind (("C-c ." . bm-next)
           ("C-c ," . bm-previous)
+          ("C-c <up>" . bm-show-all)
           ("C-c m" . bm-toggle)))
 
 
-(defmacro gptel--json-read ()
-  (if (fboundp 'json-parse-buffer)
-    `(json-parse-buffer
-       :object-type 'plist
-       :null-object nil
-       :false-object :json-false)
-    `(progn
-       (require 'json)
-       (defvar json-object-type)
-       (declare-function json-read "json" ())
-       (let ((json-object-type 'plist))
-         (json-read)))))
-
-(use-package gptel
-  :custom
-  (gptel-api-key "eli-1a7b5447-3c6c-48bf-a7b8-2756f81ea26d")
-  :config
-
-  ;; Hide the mode line of the Embark live/completions buffers
-  (add-to-list 'display-buffer-alist
-    '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-       nil
-       (window-parameters (mode-line-format . none)))))
-
-;; Consult users will also want the embark-consult package.
 (use-package embark-consult
   :ensure t ; only need to install it, embark loads it after consult if found
   :hook
@@ -491,4 +467,17 @@ This function has no error checking."
 
 (global-set-key (kbd "M-%") 'jump-to-matching-delimiter)
 
+(require 'git-gutter-fringe)
+(global-git-gutter-mode t)
+(global-set-key (kbd "C-x v =") 'git-gutter:popup-hunk)
+
+;; Jump to next/previous hunk
+(global-set-key (kbd "C-x p") 'git-gutter:previous-hunk)
+(global-set-key (kbd "C-x n") 'git-gutter:next-hunk)
+;; Stage current hunk
+(global-set-key (kbd "C-x v s") 'git-gutter:stage-hunk)
+
+;; Revert current hunk
+(global-set-key (kbd "C-x v r") 'git-gutter:revert-hunk)
+(global-set-key (kbd "C-x v SPC") #'git-gutter:mark-hunk)
 ;;;post-init.el ends here
