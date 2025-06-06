@@ -471,8 +471,10 @@ This function has no error checking."
   :config
   (define-key back-button-mode-map (kbd "C-i") nil)
   :bind (:map back-button-mode-map
-          ("C-o"     . back-button-global-backward)
-          ("C-M-o"   . back-button-global-forward)))
+          ("M-o"     . back-button-local-backward)
+          ("M-S-o"   . back-button-global-backward)
+          ("M-i"     . back-button-local-forward)
+          ("M-S-i"   . back-button-global-forward)))
 
 (defun jump-to-matching-delimiter ()
   "Jump to the matching delimiter ((), {}, [], '', \"\")."
