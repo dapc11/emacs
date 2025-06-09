@@ -68,6 +68,18 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :extend nil :stipple nil :background "#1e1e1e" :foreground "#d4d4d4" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 120 :width normal :foundry "CTDB" :family "HackNerdFont"))))
+ '(ansi-color-blue ((t (:background "#569cd6" :foreground "#569cd6"))))
+ '(ansi-color-bright-blue ((t (:background "#9CDCFE" :foreground "#9CDCFE"))))
+ '(ansi-color-bright-cyan ((t (:background "#51B6C4" :foreground "#51B6C4"))))
+ '(ansi-color-bright-green ((t (:background "#b5cea8" :foregqround "#b5cea8"))))
+ '(ansi-color-bright-magenta ((t (:background "#C586C0" :foreground "#C586C0"))))
+ '(ansi-color-bright-red ((t (:background "#d16969" :foreground "#d16969"))))
+ '(ansi-color-bright-yellow ((t (:background "#DCDCAA" :foreground "#DCDCAA"))))
+ '(ansi-color-cyan ((t (:background "#4EC9B0" :foreground "#4EC9B0"))))
+ '(ansi-color-green ((t (:background "#6A9955" :foreground "#6A9955"))))
+ '(ansi-color-magenta ((t (:background "#C586C0" :foreground "#C586C0"))))
+ '(ansi-color-red ((t (:background "#f44747" :foreground "#f44747"))))
+ '(ansi-color-yellow ((t (:background "#d7ba7d" :foreground "#d7ba7d"))))
  '(highlight ((t (:foreground "#4db2ff" :underline nil))))
  '(hl-line ((t (:extend t))))
  '(lazy-highlight ((t (:background "dark slate gray" :foreground "gray"))))
