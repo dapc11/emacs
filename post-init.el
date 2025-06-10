@@ -105,12 +105,6 @@
 (autoload 'projectile-project-root "projectile")
 (setq consult-project-function (lambda (_) (projectile-project-root)))
 
-(defun dt/yaml-mode-keybindings ()
-  "YAML mode specific keymaps."
-  (define-key yaml-mode-map (kbd "M-.") 'dt/ag-at-point))
-
-(add-hook 'yaml-mode-hook 'dt/yaml-mode-keybindings)
-
 (defvar-local consult-toggle-preview-orig nil)
 
 (defun consult-toggle-preview ()
@@ -125,13 +119,6 @@
 (define-key vertico-map (kbd "C-p") #'consult-toggle-preview)
 (define-key vertico-map (kbd "S-<up>") #'vertico-previous)
 (define-key vertico-map (kbd "S-<down>") #'vertico-next)
-
-(defun dt/ag-at-point ()
-  "Search for the text between delimiters using ag in the project."
-  (interactive)
-  (select-text-in-delimiters)
-  (let ((search-string (buffer-substring-no-properties (region-beginning) (region-end))))
-    (ag-project search-string)))
 
 (defun select-text-in-delimiters ()
   "Select text between the nearest left and right delimiters."
