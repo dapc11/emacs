@@ -33,13 +33,13 @@
  '(org-agenda-files '("~/notes/todo.md"))
  '(package-selected-packages
     '(ag ansi back-button blacken bm cape corfu dockerfile-mode dumb-jump
-       eglot-java embark-consult eterm-256color exec-path-from-shell
-       expand-region flycheck git-gutter git-gutter-fringe
-       git-timemachine go-mode highlight-indentation json-mode
-       k8s-mode lua-mode magit markdown-mode markdown-preview-eww
-       multiple-cursors orderless org-modern pandoc projectile
-       rainbow-mode rg ripgrep smartparens treemacs treesit-auto
-       ultra-scroll vertico vscode-dark-plus-theme))
+       eglot-java embark-consult eterm-256color expand-region flycheck
+       git-gutter git-gutter-fringe git-timemachine go-mode
+       highlight-indentation json-mode k8s-mode lua-mode magit
+       markdown-mode markdown-preview-eww multiple-cursors orderless
+       org-modern pandoc projectile rainbow-mode rg ripgrep
+       smartparens treemacs treesit-auto ultra-scroll vertico
+       vscode-dark-plus-theme))
  '(package-vc-selected-packages
     '((ultra-scroll :url "https://github.com/jdtsmith/ultra-scroll")))
  '(require-final-newline 'visit-save)

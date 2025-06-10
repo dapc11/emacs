@@ -273,25 +273,6 @@
 (add-hook 'python-mode-hook 'eglot-ensure)
 (add-hook 'go-mode-hook 'eglot-ensure)
 
-(use-package exec-path-from-shell
-  :if (display-graphic-p) ; Only necessary for GUI
-  :init
-  (setq exec-path-from-shell-shell-name "/bin/zsh")
-  (exec-path-from-shell-copy-envs
-    '("PYTHONDONTWRITEBYTECODE"
-       "PATH"
-       "SONARQUBE_TOKEN_CODEANALYZER"
-       "JAVA_HOME"
-       "M2_HOME"
-       "M2"
-       "MAVEN_OPTS"
-       "GOPRIVATE"
-       "GOPROXY"))
-  :config
-  ;; Ensure environment is loaded on GUI and daemon sessions
-  (when (or (daemonp) (display-graphic-p))
-    (exec-path-from-shell-initialize)))
-
 ;; Whitespace mode
 (defun dt/set-up-whitespace-handling ()
   (interactive)
@@ -344,6 +325,9 @@
 
 (dt/load-user-init "go-template-mode.el")
 (require 'go-template-mode)
+
+(setq shell-file-name "zsh")
+(setq shell-command-switch "-ic")
 
 ;; Load post-init.el
 (dt/load-user-init "post-init.el")
