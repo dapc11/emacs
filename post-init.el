@@ -483,4 +483,13 @@ This function has no error checking."
 ;; Revert current hunk
 (global-set-key (kbd "C-x v r") 'git-gutter:revert-hunk)
 (global-set-key (kbd "C-x v SPC") #'git-gutter:mark-hunk)
+
+(global-set-key (kbd "M-n") #'next-error)
+(global-set-key (kbd "M-p") #'previous-error)
+
+(defun my/save-all-buffers ()
+  "Save all modified file-visiting buffers without prompting."
+  (interactive)
+  (save-some-buffers t))
+
 ;;;post-init.el ends here

@@ -141,24 +141,6 @@
   (end-of-line)
   (delete-indentation))
 
-(defun my-next-error-or-flymake-next ()
-  "Invoke `next-error`, falling back to `flymake-goto-next-error` if no errors."
-  (interactive)
-  (condition-case nil
-    (next-error)
-    (error
-      (when (bound-and-true-p flymake-mode)
-        (flymake-goto-next-error)))))
-
-(defun my-previous-error-or-flymake-prev ()
-  "Invoke `previous-error`, falling back to `flymake-goto-prev-error` if no errors."
-  (interactive)
-  (condition-case nil
-    (previous-error)
-    (error
-      (when (bound-and-true-p flymake-mode)
-        (flymake-goto-prev-error)))))
-
 (keymap-global-set "C-S-j"       #'join-line-above)
 (keymap-global-set "<mouse-4>"   #'previous-line)
 (keymap-global-set "<mouse-5>"   #'next-line)
@@ -172,8 +154,6 @@
 (keymap-global-set "C-c k"       #'kill-this-buffer)
 (keymap-global-set "C-r"         #'query-replace)
 (keymap-global-set "C-f"         #'occur)
-(keymap-global-set "C-n"         #'my-next-error-or-flymake-next)
-(keymap-global-set "C-b"         #'my-previous-error-or-flymake-prev)
 (keymap-global-set "C-c n"       #'projectile-find-file)
 (keymap-global-set "<prior>"     #'move-beginning-of-line)
 (keymap-global-set "<next>"      #'move-end-of-line)
