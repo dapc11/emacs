@@ -178,11 +178,6 @@
 (keymap-global-set "C-/" #'dt/comment-line)
 
 (add-to-list 'compilation-error-regexp-alist-alist
-  '(custom-semver
-     "\\([0-9]+\\.[0-9]+\\.[0-9]+-[a-zA-Z0-9]+\\(?:\\.dirty\\.[a-zA-Z0-9]+\\)?\\(?:\\.[a-zA-Z0-9]+\\)?\\)"
-     1))
-
-(add-to-list 'compilation-error-regexp-alist-alist
              '(pytest
                "^\\(.*\\.py\\):\\([0-9]+\\):"
                1 2 nil 0))
@@ -199,7 +194,6 @@
 (add-to-list 'compilation-error-regexp-alist 'pytest-warning)
 (add-to-list 'compilation-error-regexp-alist 'pytest-double-colon)
 
-(add-to-list 'compilation-error-regexp-alist 'custom-semver)
 (setq compilation-find-file-no-prompt t) ;; Always use default without asking
 
 (defun parse-env-file (file)
