@@ -492,4 +492,29 @@ This function has no error checking."
   (interactive)
   (save-some-buffers t))
 
+(use-package gptel
+  :ensure t
+  :config
+  (setq gptel-log-level 'debug)
+)
+
+;; Key in ~/.authinfo
+(setq
+  gptel-model 'gpt-4o
+  gptel-backend (gptel-make-gpt4all
+                  "GPT4All"
+                  :protocol "https"
+                  :host "gateway.eli.gaia.gic.ericsson.se/api/openai"
+                  :models '(gpt-4o)
+                  :key gptel-api-key
+                  ))
+
+(gptel-make-preset 'gpt4coding
+  :description "A preset optimized for coding tasks"
+  :backend "GpT4All"
+  :model 'gpt-4o
+  :system "You are an expert coding assistant. Your role is to provide high-quality code solutions, refactorings, and explanations."
+  :tools '("read_buffer" "modify_buffer"))
+
+(load-file "./gptel-prompts.el")
 ;;;post-init.el ends here
