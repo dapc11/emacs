@@ -516,5 +516,5 @@ This function has no error checking."
   :system "You are an expert coding assistant. Your role is to provide high-quality code solutions, refactorings, and explanations."
   :tools '("read_buffer" "modify_buffer"))
 
-(load-file "./gptel-prompts.el")
+(load-file "~/.emacs.d/gptel-prompts.el")
 ;;;post-init.el ends here
