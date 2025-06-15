@@ -67,7 +67,7 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
-  '(default ((t (:inherit nil :extend nil :stipple nil :background "#1e1e1e" :foreground "#d4d4d4" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 120 :width normal :foundry "CTDB" :family "HackNerdFont"))))
+  '(default ((t (:inherit nil :extend nil :stipple nil :background "#1e1e1e" :foreground "#d4d4d4" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 120 :width normal :foundry "CTDB" :family "Jetbrains Mono"))))
   '(ansi-color-blue ((t (:background "#569cd6" :foreground "#569cd6"))))
   '(ansi-color-bright-blue ((t (:background "#9CDCFE" :foreground "#9CDCFE"))))
   '(ansi-color-bright-cyan ((t (:background "#51B6C4" :foreground "#51B6C4"))))
