@@ -464,8 +464,46 @@ This function has no error checking."
 
 (global-set-key (kbd "M-%") 'jump-to-matching-delimiter)
 
-(require 'git-gutter-fringe)
-(global-git-gutter-mode t)
+
+(use-package git-gutter
+  :ensure t
+  :config
+  (global-git-gutter-mode +1))
+
+(use-package git-gutter-fringe
+  :ensure t
+  :config
+  (setq git-gutter-fr:side 'left-fringe)
+
+  ;; Define fringe bitmaps to indicate changes
+  (fringe-helper-define 'git-gutter-fr:added nil
+    "......."
+    "......."
+    "......."
+    "......."
+    "......."
+    "......."
+    "......."
+    ".......")
+  (fringe-helper-define 'git-gutter-fr:modified nil
+    "......."
+    "......."
+    "......."
+    "......."
+    "......."
+    "......."
+    "......."
+    ".......")
+  (fringe-helper-define 'git-gutter-fr:deleted nil
+    "......."
+    "......."
+    "......."
+    "......."
+    "......."
+    "......."
+    "......."
+    "......."))
+
 (global-set-key (kbd "C-x v =") 'git-gutter:popup-hunk)
 
 ;; Jump to next/previous hunk
