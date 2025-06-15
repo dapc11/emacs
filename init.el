@@ -329,5 +329,17 @@
 (setq shell-file-name "zsh")
 (setq shell-command-switch "-ic")
 
+(defun my-projectile-replace-advice (original-fun &rest args)
+  "Advice to ensure `projectile-replace` uses Bash for subprocess."
+  (let
+    ((shell-file-name "/bin/bash"))
+    (apply original-fun args))
+  (let
+    ((shell-command-switch "-ic"))
+    (apply original-fun args)))
+
+;; Add advice around `projectile-replace`
+(advice-add 'projectile-replace :around #'my-projectile-replace-advice)
+
 ;; Load post-init.el
 (dt/load-user-init "post-init.el")
