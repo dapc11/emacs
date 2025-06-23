@@ -552,4 +552,21 @@ This function has no error checking."
 (setq gptel-default-preset 'gpt4coding)
 
 (load-file "~/.emacs.d/gptel-prompts.el")
+
+(use-package ediff
+  :ensure nil
+  :init
+  (setq ediff-split-window-function 'split-window-horizontally
+    ediff-window-setup-function 'ediff-setup-windows-plain))
+
+(defun ediff-current-windows ()
+  "Run ediff on the buffers displayed in the current frame's two windows."
+  (interactive)
+  (let ((windows (window-list)))
+    (if (= (length windows) 2)
+       (let ((buf1 (window-buffer (car windows)))
+             (buf2 (window-buffer (cadr windows))))
+         (ediff-buffers buf1 buf2))
+     (error "This function requires exactly 2 windows"))))
+
 ;;;post-init.el ends here
