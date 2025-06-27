@@ -6,6 +6,7 @@
   lisp-indent-offset 2
   column-number-mode t
   line-spacing 0.1
+  tool-bar-mode nil
   ring-bell-function 'ignore
   use-short-answers t)
 
@@ -130,6 +131,18 @@
 (use-package smartparens
   :init
   (smartparens-mode))
+
+(use-package doom-modeline
+  :ensure t
+  :hook (after-init . doom-modeline-mode))
+
+(use-package nerd-icons)
+
+(setq doom-modeline-height 1)
+(if (facep 'mode-line-active)
+    (set-face-attribute 'mode-line-active nil :family "JetBrains Mono NL Medium" :height 100) ; For 29+
+  (set-face-attribute 'mode-line nil :family "JetBrains Mono NL Medium" :height 100))
+(set-face-attribute 'mode-line-inactive nil :family "JetBrains Mono NL Medium" :height 100)
 
 (use-package expand-region
   :bind (
