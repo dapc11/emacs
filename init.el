@@ -62,7 +62,6 @@
 (advice-add 'risky-local-variable-p :override #'ignore)
 (xterm-mouse-mode t)
 (load-file custom-file)
-;; (add-to-list 'default-frame-alist '(undecorated . t))
 
 (require 'package)
 (setq package-archives
@@ -76,8 +75,11 @@
   (setq use-package-always-ensure t
     use-package-expand-minimally t))
 
-;; (dt/load-user-init "gruber-darker-theme.el")
-(load-theme 'vscode-dark-plus)
+;; (load-theme 'vscode-dark-plus)
+(use-package catppuccin-theme)
+(setq catppuccin-flavor 'macchiato) ;; or 'latte, 'macchiato, or 'mocha
+(load-theme 'catppuccin t)
+
 (dt/load-user-init "utils.el")
 
 (use-package savehist
