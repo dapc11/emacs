@@ -57,6 +57,7 @@
 (menu-bar-mode 1)
 (scroll-bar-mode 1)
 (delete-selection-mode 1)
+(doom-modeline-mode 1)
 (global-hl-line-mode)
 (auto-save-visited-mode)
 (global-display-line-numbers-mode)
@@ -140,9 +141,9 @@
 
 (setq doom-modeline-height 1)
 (if (facep 'mode-line-active)
-    (set-face-attribute 'mode-line-active nil :family "JetBrains Mono NL Medium" :height 100) ; For 29+
-  (set-face-attribute 'mode-line nil :family "JetBrains Mono NL Medium" :height 100))
-(set-face-attribute 'mode-line-inactive nil :family "JetBrains Mono NL Medium" :height 100)
+    (set-face-attribute 'mode-line-active nil :family "JetBrains Mono NL Medium" :height 140) ; For 29+
+  (set-face-attribute 'mode-line nil :family "JetBrains Mono NL Medium" :height 140))
+(set-face-attribute 'mode-line-inactive nil :family "JetBrains Mono NL Medium" :height 140)
 
 (use-package expand-region
   :bind (
@@ -338,8 +339,8 @@
   :config
   (ultra-scroll-mode 1))
 
-(dt/load-user-init "go-template-mode.el")
-(require 'go-template-mode)
+;; (dt/load-user-init "go-template-mode.el")
+;; (require 'go-template-mode)
 
 (setq shell-file-name "zsh")
 (setq shell-command-switch "-ic")
