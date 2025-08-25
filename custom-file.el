@@ -36,12 +36,12 @@
     '(ag ansi back-button blacken bm cape catppuccin catppuccin-theme
        corfu dockerfile-mode doom-modeline dumb-jump eglot-java
        embark-consult eterm-256color expand-region git-gutter
-       git-gutter-fringe git-timemachine go-mode gptel
-       highlight-indentation json-mode k8s-mode lua-mode magit
-       markdown-mode markdown-preview-eww multiple-cursors orderless
-       org-modern pandoc projectile rainbow-mode rg ripgrep
-       smartparens treemacs treesit-auto ultra-scroll vertico
-       vscode-dark-plus-theme))
+       git-gutter-fringe git-timemachine go-mode gptel gptel-commit
+       gptel-magit highlight-indentation json-mode k8s-mode lua-mode
+       magit markdown-mode markdown-preview-eww multiple-cursors
+       orderless org-modern pandoc projectile rainbow-mode rg ripgrep
+       smartparens transient treemacs treesit-auto ultra-scroll
+       vertico vscode-dark-plus-theme))
  '(package-vc-selected-packages
     '((ultra-scroll :url "https://github.com/jdtsmith/ultra-scroll")))
  '(require-final-newline 'visit-save)

@@ -114,7 +114,6 @@
 
   :config
   (add-hook 'after-save-hook 'magit-after-save-refresh-status t)
-  (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
   (setq magit-blame-echo-style 'headings)
   (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1))
 
@@ -189,8 +188,8 @@
 
 (setq magit-blame-styles
   '((margin
-      (margin-format " %s%f" " %C %a" " %H")
-      (margin-width . 42)
+      (margin-format "%h %-3C %-10a")
+      (margin-width . 37)
       (margin-face . magit-blame-margin)
       (margin-body-face magit-blame-dimmed))))
 
