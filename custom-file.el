@@ -13,7 +13,7 @@
        cucumber shellcheck))
  '(compilation-scroll-output t)
  '(custom-safe-themes t)
- '(eglot-connect-timeout nil)
+ '(eglot-connect-timeout nil t)
  '(global-display-line-numbers-mode t)
  '(gnutls-algorithm-priority "normal:-vers-tls1.3")
  '(grep-command "rg --vimgrep ")
@@ -33,15 +33,13 @@
  '(mode-require-final-newline t)
  '(org-agenda-files '("~/notes/todo.md"))
  '(package-selected-packages
-    '(ag ansi back-button blacken bm cape catppuccin catppuccin-theme
-       corfu dockerfile-mode doom-modeline dumb-jump eglot-java
-       embark-consult eterm-256color expand-region git-gutter
-       git-gutter-fringe git-timemachine go-mode gptel gptel-commit
-       gptel-magit highlight-indentation json-mode k8s-mode lua-mode
-       magit markdown-mode markdown-preview-eww multiple-cursors
-       orderless org-modern pandoc projectile rainbow-mode rg ripgrep
-       smartparens transient treemacs treesit-auto ultra-scroll
-       vertico vscode-dark-plus-theme))
+    '(back-button blacken bm cape catppuccin-theme corfu dockerfile-mode
+       doom-modeline dumb-jump eglot-java embark-consult expand-region
+       git-gutter-fringe git-timemachine go-mode gptel-commit
+       gptel-magit json-mode k8s-mode llm lua-mode magit-todos
+       marginalia markdown-mode markdown-preview-eww multiple-cursors
+       orderless pandoc projectile rainbow-mode request rg smartparens
+       tablist treemacs ultra-scroll vertico vscode-dark-plus-theme))
  '(package-vc-selected-packages
     '((ultra-scroll :url "https://github.com/jdtsmith/ultra-scroll")))
  '(require-final-newline 'visit-save)
@@ -69,7 +67,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :extend nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 140 :width normal :foundry "CTDB" :family "JetBrains Mono NL Medium"))))
+ '(default ((t (:inherit nil :extend nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "CTDB" :family "JetBrains Mono NL Medium"))))
  '(font-lock-comment-face ((t (:inherit font-lock-constant-face))))
- '(whitespace-space ((t (:inherit ansi-color-black))))
- '(whitespace-tab ((t (:inherit ansi-color-black)))))
+ '(whitespace-space ((t (:inherit whitespace-indentation))))
+ '(window-divider ((t (:foreground "#303030" :box (:line-width (4 . 4) :color "#444d56" :style released-button)))))
+ '(window-divider-first-pixel ((t (:foreground "#303030")))))

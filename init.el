@@ -140,7 +140,7 @@
 
 (setq doom-modeline-height 1)
 (if (facep 'mode-line-active)
-    (set-face-attribute 'mode-line-active nil :family "JetBrains Mono NL Medium" :height 140) ; For 29+
+  (set-face-attribute 'mode-line-active nil :family "JetBrains Mono NL Medium" :height 140) ; For 29+
   (set-face-attribute 'mode-line nil :family "JetBrains Mono NL Medium" :height 140))
 (set-face-attribute 'mode-line-inactive nil :family "JetBrains Mono NL Medium" :height 140)
 
@@ -355,6 +355,51 @@
 
 ;; Add advice around `projectile-replace`
 (advice-add 'projectile-replace :around #'my-projectile-replace-advice)
+
+(defun markdown-to-jira ()
+  "Convert the current buffer from Markdown to Jira using Pandoc."
+  (interactive)
+  (let* ((input-file (make-temp-file "md2jira" nil ".md"))
+          (output-file (make-temp-file "md2jira" nil ".jira"))
+          (pandoc-command (format "pandoc --from markdown --to jira -o %s %s"
+                            output-file input-file)))
+    (write-region (point-min) (point-max) input-file)
+    (shell-command pandoc-command)
+    (erase-buffer)
+    (insert-file-contents output-file)
+    (delete-file input-file)
+    (delete-file output-file)))
+
+(use-package embark
+  :ensure t
+  :bind
+  (("C-." . embark-act)     ;; Use Embark as an action menu
+   ("C-;" . embark-dwim))   ;; Smart actions
+  :config
+  (defun embark-which-key-indicator ()
+    "An embark indicator that displays keymaps using which-key."
+    (lambda (&optional keymap targets prefix)
+      (if (null keymap)
+          (which-key--hide-popup-ignore-command)
+        (which-key--show-keymap
+         (if prefix
+             (format "Embark %s %s"
+                     (plist-get (car targets) :type)
+                     prefix)
+           (format "Embark %s"
+                   (plist-get (car targets) :type)))
+         keymap nil nil t))))
+
+  (setq embark-indicators
+        '(embark-which-key-indicator
+          embark-highlight-indicator
+          embark-isearch-highlight-indicator))))
+
+(use-package marginalia
+  :ensure t
+  :bind (("M-A" . marginalia-cycle))
+  :init
+  (marginalia-mode))
 
 ;; Load post-init.el
 (dt/load-user-init "post-init.el")
