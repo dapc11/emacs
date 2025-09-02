@@ -13,7 +13,7 @@
        cucumber shellcheck))
  '(compilation-scroll-output t)
  '(custom-safe-themes t)
- '(eglot-connect-timeout nil t)
+ '(eglot-connect-timeout nil)
  '(global-display-line-numbers-mode t)
  '(gnutls-algorithm-priority "normal:-vers-tls1.3")
  '(grep-command "rg --vimgrep ")
@@ -33,13 +33,14 @@
  '(mode-require-final-newline t)
  '(org-agenda-files '("~/notes/todo.md"))
  '(package-selected-packages
-    '(back-button blacken bm cape catppuccin-theme corfu dockerfile-mode
-       doom-modeline dumb-jump eglot-java embark-consult expand-region
-       git-gutter-fringe git-timemachine go-mode gptel-commit
-       gptel-magit json-mode k8s-mode llm lua-mode magit-todos
-       marginalia markdown-mode markdown-preview-eww multiple-cursors
-       orderless pandoc projectile rainbow-mode request rg smartparens
-       tablist treemacs ultra-scroll vertico vscode-dark-plus-theme))
+    '(back-button blacken bm cape catppuccin-theme corfu dired-subtree
+       dockerfile-mode doom-modeline dumb-jump eglot-java
+       embark-consult expand-region git-gutter-fringe git-timemachine
+       go-mode gptel-commit gptel-magit json-mode k8s-mode llm
+       lua-mode magit-todos marginalia markdown-mode
+       markdown-preview-eww multiple-cursors orderless pandoc
+       projectile rainbow-mode request rg smartparens tablist treemacs
+       ultra-scroll vertico vscode-dark-plus-theme))
  '(package-vc-selected-packages
     '((ultra-scroll :url "https://github.com/jdtsmith/ultra-scroll")))
  '(require-final-newline 'visit-save)

@@ -253,6 +253,21 @@
   )
 
 (require 'dired)
+(setq dired-listing-switches "-altr")
+(setq dired-dwim-target 'dired-dwim-target-next)
+
+(use-package dired-subtree
+  :ensure t
+  :after dired
+  :bind
+  ( :map dired-mode-map
+    ("<tab>" . dired-subtree-toggle)
+    ("TAB" . dired-subtree-toggle)
+    ("<backtab>" . dired-subtree-remove)
+    ("S-TAB" . dired-subtree-remove))
+  :config
+  (setq dired-subtree-use-backgrounds nil))
+
 (defun dt/dired-up-directory ()
   "Go up to the parent directory in dired."
   (interactive)
@@ -539,5 +554,16 @@ This function has no error checking."
              (buf2 (window-buffer (cadr windows))))
          (ediff-buffers buf1 buf2))
      (error "This function requires exactly 2 windows"))))
+
+(defun prelude-copy-file-name-to-clipboard ()
+  "Copy the current buffer file name to the clipboard."
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      default-directory
+                    (buffer-file-name))))
+    (when filename
+      (kill-new filename)
+      (message "Copied buffer file name '%s' to the clipboard." filename))))
+
 
 ;;;post-init.el ends here
