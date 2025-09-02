@@ -280,18 +280,14 @@
 (defun dt/set-up-whitespace-handling ()
   (interactive)
   (whitespace-mode 1)
-  (add-to-list 'write-file-functions 'delete-trailing-whitespace))
+  (add-to-list 'write-file-functions 'dt/delete-trailing-whitespace-except-markdown))
 
-(add-hook 'compilation-filter-hook 'dt/apply-ansi-colors)
-(add-hook 'html-mode-hook          'dt/apply-ansi-colors)
-(add-hook 'emacs-lisp-mode-hook    'dt/set-up-whitespace-handling)
-(add-hook 'git-commit-setup-hook   'dt/set-up-whitespace-handling)
-(add-hook 'go-mode-hook            'dt/set-up-whitespace-handling)
-(add-hook 'java-mode-hook          'dt/set-up-whitespace-handling)
-(add-hook 'json-mode-hook          'dt/set-up-whitespace-handling)
-(add-hook 'lua-mode-hook           'dt/set-up-whitespace-handling)
-(add-hook 'python-mode-hook        'dt/set-up-whitespace-handling)
-(add-hook 'yaml-mode-hook          'dt/set-up-whitespace-handling)
+(defun dt/delete-trailing-whitespace-except-markdown ()
+  (unless (derived-mode-p 'markdown-mode)
+    (delete-trailing-whitespace)))
+
+(add-hook 'prog-mode-hook 'dt/set-up-whitespace-handling)
+(add-hook 'text-mode-hook 'dt/set-up-whitespace-handling)
 
 (setq org-todo-keywords
   '((sequence "TODO" "ONGOING" "TESTING" "IN REVIEW" "ON HOLD" "DONE" "ABANDONED")))
