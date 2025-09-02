@@ -14,7 +14,6 @@
 (setq-default tab-width 4)
 (setq-default c-basic-offset 4)
 (setq-default c-basic-indent 4)
-;; set bar cursor
 (setq-default cursor-type 'bar)
 
 (setq backup-directory-alist '(("." . "~/.emacsbackup")))
@@ -34,22 +33,6 @@
     (when (file-exists-p user-init-file)
       (load user-init-file nil t))))
 
-;; (defun dt/set-font-based-on-dpi ()
-;;   "Set font based on screen DPI (HiDPI vs standard)."
-;;   ;; (let ((font-name "Jetbrains Mono")
-;;   (let ((font-name "HackNerdFont")
-;;          (hidpi-font-size 16)          ;; Font size for HiDPI screens
-;;          (standard-font-size 15)        ;; Font size for standard DPI screens
-;;          (dpi-threshold 100))           ;; DPI threshold for HiDPI
-;;     (let* ((dpi (/ (display-pixel-width) (/ (display-mm-width) 25.4))) ;; Calculate DPI
-;;             (font-size (if (> dpi dpi-threshold)
-;;                          hidpi-font-size
-;;                          standard-font-size)))
-;;       (if (member font-name (font-family-list))
-;;         (set-face-attribute 'default nil :font (format "%s-%d" font-name font-size))
-;; ;;         (message "Font %s is not available on this system" font-name)))))
-;; (dt/set-font-based-on-dpi)
-
 (which-key-mode 1)
 (global-font-lock-mode 1)
 (tool-bar-mode 0)
@@ -64,6 +47,8 @@
 (advice-add 'risky-local-variable-p :override #'ignore)
 (xterm-mouse-mode t)
 (load-file custom-file)
+(setq shell-file-name "zsh")
+(setq shell-command-switch "-ic")
 
 (require 'package)
 (setq package-archives
@@ -311,7 +296,6 @@
 (add-hook 'treemacs-mode-hook (lambda()(display-line-numbers-mode -1)))
 (window-divider-mode 1)
 
-;; Functions to increase and decrease font size
 (defun my-increase-font-size ()
   "Increase the font size globally."
   (interactive)
@@ -337,12 +321,6 @@
     scroll-margin 0)
   :config
   (ultra-scroll-mode 1))
-
-;; (dt/load-user-init "go-template-mode.el")
-;; (require 'go-template-mode)
-
-(setq shell-file-name "zsh")
-(setq shell-command-switch "-ic")
 
 (defun my-projectile-replace-advice (original-fun &rest args)
   "Advice to ensure `projectile-replace` uses Bash for subprocess."
@@ -393,11 +371,10 @@
   (setq embark-indicators
         '(embark-which-key-indicator
           embark-highlight-indicator
-          embark-isearch-highlight-indicator))))
+          embark-isearch-highlight-indicator)))
 
 (use-package marginalia
   :ensure t
-  :bind (("M-A" . marginalia-cycle))
   :init
   (marginalia-mode))
 
