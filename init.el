@@ -47,6 +47,9 @@
 (advice-add 'risky-local-variable-p :override #'ignore)
 (xterm-mouse-mode t)
 (load-file custom-file)
+(global-auto-revert-mode 1)
+(setq auto-revert-verbose nil)           ; Don't show revert messages
+(setq global-auto-revert-non-file-buffers t)  ; Also revert dired buffers
 (setq shell-file-name "zsh")
 (setq shell-command-switch "-ic")
 
