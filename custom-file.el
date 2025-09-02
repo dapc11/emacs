@@ -69,6 +69,7 @@
  ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :extend nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "CTDB" :family "JetBrains Mono NL Medium"))))
  '(font-lock-comment-face ((t (:inherit font-lock-constant-face))))
+ '(gptel-context-highlight-face ((t (:extend t :background "#1e2030"))))
  '(whitespace-space ((t (:inherit whitespace-indentation))))
  '(window-divider ((t (:foreground "#303030" :box (:line-width (4 . 4) :color "#444d56" :style released-button)))))
  '(window-divider-first-pixel ((t (:foreground "#303030")))))
